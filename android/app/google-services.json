@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "31323304758",
+    "firebase_url": "https://learning-22.firebaseio.com",
+    "project_id": "learning-22",
+    "storage_bucket": "learning-22.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:31323304758:android:8a679e1d72345d2c577997",
+        "android_client_info": {
+          "package_name": "com.recursivex.learning"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "31323304758-cqne7e10v8j8v36iaspv050f719drgkb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.recursivex.learning",
+            "certificate_hash": "86fdb6d5c79716fab283d681e65a9883163b56db"
+          }
+        },
+        {
+          "client_id": "31323304758-9jpss01dsh3hgvokd1s61655gap7tbrq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCis4pE29EeeCv2caV3aSf4TcWWazFpYg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "31323304758-9jpss01dsh3hgvokd1s61655gap7tbrq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "31323304758-iu348co3f2cbhi38c86vrqm8q86m14s3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.recursivex.learning"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

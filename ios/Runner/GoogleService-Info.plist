@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>31323304758-iu348co3f2cbhi38c86vrqm8q86m14s3.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.31323304758-iu348co3f2cbhi38c86vrqm8q86m14s3</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAJVZ-rgE_5jPWe8_n-PJlYCdzriSRm4QQ</string>
+	<key>GCM_SENDER_ID</key>
+	<string>31323304758</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.recursivex.learning</string>
+	<key>PROJECT_ID</key>
+	<string>learning-22</string>
+	<key>STORAGE_BUCKET</key>
+	<string>learning-22.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:31323304758:ios:0101646a69a6e7f9577997</string>
+	<key>DATABASE_URL</key>
+	<string>https://learning-22.firebaseio.com</string>
+</dict>
+</plist>
