@@ -222,6 +222,10 @@ class _VideoPlayerOverlayState extends State<VideoPlayerOverlay> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _controller = widget.controller;
+    _controller..addListener((){
+      if(mounted)
+        setState(() {});
+    });
   }
 
   @override
@@ -240,12 +244,30 @@ class _VideoPlayerOverlayState extends State<VideoPlayerOverlay> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text(''),
               Padding(
-                padding: const EdgeInsets.only(bottom: 5.0),
-                child: IconButton(
-                  icon: Icon(Icons.fullscreen, color: Colors.white,),
-                  onPressed: widget.changeOrientation,
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: _showTime(_controller.value.position),
+              ),
+              if(widget.quarterTurns == 1)
+                Expanded(
+                  child: VideoProgressIndicator(_controller,
+                    colors: VideoProgressColors(
+                        playedColor: Colors.red,
+                        backgroundColor: Colors.grey.shade200
+                    ),
+                    allowScrubbing: true,
+                  ),
+                ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Row(
+                  children: <Widget>[
+                    _showTime(_controller.value.duration),
+                    IconButton(
+                      icon: Icon(Icons.fullscreen, color: Colors.white,),
+                      onPressed: widget.changeOrientation,
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -291,5 +313,9 @@ class _VideoPlayerOverlayState extends State<VideoPlayerOverlay> {
         },
       ),
     );
+  }
+
+  Widget _showTime(Duration d){
+    return Text('${d.inMinutes}:${d.inSeconds}');
   }
 }
