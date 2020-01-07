@@ -84,6 +84,8 @@ Vimeo _$VimeoFromJson(Map<String, dynamic> json) {
         ?.map((e) =>
             e == null ? null : VimeoFile.fromJson(e as Map<String, dynamic>))
         ?.toList(),
+    width: json['width'] as int,
+    height: json['height'] as int,
   );
 }
 
@@ -95,4 +97,6 @@ Map<String, dynamic> _$VimeoToJson(Vimeo instance) => <String, dynamic>{
       'pictures': instance.pictures,
       'user': instance.user,
       'files': instance.files,
+      'width': instance.width,
+      'height': instance.height,
     };

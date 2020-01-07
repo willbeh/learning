@@ -75,7 +75,7 @@ class VideoPage extends StatelessWidget {
 
                   case ConnectionState.waiting:
                     return Container(
-                      height: (MediaQuery.of(context).size.width * 0.5625) + 80,
+                      height: (MediaQuery.of(context).size.width * 0.5625) + 50,
                       child: Center(
                         child: CircularProgressIndicator(),
                       ),

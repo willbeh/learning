@@ -105,7 +105,8 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
   }
   
   Widget _buildPage(BuildContext context, Vimeo vimeo){
-    double height = (quarterTurns == 0) ? MediaQuery.of(context).size.width * 0.5625 : MediaQuery.of(context).size.height;
+    double ratio = vimeo.width / vimeo.height;
+    double height = (quarterTurns == 0) ? MediaQuery.of(context).size.width / ratio : MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
     FadeAnimation imageFadeAnim = FadeAnimation(child: VideoPlayerOverlay(_controller, width, height, () => _setOrientation(), quarterTurns, () => _playVideo(), _isCompleted), duration: Duration(seconds: 1),);
@@ -121,17 +122,19 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                 height: height,
                 width: width,
                 child: _controller.value.initialized
-                    ? AspectRatio(
-                  aspectRatio: _controller.value.aspectRatio,
+                    ? Center(
+                      child: AspectRatio(
+                  aspectRatio: ratio, //_controller.value.aspectRatio,
                   child: GestureDetector(
-                      child: VideoPlayer(_controller),
-                    onTap: () {
-                        if(_controller.value.isPlaying){
-                          setState(() {});
-                        }
-                    },
+                        child: VideoPlayer(_controller),
+                      onTap: () {
+                          if(_controller.value.isPlaying){
+                            setState(() {});
+                          }
+                      },
                   ),
-                )
+                ),
+                    )
                     : Container(
                   child: Center(child: CircularProgressIndicator()),
                 ),

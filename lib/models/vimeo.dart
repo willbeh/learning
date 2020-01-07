@@ -53,7 +53,7 @@ class VimeoUser {
 
 @JsonSerializable()
 class Vimeo {
-  Vimeo({this.name, this.description, this.link, this.duration, this.pictures, this.user, this.files});
+  Vimeo({this.name, this.description, this.link, this.duration, this.pictures, this.user, this.files, this.width, this.height});
 
   String name;
   String description;
@@ -62,6 +62,8 @@ class Vimeo {
   VimeoPicture pictures;
   VimeoUser user;
   List<VimeoFile> files;
+  int width;
+  int height;
 
 
   factory Vimeo.fromJson(Map<String, dynamic> json) => _$VimeoFromJson(json);
