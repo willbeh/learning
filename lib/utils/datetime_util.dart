@@ -84,4 +84,7 @@ class DateTimeUtil {
       }
     }
   }
+
+  static String formatDurationHMMSS(Duration d) => d.toString().split('.').first.padLeft(7, "0");
+
 }

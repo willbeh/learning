@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:learning/pages/home/home.dart';
 import 'package:learning/pages/video/video.dart';
 import 'package:learning/pages/video/video_player.dart';
+import 'package:learning/pages/video/video_player_2.dart';
 import 'package:learning/pages/video/video_web.dart';
 import 'dart:convert';
 
