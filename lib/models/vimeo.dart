@@ -17,10 +17,12 @@ class VimeoSize {
 
 @JsonSerializable()
 class VimeoFile {
-  VimeoFile(this.quality, this.type, this.link);
+  VimeoFile(this.quality, this.type, this.link, this.width, this.height);
   String quality;
   String type;
   String link;
+  int width;
+  int height;
 
   factory VimeoFile.fromJson(Map<String, dynamic> json) => _$VimeoFileFromJson(json);
 

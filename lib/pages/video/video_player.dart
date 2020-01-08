@@ -24,6 +24,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
   int _prefPosition = 0;
   int quarterTurns = 0;
   bool _isCompleted = false;
+  bool _isPlaying = false;
 //  Orientation currentOrientation = Orientation.portrait;
 
   @override
@@ -66,6 +67,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
       ..addListener(() {
         _logInfo();
       });
+
   }
 
   @override
@@ -109,7 +111,11 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
     double height = (quarterTurns == 0) ? MediaQuery.of(context).size.width / ratio : MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
-    FadeAnimation imageFadeAnim = FadeAnimation(child: VideoPlayerOverlay(_controller, width, height, () => _setOrientation(), quarterTurns, () => _playVideo(), _isCompleted), duration: Duration(seconds: 1),);
+    FadeAnimation imageFadeAnim = FadeAnimation(
+      child: VideoPlayerOverlay(_controller, width, height, () => _setOrientation(), quarterTurns, () => _playVideo(), _isCompleted),
+      duration: Duration(seconds: 1),
+      controller: _controller,
+    );
     
     return Column(
       children: <Widget>[
@@ -182,6 +188,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
   _playVideo(){
     _controller.value.isPlaying ? Wakelock.disable() : Wakelock.enable();
     _controller.value.isPlaying ? _controller.pause() : _controller.play();
+    _isPlaying = _controller.value.isPlaying;
     setState(() {});
   }
 
@@ -204,6 +211,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
 
   _logInfo() async {
     if(_controller.value.position.inSeconds > _prefPosition){
+      log.d('update Pref position');
       if(_controller.value.position.inSeconds - _prefPosition > 1) {
         _controller.seekTo(Duration(seconds: _prefPosition)).then((_) {
           _controller.pause();
@@ -228,6 +236,10 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
           setState(() {});
         });
       });
+    }
+    if(_isPlaying != _controller.value.isPlaying){
+      _isPlaying = _controller.value.isPlaying;
+      setState(() {});
     }
   }
 }
@@ -334,10 +346,11 @@ class _VideoPlayerOverlayState extends State<VideoPlayerOverlay> {
 
 class FadeAnimation extends StatefulWidget {
   FadeAnimation(
-      {this.child, this.duration = const Duration(milliseconds: 500)});
+      {this.child, this.duration = const Duration(milliseconds: 500), this.controller});
 
   final Widget child;
   final Duration duration;
+  VideoPlayerController controller;
 
   @override
   _FadeAnimationState createState() => _FadeAnimationState();
@@ -369,7 +382,7 @@ class _FadeAnimationState extends State<FadeAnimation>
     });
     Future.delayed(Duration(seconds: 1), () {
       _showWidget = false;
-      _isLoaded = true;
+//      _isLoaded = true;
       if (mounted)
         animationController.forward(from: 0.0);
     });
@@ -405,8 +418,25 @@ class _FadeAnimationState extends State<FadeAnimation>
 
   @override
   Widget build(BuildContext context) {
+    bool _controllerWasPlaying = false;
+    return GestureDetector(
+      onLongPress: () {
+        _isLoaded = true;
+      },
+      onLongPressEnd: (_) {
+        _isLoaded = false;
+        animationController.forward(from: 0.0);
+      },
+      child: _buildWidget(context),
+    );
+  }
+  
+  Widget _buildWidget(BuildContext context) {
     if (_showWidget) {
       return inAnimationController.isAnimating ? Opacity(opacity: 0.0 + inAnimationController.value,child: widget.child) : widget.child;
+    }
+    if (_isLoaded) {
+      return widget.child;
     }
 
     return animationController.isAnimating

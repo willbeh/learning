@@ -27,6 +27,8 @@ VimeoFile _$VimeoFileFromJson(Map<String, dynamic> json) {
     json['quality'] as String,
     json['type'] as String,
     json['link'] as String,
+    json['width'] as int,
+    json['height'] as int,
   );
 }
 
@@ -34,6 +36,8 @@ Map<String, dynamic> _$VimeoFileToJson(VimeoFile instance) => <String, dynamic>{
       'quality': instance.quality,
       'type': instance.type,
       'link': instance.link,
+      'width': instance.width,
+      'height': instance.height,
     };
 
 VimeoPicture _$VimeoPictureFromJson(Map<String, dynamic> json) {
