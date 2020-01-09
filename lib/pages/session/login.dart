@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:learning/utils/app_traslation_util.dart';
 import '../../app_routes.dart';
 import '../../utils/app_icon_icons.dart';
 import '../../widgets/app_button.dart';
@@ -52,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   child: Column(
                     children: <Widget>[
-                      Text('Login', style: Theme.of(context).textTheme.title.copyWith(color: Theme.of(context).primaryColor),),
+                      Text('${AppTranslate.text(context, 'login')}', style: Theme.of(context).textTheme.title.copyWith(color: Theme.of(context).primaryColor),),
                       CommonUI.heightPadding(),
                       AppTextField(
                         controller: emailCtrl,

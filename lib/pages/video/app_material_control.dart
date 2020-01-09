@@ -3,7 +3,10 @@ import 'dart:async';
 import 'package:chewie/chewie.dart';
 import 'package:chewie/src/material_progress_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:learning/states/vimeo_state.dart';
 import 'package:learning/utils/logger.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 
 class AppMaterialControl extends StatefulWidget {
@@ -60,6 +63,18 @@ class _AppMaterialControlState extends State<AppMaterialControl> {
             absorbing: _hideStuff,
             child: Column(
               children: <Widget>[
+                AnimatedOpacity(
+                  opacity: (!_hideStuff) || (_latestValue != null && !_latestValue.isPlaying) ? 1.0 : 0.0,
+                  duration: Duration(milliseconds: 300),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      _buildBackButton(),
+                      _buildCompleted(),
+                    ],
+                  ),
+                ),
                 _latestValue != null &&
                     !_latestValue.isPlaying &&
                     _latestValue.duration == null ||
@@ -106,13 +121,44 @@ class _AppMaterialControlState extends State<AppMaterialControl> {
     super.didChangeDependencies();
   }
 
+  Widget _buildCompleted(){
+    // TODO implement completed
+    SharedPreferences prefs = Provider.of(context);
+    VimeoState vimeoState = Provider.of<VimeoState>(context);
+    int position = prefs.getInt(vimeoState.selectedVideoId);
+
+    if(position == null || position < vimeoState.selectedVideo.duration) {
+      return Container();
+    }
+    return Padding(
+      padding: EdgeInsets.only(right: 15, top: 8),
+      child: Text('Completed'),
+    );
+  }
+
+  Widget _buildBackButton(){
+    return Align(
+      alignment: Alignment.topLeft,
+      child: IconButton(
+        icon: Icon(chewieController.isFullScreen ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_left, color: Colors.white,),
+        onPressed: () {
+          if(chewieController.isFullScreen) {
+            chewieController.exitFullScreen();
+          } else {
+            Navigator.of(context).pop();
+          }
+        },
+      ),
+    );
+  }
+
   AnimatedOpacity _buildBottomBar(
       BuildContext context,
       ) {
     final iconColor = Colors.white; Theme.of(context).textTheme.button.color;
 
     return AnimatedOpacity(
-      opacity: _hideStuff ? 0.0 : 1.0,
+      opacity: (!_hideStuff) || (_latestValue != null && !_latestValue.isPlaying) ? 1.0 : 0.0,
       duration: Duration(milliseconds: 300),
       child: Container(
         height: barHeight,
@@ -138,26 +184,22 @@ class _AppMaterialControlState extends State<AppMaterialControl> {
     );
   }
 
-  GestureDetector _buildExpandButton() {
+  Widget _buildExpandButton() {
     return GestureDetector(
       onTap: _onExpandCollapse,
-      child: AnimatedOpacity(
-        opacity: _hideStuff ? 0.0 : 1.0,
-        duration: Duration(milliseconds: 300),
-        child: Container(
-          height: barHeight,
-          margin: EdgeInsets.only(right: 12.0),
-          padding: EdgeInsets.only(
-            left: 8.0,
-            right: 8.0,
-          ),
-          child: Center(
-            child: Icon(
-              chewieController.isFullScreen
-                  ? Icons.fullscreen_exit
-                  : Icons.fullscreen,
-              color: Colors.white,
-            ),
+      child: Container(
+        height: barHeight,
+        margin: EdgeInsets.only(right: 12.0),
+        padding: EdgeInsets.only(
+          left: 8.0,
+          right: 8.0,
+        ),
+        child: Center(
+          child: Icon(
+            chewieController.isFullScreen
+                ? Icons.fullscreen_exit
+                : Icons.fullscreen,
+            color: Colors.white,
           ),
         ),
       ),
@@ -168,7 +210,7 @@ class _AppMaterialControlState extends State<AppMaterialControl> {
 //    log.d('${_latestValue.isPlaying} $_dragging');
     return Expanded(
       child: AnimatedOpacity(
-        opacity: _hideStuff ? 0.0 : 1.0,
+        opacity: (!_hideStuff) || (_latestValue != null && !_latestValue.isPlaying) ? 1.0 : 0.0,
         duration: Duration(milliseconds: 300),
         child: Center(
           child: InkWell(

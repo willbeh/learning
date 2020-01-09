@@ -2,6 +2,7 @@ import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:learning/models/vimeo.dart';
 import 'package:learning/pages/video/app_material_control.dart';
+import 'package:learning/pages/video/video_detail.dart';
 import 'package:learning/states/vimeo_state.dart';
 import 'package:learning/utils/image_util.dart';
 import 'package:learning/utils/logger.dart';
@@ -65,10 +66,12 @@ class _VideoPlayer2PageState extends State<VideoPlayer2Page> {
         aspectRatio: vimeoState.selectedVideo.width / vimeoState.selectedVideo.height,
         autoPlay: false,
         looping: false,
-//        allowMuting: false,
+        allowMuting: false,
         autoInitialize: true,
+        allowedScreenSleep: false,
         customControls: AppMaterialControl(),
         startAt: Duration(seconds: position),
+//        overlay: _buildOverlay()
       );
     }
   }
@@ -93,44 +96,17 @@ class _VideoPlayer2PageState extends State<VideoPlayer2Page> {
         body: SafeArea(
           child: Column(
             children: <Widget>[
-              Stack(
-                children: <Widget>[
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: height,
-                    child: Center(
-                      child: Chewie(
-                        controller: _chewieController,
-                      ),
-                    ),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: height,
+                child: Center(
+                  child: Chewie(
+                    controller: _chewieController,
                   ),
-                  _buildOverlay(),
-                ],
+                ),
               ),
               if(!_chewieController.isFullScreen)
-                Column(
-                  children: <Widget>[
-                    ListTile(
-                      leading: ImageUtil.showCircularImage(
-                          25, vimeo.user.pictures.sizes[2].link),
-                      title: Text(vimeo.name, style: ThemeData.dark().textTheme.display1),
-                      subtitle: Text(
-                        vimeo.user.name,
-                        style: ThemeData.dark().textTheme.display3,
-                      ),
-                      trailing: Column(
-                        children: <Widget>[
-                          Icon(Icons.thumb_up),
-                          Text('123')
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(20),
-                      child: Text(vimeo.description),
-                    )
-                  ],
-                ),
+                VideoDetail(),
             ],
           ),
         ),
@@ -140,8 +116,10 @@ class _VideoPlayer2PageState extends State<VideoPlayer2Page> {
 
   Widget _buildOverlay(){
     log.d('_chewieController.isFullScreen ${_chewieController?.isFullScreen}');
-    return Stack(
-      children: <Widget>[
+    return Container(
+
+      child: Stack(
+        children: <Widget>[
 //        if(_chewieController != null && _chewieController.isFullScreen == false)
 //          Align(
 //            alignment: Alignment.topRight,
@@ -150,15 +128,16 @@ class _VideoPlayer2PageState extends State<VideoPlayer2Page> {
 //              onPressed: () => Navigator.pop(context),
 //            ),
 //          ),
-        if(_isCompleted)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-            child: Align(
-              alignment: Alignment.topRight,
-              child: Text('Completed', style: TextStyle(color: Colors.white),),
+          if(_isCompleted)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Text('Completed', style: TextStyle(color: Colors.white),),
+              ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 
