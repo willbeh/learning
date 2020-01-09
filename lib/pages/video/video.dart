@@ -53,7 +53,7 @@ class VideoPage extends StatelessWidget {
         ),
         body: ListView.separated(
           itemCount: videoId.length,
-          separatorBuilder: (context, i) => Divider(),
+          separatorBuilder: (context, i) => Divider(height: 0,),
           itemBuilder: (context, i) {
             if (vimeoState.videos.containsKey(videoId[i])) {
               return _buildVideoContainer(

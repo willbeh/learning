@@ -22,7 +22,7 @@ class AppRoutes {
       routeHomePage: (BuildContext context) => HomePage(),
       routeVideo: (BuildContext context) => VideoPage(),
       routeVideoWeb: (BuildContext context) => VideoWebPage(),
-      routeVideoPlayer: (BuildContext context) => VideoPlayerPage(),
+      routeVideoPlayer: (BuildContext context) => VideoPlayer2Page(),
     };
   }
 

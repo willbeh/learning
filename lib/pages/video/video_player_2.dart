@@ -1,439 +1,186 @@
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
+import 'package:learning/models/vimeo.dart';
+import 'package:learning/pages/video/app_material_control.dart';
 import 'package:learning/states/vimeo_state.dart';
+import 'package:learning/utils/image_util.dart';
+import 'package:learning/utils/logger.dart';
+import 'package:learning/widgets/common_ui.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter/scheduler.dart';
 
-class VideoPlayer2Page extends StatelessWidget {
-
+class VideoPlayer2Page extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    VimeoState vimeoState = Provider.of<VimeoState>(context);
-    return Container(
-      child: Column(
-        children: <Widget>[
-          NetworkPlayerLifeCycle(
-            vimeoState.selectedVideo.files[0].link,
-                (BuildContext context,
-                VideoPlayerController controller) =>
-                AspectRatioVideo(controller),
-          )
-        ],
-      ),
-    );
-  }
+  _VideoPlayer2PageState createState() => _VideoPlayer2PageState();
 }
 
+class _VideoPlayer2PageState extends State<VideoPlayer2Page> {
+  VideoPlayerController _controller;
+  ChewieController _chewieController;
+  VimeoState vimeoState;
+  SharedPreferences prefs;
+  int _prefPosition = 0;
+  bool hasInit = false;
+  bool _isCompleted = false;
 
-//class VideoPlayer2Page extends StatefulWidget {
-//  @override
-//  _VideoPlayer2PageState createState() => _VideoPlayer2PageState();
-//}
-//
-//class _VideoPlayer2PageState extends State<VideoPlayer2Page> {
-//  VideoPlayerController _videoPlayerController;
-//  bool startedPlaying = false;
-//  VimeoState vimeoState;
-//
-//  @override
-//  void didChangeDependencies() {
-//    super.didChangeDependencies();
-//    vimeoState = Provider.of<VimeoState>(context);
-//    _videoPlayerController =
-//        VideoPlayerController.network(vimeoState.selectedVideo.files[0].link);
-//    _videoPlayerController.addListener(() {
-//      if (startedPlaying && !_videoPlayerController.value.isPlaying) {
-//        Navigator.pop(context);
-//      }
-//    });
-//  }
-//
-//  @override
-//  void initState() {
-//    super.initState();
-//  }
-//
-//  @override
-//  void dispose() {
-//    _videoPlayerController.dispose();
-//    super.dispose();
-//  }
-//
-//  Future<bool> started() async {
-//    await _videoPlayerController.initialize();
-//    await _videoPlayerController.play();
-//    startedPlaying = true;
-//    return true;
-//  }
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    return Material(
-//      elevation: 0,
-//      child: Center(
-//        child: FutureBuilder<bool>(
-//          future: started(),
-//          builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-//            if (snapshot.data == true) {
-//              return AspectRatio(
-//                  aspectRatio: _videoPlayerController.value.aspectRatio,
-//                  child: VideoPlayer(_videoPlayerController));
-//            } else {
-//              return const Text('waiting for video to load');
-//            }
-//          },
-//        ),
-//      ),
-//    );
-//  }
-//}
-
-
-class VideoPlayPause extends StatefulWidget {
-  VideoPlayPause(this.controller);
-
-  final VideoPlayerController controller;
+  var log = getLogger('_VideoPlayer2PageState');
 
   @override
-  State createState() {
-    return _VideoPlayPauseState();
-  }
-}
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if(!hasInit){
+      hasInit = true;
+      prefs = Provider.of(context);
+      vimeoState = Provider.of<VimeoState>(context);
 
-class _VideoPlayPauseState extends State<VideoPlayPause> {
-  _VideoPlayPauseState() {
-    listener = () {
-      SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {}));
-    };
-  }
-
-  FadeAnimation imageFadeAnim =
-  FadeAnimation(child: const Icon(Icons.play_arrow, size: 100.0));
-  VoidCallback listener;
-
-  VideoPlayerController get controller => widget.controller;
-
-  @override
-  void initState() {
-    super.initState();
-    controller.addListener(listener);
-    controller.setVolume(1.0);
-    controller.play();
-  }
-
-  @override
-  void deactivate() {
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      controller.setVolume(0.0);
-      controller.removeListener(listener);
-    });
-
-    super.deactivate();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final List<Widget> children = <Widget>[
-      GestureDetector(
-        child: VideoPlayer(controller),
-        onTap: () {
-          if (!controller.value.initialized) {
-            return;
-          }
-          if (controller.value.isPlaying) {
-            imageFadeAnim =
-                FadeAnimation(child: const Icon(Icons.pause, size: 100.0));
-            controller.pause();
-          } else {
-            imageFadeAnim =
-                FadeAnimation(child: const Icon(Icons.play_arrow, size: 100.0));
-            controller.play();
-          }
-        },
-      ),
-      Align(
-        alignment: Alignment.bottomCenter,
-        child: VideoProgressIndicator(
-          controller,
-          allowScrubbing: true,
-        ),
-      ),
-      Center(child: imageFadeAnim),
-      Center(
-          child: controller.value.isBuffering
-              ? const CircularProgressIndicator()
-              : null),
-    ];
-
-    return Stack(
-      fit: StackFit.passthrough,
-      children: children,
-    );
-  }
-}
-
-class FadeAnimation extends StatefulWidget {
-  FadeAnimation(
-      {this.child, this.duration = const Duration(milliseconds: 500)});
-
-  final Widget child;
-  final Duration duration;
-
-  @override
-  _FadeAnimationState createState() => _FadeAnimationState();
-}
-
-class _FadeAnimationState extends State<FadeAnimation>
-    with SingleTickerProviderStateMixin {
-  AnimationController animationController;
-
-  @override
-  void initState() {
-    super.initState();
-    animationController =
-        AnimationController(duration: widget.duration, vsync: this);
-    animationController.addListener(() {
-      if (mounted) {
-        setState(() {});
+      int videoIndex = 0;
+      for(int i=0; i<vimeoState.selectedVideo.files.length; i++) {
+        if(vimeoState.selectedVideo.files[i].height == 540) {
+          videoIndex = i;
+        }
       }
-    });
-    animationController.forward(from: 0.0);
-  }
 
-  @override
-  void deactivate() {
-    animationController.stop();
-    super.deactivate();
-  }
+      String videoFile = vimeoState.selectedVideo.files[videoIndex].link;
 
-  @override
-  void didUpdateWidget(FadeAnimation oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.child != widget.child) {
-      animationController.forward(from: 0.0);
+      int position = prefs.getInt(vimeoState.selectedVideoId);
+      // if no prefs then set a 0
+      if (position == null){
+        position = 0;
+        prefs.setInt(vimeoState.selectedVideoId, 0);
+      } else if(position > 0){
+        _prefPosition = position;
+        if(position == vimeoState.selectedVideo.duration) {
+          _isCompleted = true;
+        }
+      }
+      log.d('position $position');
+
+      _controller = VideoPlayerController.network(videoFile)
+        ..addListener(() => _logInfo());
+
+      _chewieController = ChewieController(
+        videoPlayerController: _controller,
+        aspectRatio: vimeoState.selectedVideo.width / vimeoState.selectedVideo.height,
+        autoPlay: false,
+        looping: false,
+//        allowMuting: false,
+        autoInitialize: true,
+        customControls: AppMaterialControl(),
+        startAt: Duration(seconds: position),
+      );
     }
   }
 
   @override
   void dispose() {
-    animationController.dispose();
+    _controller.dispose();
+    _chewieController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return animationController.isAnimating
-        ? Opacity(
-      opacity: 1.0 - animationController.value,
-      child: widget.child,
-    )
-        : Container();
-  }
-}
+    Vimeo vimeo = vimeoState.selectedVideo;
 
-typedef Widget VideoWidgetBuilder(
-    BuildContext context, VideoPlayerController controller);
+    double height = (_chewieController.isFullScreen) ? MediaQuery.of(context).size.height :
+    MediaQuery.of(context).size.width * (vimeo.height/vimeo.width);
 
-abstract class PlayerLifeCycle extends StatefulWidget {
-  PlayerLifeCycle(this.dataSource, this.childBuilder);
-
-  final VideoWidgetBuilder childBuilder;
-  final String dataSource;
-}
-
-/// A widget connecting its life cycle to a [VideoPlayerController] using
-/// a data source from the network.
-class NetworkPlayerLifeCycle extends PlayerLifeCycle {
-  NetworkPlayerLifeCycle(String dataSource, VideoWidgetBuilder childBuilder)
-      : super(dataSource, childBuilder);
-
-  @override
-  _NetworkPlayerLifeCycleState createState() => _NetworkPlayerLifeCycleState();
-}
-
-/// A widget connecting its life cycle to a [VideoPlayerController] using
-/// an asset as data source
-class AssetPlayerLifeCycle extends PlayerLifeCycle {
-  AssetPlayerLifeCycle(String dataSource, VideoWidgetBuilder childBuilder)
-      : super(dataSource, childBuilder);
-
-  @override
-  _AssetPlayerLifeCycleState createState() => _AssetPlayerLifeCycleState();
-}
-
-abstract class _PlayerLifeCycleState extends State<PlayerLifeCycle> {
-  VideoPlayerController controller;
-
-  @override
-
-  /// Subclasses should implement [createVideoPlayerController], which is used
-  /// by this method.
-  void initState() {
-    super.initState();
-    controller = createVideoPlayerController();
-    controller.addListener(() {
-      if (controller.value.hasError) {
-        print(controller.value.errorDescription);
-      }
-    });
-    controller.initialize();
-    controller.setLooping(true);
-    controller.play();
-  }
-
-  @override
-  void deactivate() {
-    super.deactivate();
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return widget.childBuilder(context, controller);
-  }
-
-  VideoPlayerController createVideoPlayerController();
-}
-
-class _NetworkPlayerLifeCycleState extends _PlayerLifeCycleState {
-  @override
-  VideoPlayerController createVideoPlayerController() {
-    return VideoPlayerController.network(widget.dataSource);
-  }
-}
-
-class _AssetPlayerLifeCycleState extends _PlayerLifeCycleState {
-  @override
-  VideoPlayerController createVideoPlayerController() {
-    return VideoPlayerController.asset(widget.dataSource);
-  }
-}
-
-/// A filler card to show the video in a list of scrolling contents.
-Widget buildCard(String title) {
-  return Card(
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        ListTile(
-          leading: const Icon(Icons.airline_seat_flat_angled),
-          title: Text(title),
-        ),
-        // TODO(jackson): Remove when deprecation is on stable branch
-        // ignore: deprecated_member_use
-        ButtonTheme.bar(
-          child: ButtonBar(
+    return Theme(
+      data: ThemeData.dark(),
+      child: Scaffold(
+        body: SafeArea(
+          child: Column(
             children: <Widget>[
-              FlatButton(
-                child: const Text('BUY TICKETS'),
-                onPressed: () {
-                  /* ... */
-                },
+              Stack(
+                children: <Widget>[
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: height,
+                    child: Center(
+                      child: Chewie(
+                        controller: _chewieController,
+                      ),
+                    ),
+                  ),
+                  _buildOverlay(),
+                ],
               ),
-              FlatButton(
-                child: const Text('SELL TICKETS'),
-                onPressed: () {
-                  /* ... */
-                },
-              ),
+              if(!_chewieController.isFullScreen)
+                Column(
+                  children: <Widget>[
+                    ListTile(
+                      leading: ImageUtil.showCircularImage(
+                          25, vimeo.user.pictures.sizes[2].link),
+                      title: Text(vimeo.name, style: ThemeData.dark().textTheme.display1),
+                      subtitle: Text(
+                        vimeo.user.name,
+                        style: ThemeData.dark().textTheme.display3,
+                      ),
+                      trailing: Column(
+                        children: <Widget>[
+                          Icon(Icons.thumb_up),
+                          Text('123')
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Text(vimeo.description),
+                    )
+                  ],
+                ),
             ],
           ),
         ),
-      ],
-    ),
-  );
-}
-
-//class VideoInListOfCards extends StatelessWidget {
-//  VideoInListOfCards(this.controller);
-//
-//  final VideoPlayerController controller;
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    return ListView(
-//      children: <Widget>[
-//        buildCard("Item a"),
-//        buildCard("Item b"),
-//        buildCard("Item c"),
-//        buildCard("Item d"),
-//        buildCard("Item e"),
-//        buildCard("Item f"),
-//        buildCard("Item g"),
-//        Card(
-//            child: Column(children: <Widget>[
-//              Column(
-//                children: <Widget>[
-//                  const ListTile(
-//                    leading: Icon(Icons.cake),
-//                    title: Text("Video video"),
-//                  ),
-//                  Stack(
-//                      alignment: FractionalOffset.bottomRight +
-//                          const FractionalOffset(-0.1, -0.1),
-//                      children: <Widget>[
-//                        AspectRatioVideo(controller),
-//                        Image.asset('assets/flutter-mark-square-64.png'),
-//                      ]),
-//                ],
-//              ),
-//            ])),
-//        buildCard("Item h"),
-//        buildCard("Item i"),
-//        buildCard("Item j"),
-//        buildCard("Item k"),
-//        buildCard("Item l"),
-//      ],
-//    );
-//  }
-//}
-
-class AspectRatioVideo extends StatefulWidget {
-  AspectRatioVideo(this.controller);
-
-  final VideoPlayerController controller;
-
-  @override
-  AspectRatioVideoState createState() => AspectRatioVideoState();
-}
-
-class AspectRatioVideoState extends State<AspectRatioVideo> {
-  VideoPlayerController get controller => widget.controller;
-  bool initialized = false;
-
-  VoidCallback listener;
-
-  @override
-  void initState() {
-    super.initState();
-    listener = () {
-      if (!mounted) {
-        return;
-      }
-      if (initialized != controller.value.initialized) {
-        initialized = controller.value.initialized;
-        setState(() {});
-      }
-    };
-    controller.addListener(listener);
+      ),
+    );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    if (initialized) {
-      return Center(
-        child: AspectRatio(
-          aspectRatio: controller.value.aspectRatio,
-          child: VideoPlayPause(controller),
-        ),
-      );
-    } else {
-      return Container();
+  Widget _buildOverlay(){
+    log.d('_chewieController.isFullScreen ${_chewieController?.isFullScreen}');
+    return Stack(
+      children: <Widget>[
+//        if(_chewieController != null && _chewieController.isFullScreen == false)
+//          Align(
+//            alignment: Alignment.topRight,
+//            child: IconButton(
+//              icon: Icon(Icons.arrow_back_ios, color: Colors.white,),
+//              onPressed: () => Navigator.pop(context),
+//            ),
+//          ),
+        if(_isCompleted)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+            child: Align(
+              alignment: Alignment.topRight,
+              child: Text('Completed', style: TextStyle(color: Colors.white),),
+            ),
+          ),
+      ],
+    );
+  }
+
+  _logInfo(){
+    if(_controller.value.position.inSeconds > _prefPosition){
+      if(_controller.value.position.inSeconds - _prefPosition > 1) {
+//        _chewieController.pause();
+        _chewieController.seekTo(Duration(seconds: _prefPosition)).then((_) {
+          _chewieController.pause();
+          CommonUI.alertBox(context, title: 'Cannot skip', msg: 'Cannot skip to front', onPress: () {
+            Navigator.pop(context);
+          });
+        });
+
+      } else {
+        _prefPosition = _controller.value.position.inSeconds;
+        prefs.setInt(vimeoState.selectedVideoId, _prefPosition);
+      }
+    }
+    if(_controller.value.duration == _controller.value.position){
+      _isCompleted = true;
     }
   }
 }
+
