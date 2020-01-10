@@ -44,6 +44,7 @@ dependencies:
   cached_network_image: ^2.0.0
   wakelock: ^0.1.3+3
   chewie: ^0.9.8+1
+  flare_flutter: ^1.8.3
 
 
 dev_dependencies:
@@ -69,6 +70,7 @@ flutter:
   assets:
     - lang/en.json
     - lang/zh.json
+    - assets/flare/lion.flr
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

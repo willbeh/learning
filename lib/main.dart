@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        StreamProvider<FirebaseUser>(create: (_) => userRepository.onAuthStateChange),
+        StreamProvider<FirebaseUser>(create: (_) => userRepository.onAuthStateChange, lazy: false,),
         FutureProvider<SharedPreferences>(create: (_) => SharedPreferences.getInstance(), lazy: false,),
         ChangeNotifierProvider(
           create: (_) => ThemeState(isLightTheme: true),

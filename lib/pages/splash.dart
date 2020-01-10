@@ -1,5 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:flare_flutter/flare_actor.dart';
 import '../app_routes.dart';
+
 
 class SplashPage extends StatefulWidget {
   @override
@@ -11,8 +15,14 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 2), () {
-      Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.routeLoginPage, (route)=>false);
+
+    Future.delayed(Duration(seconds: 3), () {
+      FirebaseUser user = Provider.of<FirebaseUser>(context, listen: false);
+      if(user == null){
+        Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.routeLoginPage, (route)=>false);
+      } else {
+        Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.routeHomePage, (route)=>false);
+      }
     });
   }
 
@@ -39,8 +49,12 @@ class _SplashPageState extends State<SplashPage> {
             ],
           ),
         ),
-        child: Container(),
+        child: Center(
+          child: FlareActor("assets/flare/lion.flr", alignment:Alignment.center, fit:BoxFit.contain, animation:"animation"),
+        ),
       ),
     );
   }
+
+
 }
