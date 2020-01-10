@@ -76,7 +76,7 @@ class MyAppLoad extends StatelessWidget {
       onGenerateTitle: (BuildContext context) => AppLocalizations.of(context).translate('title'),
       debugShowCheckedModeBanner: false,
       theme: (Provider.of<ThemeState>(context).isLightTheme) ? lightTheme : darkTheme, // AppTheme.themeData(),
-      darkTheme: darkTheme,
+//      darkTheme: darkTheme,
       home: SplashPage(),
       routes: AppRoutes.appRoutes(context),
     );

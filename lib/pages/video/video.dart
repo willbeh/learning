@@ -27,47 +27,40 @@ class VideoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: ThemeData.dark(),
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          title: Text('Video'),
-          actions: <Widget>[
-            PopupMenuButton<int>(
-              onSelected: (int result) {
-                if(result == 0) {
-                  SharedPreferences prefs = Provider.of<SharedPreferences>(context, listen: false);
-                  videoId.forEach((id) {
-                    prefs.setInt(id, 0);
-                  });
-                }
-              },
-              itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
-                const PopupMenuItem<int>(
-                  value: 0,
-                  child: Text('Reset'),
-                ),
-              ],
-            )
-          ],
-        ),
-        body: AppStreamBuilder(
-          stream: VideoService.find(),
-          fn: _buildPage,
-        ),
+    return Scaffold(
+      appBar: AppBar(
+//        backgroundColor: Colors.transparent,
+        title: Text('Video'),
+        actions: <Widget>[
+          PopupMenuButton<int>(
+            onSelected: (int result) {
+              if(result == 0) {
+                SharedPreferences prefs = Provider.of<SharedPreferences>(context, listen: false);
+                videoId.forEach((id) {
+                  prefs.setInt(id, 0);
+                });
+              }
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
+              const PopupMenuItem<int>(
+                value: 0,
+                child: Text('Reset'),
+              ),
+            ],
+          )
+        ],
+      ),
+      body: AppStreamBuilder(
+        stream: VideoService.find(),
+        fn: _buildPage,
       ),
     );
   }
 
   _buildPage(BuildContext context, List<Video> videos) {
-    VimeoState vimeoState = Provider.of(context);
-
-    log.d('_buildPage ${videos.length}');
-
     return ListView.separated(
       itemCount: videos.length,
-      separatorBuilder: (_, __) => Divider(),
+      separatorBuilder: (_, __) => Divider(height: 0,),
       itemBuilder: (context, i) {
         Video video = videos[i];
         if (video.data != null) {
@@ -126,60 +119,6 @@ class VideoPage extends StatelessWidget {
     );
   }
 
-//  _buildList(BuildContext context) {
-//    VimeoState vimeoState = Provider.of(context);
-//    return ListView.separated(
-//      itemCount: videoId.length,
-//      separatorBuilder: (context, i) => Divider(height: 0,),
-//      itemBuilder: (context, i) {
-//        if (vimeoState.videos.containsKey(videoId[i])) {
-//          return _buildVideoContainer(
-//              context, vimeoState.videos[videoId[i]], videoId[i]);
-//        }
-//
-//        return FutureBuilder(
-//          future: http.get('https://api.vimeo.com/videos/${videoId[i]}',
-//              headers: headers),
-//          builder: (context, AsyncSnapshot<http.Response> snapshot) {
-//            if (snapshot.hasError) {
-//              return Container(
-//                child: Text('${snapshot.error}'),
-//              );
-//            }
-//            switch (snapshot.connectionState) {
-//              case ConnectionState.none:
-//                break;
-//
-//              case ConnectionState.waiting:
-//                return Container(
-//                  height: (MediaQuery.of(context).size.width * 0.5625) + 50,
-//                  child: Center(
-//                    child: CircularProgressIndicator(),
-//                  ),
-//                );
-//                break;
-//
-//              case ConnectionState.done:
-//                if (snapshot.hasData) {
-//                  if (snapshot.data.statusCode == 200) {
-//                    Vimeo vimeo = Vimeo.fromJson(json.decode(snapshot.data.body));
-//                    vimeoState.videos[videoId[i]] = vimeo;
-//                    return _buildVideoContainer(context, vimeo, videoId[i]);
-//                  }
-//                }
-//                break;
-//
-//              case ConnectionState.active:
-//                break;
-//            }
-//
-//            return Container();
-//          },
-//        );
-//      },
-//    );
-//  }
-
   Widget _buildVideoContainer(BuildContext context, Vimeo vimeo, String id) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -201,10 +140,10 @@ class VideoPage extends StatelessWidget {
         ListTile(
           leading: ImageUtil.showCircularImage(
               25, vimeo.user.pictures.sizes[2].link),
-          title: Text(vimeo.name, style: ThemeData.dark().textTheme.display1),
+          title: Text(vimeo.name, style: Theme.of(context).textTheme.display1),
           subtitle: Text(
             vimeo.user.name,
-            style: ThemeData.dark().textTheme.display3,
+            style: Theme.of(context).textTheme.display3,
           ),
         )
       ],

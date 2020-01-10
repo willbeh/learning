@@ -40,14 +40,6 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-//    currentOrientation = MediaQuery.of(context).orientation;
-
-//    SystemChrome.setPreferredOrientations([
-//          DeviceOrientation.portraitUp,
-//          DeviceOrientation.landscapeLeft,
-//          DeviceOrientation.landscapeRight,
-//        ]);
-
     prefs = Provider.of(context);
     vimeoState = Provider.of<VimeoState>(context);
 
@@ -93,23 +85,20 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
   Widget build(BuildContext context) {
     Vimeo vimeo = vimeoState.selectedVideo;
 
-    return Theme(
-      data: ThemeData.dark(),
-      child: Scaffold(
-        body: OrientationBuilder(
-          builder: (context, orientation) {
-            return SingleChildScrollView(
-              child: (quarterTurns == 0) ? SafeArea(
-                child: _buildPage(context, vimeo),
-              ) :
-              // overwrite back button if shown on vertical
-              WillPopScope(
-                onWillPop: () => _onWillPop(),
-                child: _buildPage(context, vimeo),
-              ),
-            );
-          }
-        ),
+    return Scaffold(
+      body: OrientationBuilder(
+        builder: (context, orientation) {
+          return SingleChildScrollView(
+            child: (quarterTurns == 0) ? SafeArea(
+              child: _buildPage(context, vimeo),
+            ) :
+            // overwrite back button if shown on vertical
+            WillPopScope(
+              onWillPop: () => _onWillPop(),
+              child: _buildPage(context, vimeo),
+            ),
+          );
+        }
       ),
     );
   }
@@ -176,10 +165,10 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                   ListTile(
                     leading: ImageUtil.showCircularImage(
                         25, vimeo.user.pictures.sizes[2].link),
-                    title: Text(vimeo.name, style: ThemeData.dark().textTheme.display1),
+                    title: Text(vimeo.name, style: Theme.of(context).textTheme.display1),
                     subtitle: Text(
                       vimeo.user.name,
-                      style: ThemeData.dark().textTheme.display3,
+                      style: Theme.of(context).textTheme.display3,
                     ),
                     trailing: Column(
                       children: <Widget>[
@@ -411,7 +400,7 @@ class _AppVideoControlState extends State<AppVideoControl> {
                       padding: const EdgeInsets.only(left: 10),
                       child: Row(
                         children: <Widget>[
-                          (widget.controller.value.duration == null) ? Text('0') :Text('${DateTimeUtil.formatDuration(widget.controller.value.duration)}'),
+                          (widget.controller.value.duration == null) ? Text('0') :Text('${DateTimeUtil.formatDuration(widget.controller.value.duration)}', style: TextStyle(color: Colors.white),),
                           IconButton(
                             icon: Icon((widget.quarterTurns == 0) ? Icons.fullscreen : Icons.fullscreen_exit, color: Colors.white,),
                             onPressed: widget.changeOrientation,
@@ -429,7 +418,7 @@ class _AppVideoControlState extends State<AppVideoControl> {
                 alignment: Alignment.topRight,
                 child: Padding(
                   padding: EdgeInsets.all(10),
-                  child: Text('Completed'),
+                  child: Text('Completed', style: TextStyle(color: Colors.white),),
                 ),
               ),
 
@@ -489,7 +478,7 @@ class _AppVideoPositionState extends State<AppVideoPosition> {
 
   @override
   Widget build(BuildContext context) {
-    return (_displayDuration == null) ? Text('0') :Text('${DateTimeUtil.formatDuration(_displayDuration)}');
+    return (_displayDuration == null) ? Text('0') :Text('${DateTimeUtil.formatDuration(_displayDuration)}', style: TextStyle(color: Colors.white),);
 //    return (controller.value.position == null) ? Text('0') :Text('${DateTimeUtil.formatDuration(controller.value.position)}');
   }
 }
