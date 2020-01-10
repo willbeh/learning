@@ -39,8 +39,19 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-    <key>io.flutter.embedded_views_preview</key>
-    <true/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.31323304758-iu348co3f2cbhi38c86vrqm8q86m14s3</string>
+			</array>
+		</dict>
+	</array>
+	<key>io.flutter.embedded_views_preview</key>
+	<true/>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>

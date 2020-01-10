@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:learning/services/user_repository.dart';
 import 'package:learning/utils/app_traslation_util.dart';
@@ -87,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
                           children: <Widget>[
                             IconButton(
                               icon: Icon(AppIcon.google, color: Color(0xffDB4437)),
-                              onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.routeHomePage, (route) => false),
+                              onPressed: () => _signInGoogle(),
                             ),
                             IconButton(
                               icon: Icon(AppIcon.facebook, color: Color(0xff4267B2)),
@@ -107,16 +108,16 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  _signInGoogle(){
+  _signInGoogle() async{
     setState(() {
       _isLoading = true;
     });
-    userRepository.signInWithGoogle().then((_) => Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.routeHomePage, (route) => false))
-    .catchError((error) {
-      setState(() {
-        _isLoading = false;
-      });
-      CommonUI.alertBox(context, title: 'Error sign in Google', msg: '$error');
+    FirebaseUser user = await userRepository.signInWithGoogle();
+    setState(() {
+      _isLoading = false;
     });
+    if(user != null){
+      Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.routeHomePage, (route) => false);
+    }
   }
 }

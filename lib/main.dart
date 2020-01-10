@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -5,6 +6,7 @@ import 'package:learning/app_routes.dart';
 import 'package:learning/dark_theme.dart';
 import 'package:learning/light_theme.dart';
 import 'package:learning/pages/splash.dart';
+import 'package:learning/services/user_repository.dart';
 import 'package:learning/states/theme_state.dart';
 import 'package:learning/states/vimeo_state.dart';
 import 'package:learning/utils/app_localization.dart';
@@ -25,6 +27,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        StreamProvider<FirebaseUser>(create: (_) => userRepository.onAuthStateChange),
         FutureProvider<SharedPreferences>(create: (_) => SharedPreferences.getInstance(), lazy: false,),
         ChangeNotifierProvider(
           create: (_) => ThemeState(isLightTheme: true),

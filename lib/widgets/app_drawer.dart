@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:learning/services/user_repository.dart';
+import 'package:learning/utils/image_util.dart';
 import 'package:provider/provider.dart';
 import '../app_routes.dart';
 import '../states/theme_state.dart';
@@ -8,6 +11,7 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThemeState themeState = Provider.of(context);
+    FirebaseUser user = Provider.of(context);
 
     return Drawer(
       // Add a ListView to the drawer. This ensures the user can scroll
@@ -21,13 +25,15 @@ class AppDrawer extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                CircleAvatar(
+                (user?.photoUrl != null && user?.photoUrl != '')
+                ? ImageUtil.showCircularImage(30, user?.photoUrl)
+                : CircleAvatar(
                   child: Icon(Icons.person, size: 32,),
                   radius: 27,
                 ),
                 CommonUI.heightPadding(),
-                Text('Andy Groove1', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-                Text('andy@email.com', style: TextStyle(color: Colors.white),),
+                Text('${user?.displayName}', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                Text('${user?.email}', style: TextStyle(color: Colors.white),),
               ],
             ),
             decoration: BoxDecoration(
@@ -40,7 +46,7 @@ class AppDrawer extends StatelessWidget {
           ),
           ListTile(
             title: Text('Logout'),
-            onTap: () => Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.routeLoginPage, (route) => false),
+            onTap: () => userRepository.signOut().then((_) => Navigator.pushReplacementNamed(context, '/')),
           ),
         ],
       ),
