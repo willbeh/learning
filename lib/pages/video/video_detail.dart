@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:learning/models/vimeo.dart';
+import 'package:learning/models/video.dart';
 import 'package:learning/states/vimeo_state.dart';
 import 'package:learning/utils/image_util.dart';
 import 'package:provider/provider.dart';

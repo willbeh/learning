@@ -3,10 +3,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:learning/app_routes.dart';
-import 'package:learning/models/vimeo.dart';
+import 'package:learning/models/video.dart';
+//import 'package:learning/models/vimeo.dart';
+import 'package:learning/services/firestore/video_service.dart';
 import 'package:learning/states/vimeo_state.dart';
 import 'package:learning/utils/image_util.dart';
 import 'package:learning/utils/logger.dart';
+import 'package:learning/widgets/app_stream_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -24,8 +27,6 @@ class VideoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    VimeoState vimeoState = Provider.of(context);
-
     return Theme(
       data: ThemeData.dark(),
       child: Scaffold(
@@ -51,59 +52,133 @@ class VideoPage extends StatelessWidget {
             )
           ],
         ),
-        body: ListView.separated(
-          itemCount: videoId.length,
-          separatorBuilder: (context, i) => Divider(height: 0,),
-          itemBuilder: (context, i) {
-            if (vimeoState.videos.containsKey(videoId[i])) {
-              return _buildVideoContainer(
-                  context, vimeoState.videos[videoId[i]], videoId[i]);
-            }
-
-            return FutureBuilder(
-              future: http.get('https://api.vimeo.com/videos/${videoId[i]}',
-                  headers: headers),
-              builder: (context, AsyncSnapshot<http.Response> snapshot) {
-                if (snapshot.hasError) {
-                  return Container(
-                    child: Text('${snapshot.error}'),
-                  );
-                }
-                switch (snapshot.connectionState) {
-                  case ConnectionState.none:
-                    break;
-
-                  case ConnectionState.waiting:
-                    return Container(
-                      height: (MediaQuery.of(context).size.width * 0.5625) + 50,
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                    break;
-
-                  case ConnectionState.done:
-                    if (snapshot.hasData) {
-                      if (snapshot.data.statusCode == 200) {
-                        Vimeo vimeo = Vimeo.fromJson(json.decode(snapshot.data.body));
-                        vimeoState.videos[videoId[i]] = vimeo;
-                        return _buildVideoContainer(context, vimeo, videoId[i]);
-                      }
-                    }
-                    break;
-
-                  case ConnectionState.active:
-                    break;
-                }
-
-                return Container();
-              },
-            );
-          },
+        body: AppStreamBuilder(
+          stream: VideoService.find(),
+          fn: _buildPage,
         ),
       ),
     );
   }
+
+  _buildPage(BuildContext context, List<Video> videos) {
+    VimeoState vimeoState = Provider.of(context);
+
+    log.d('_buildPage ${videos.length}');
+
+    return ListView.separated(
+      itemCount: videos.length,
+      separatorBuilder: (_, __) => Divider(),
+      itemBuilder: (context, i) {
+        Video video = videos[i];
+        if (video.data != null) {
+          return _buildVideoContainer(
+              context, video.data, video.vid);
+        }
+
+        return FutureBuilder(
+          future: http.get('https://api.vimeo.com/videos/${video.vid}',
+              headers: headers),
+          builder: (context, AsyncSnapshot<http.Response> snapshot) {
+            if (snapshot.hasError) {
+              return Container(
+                child: Text('${snapshot.error}'),
+              );
+            }
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                break;
+
+              case ConnectionState.waiting:
+                return Container(
+                  height: (MediaQuery.of(context).size.width * 0.5625) + 50,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+                break;
+
+              case ConnectionState.done:
+                if (snapshot.hasData) {
+                  if (snapshot.data.statusCode == 200) {
+                    Vimeo vimeo = Vimeo.fromJson(json.decode(snapshot.data.body));
+                    log.d('${snapshot.data.body}');
+                    VideoService.update(
+                      id: video.vid,
+                      data: {
+                        'data': json.decode(snapshot.data.body)
+                      }
+                    ).catchError((error) {
+                      log.d('updateError $error');
+                    });
+                    return _buildVideoContainer(context, vimeo, video.vid);
+                  }
+                }
+                break;
+
+              case ConnectionState.active:
+                break;
+            }
+
+            return Container();
+          },
+        );
+      },
+    );
+  }
+
+//  _buildList(BuildContext context) {
+//    VimeoState vimeoState = Provider.of(context);
+//    return ListView.separated(
+//      itemCount: videoId.length,
+//      separatorBuilder: (context, i) => Divider(height: 0,),
+//      itemBuilder: (context, i) {
+//        if (vimeoState.videos.containsKey(videoId[i])) {
+//          return _buildVideoContainer(
+//              context, vimeoState.videos[videoId[i]], videoId[i]);
+//        }
+//
+//        return FutureBuilder(
+//          future: http.get('https://api.vimeo.com/videos/${videoId[i]}',
+//              headers: headers),
+//          builder: (context, AsyncSnapshot<http.Response> snapshot) {
+//            if (snapshot.hasError) {
+//              return Container(
+//                child: Text('${snapshot.error}'),
+//              );
+//            }
+//            switch (snapshot.connectionState) {
+//              case ConnectionState.none:
+//                break;
+//
+//              case ConnectionState.waiting:
+//                return Container(
+//                  height: (MediaQuery.of(context).size.width * 0.5625) + 50,
+//                  child: Center(
+//                    child: CircularProgressIndicator(),
+//                  ),
+//                );
+//                break;
+//
+//              case ConnectionState.done:
+//                if (snapshot.hasData) {
+//                  if (snapshot.data.statusCode == 200) {
+//                    Vimeo vimeo = Vimeo.fromJson(json.decode(snapshot.data.body));
+//                    vimeoState.videos[videoId[i]] = vimeo;
+//                    return _buildVideoContainer(context, vimeo, videoId[i]);
+//                  }
+//                }
+//                break;
+//
+//              case ConnectionState.active:
+//                break;
+//            }
+//
+//            return Container();
+//          },
+//        );
+//      },
+//    );
+//  }
 
   Widget _buildVideoContainer(BuildContext context, Vimeo vimeo, String id) {
     return Column(

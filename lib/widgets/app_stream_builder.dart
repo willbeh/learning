@@ -5,10 +5,11 @@ class AppStreamBuilder extends StatelessWidget {
   final Stream stream;
   final Function fn;
   final Function fnNone;
+  bool showLoading;
 
   final log = getLogger('AppStreamBuilder');
 
-  AppStreamBuilder({this.stream, this.fn, this.fnNone});
+  AppStreamBuilder({@required this.stream, @required this.fn, this.fnNone, this.showLoading = true});
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +37,8 @@ class AppStreamBuilder extends StatelessWidget {
           case ConnectionState.waiting:
 //            myTrace.incrementMetric('ConnectionState_waiting', 1);
 //            return AppStreamWait();
+            if(showLoading)
+              return Center(child: CircularProgressIndicator(),);
             break;
 
           case ConnectionState.done:

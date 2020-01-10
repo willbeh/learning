@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:learning/models/vimeo.dart';
+import 'package:learning/models/video.dart';
 import 'package:learning/pages/video/video_question.dart';
 import 'package:learning/states/vimeo_state.dart';
 import 'package:learning/utils/datetime_util.dart';
