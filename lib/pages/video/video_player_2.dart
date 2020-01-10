@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:learning/models/vimeo.dart';
 import 'package:learning/pages/video/app_material_control.dart';
 import 'package:learning/pages/video/video_detail.dart';
+import 'package:learning/pages/video/video_question.dart';
 import 'package:learning/states/vimeo_state.dart';
 import 'package:learning/utils/image_util.dart';
 import 'package:learning/utils/logger.dart';
@@ -25,6 +26,8 @@ class _VideoPlayer2PageState extends State<VideoPlayer2Page> {
   int _prefPosition = 0;
   bool hasInit = false;
   bool _isCompleted = false;
+  List<bool> _taken = [false];
+  bool _showInVideoQuestion = false;
 
   var log = getLogger('_VideoPlayer2PageState');
 
@@ -94,49 +97,30 @@ class _VideoPlayer2PageState extends State<VideoPlayer2Page> {
       data: ThemeData.dark(),
       child: Scaffold(
         body: SafeArea(
-          child: Column(
+          child: Stack(
             children: <Widget>[
-              Container(
-                width: MediaQuery.of(context).size.width,
-                height: height,
-                child: Center(
-                  child: Chewie(
-                    controller: _chewieController,
+              //Video Player
+              Column(
+                children: <Widget>[
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: height,
+                    child: Center(
+                      child: Chewie(
+                        controller: _chewieController,
+                      ),
+                    ),
                   ),
-                ),
+                  if(!_chewieController.isFullScreen)
+                    VideoDetail(),
+                ],
               ),
-              if(!_chewieController.isFullScreen)
-                VideoDetail(),
+              // in video question
+              if (_showInVideoQuestion)
+                VideoQuestion(),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildOverlay(){
-    log.d('_chewieController.isFullScreen ${_chewieController?.isFullScreen}');
-    return Container(
-
-      child: Stack(
-        children: <Widget>[
-//        if(_chewieController != null && _chewieController.isFullScreen == false)
-//          Align(
-//            alignment: Alignment.topRight,
-//            child: IconButton(
-//              icon: Icon(Icons.arrow_back_ios, color: Colors.white,),
-//              onPressed: () => Navigator.pop(context),
-//            ),
-//          ),
-          if(_isCompleted)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-              child: Align(
-                alignment: Alignment.topRight,
-                child: Text('Completed', style: TextStyle(color: Colors.white),),
-              ),
-            ),
-        ],
       ),
     );
   }
@@ -157,8 +141,23 @@ class _VideoPlayer2PageState extends State<VideoPlayer2Page> {
         prefs.setInt(vimeoState.selectedVideoId, _prefPosition);
       }
     }
-    if(_controller.value.duration == _controller.value.position){
+    if(_controller.value.position.inSeconds == 22){
+      if(!_taken[0] && _controller.value.isPlaying){
+        log.d('in 22');
+        _controller.pause().then((_) {
+          log.d('complete pause');
+          _taken[0] = true;
+          setState(() {
+            _showInVideoQuestion = true;
+          });
+        });
+
+      }
+
+    }
+    if(_controller.value.duration == _controller.value.position && _controller.value.isPlaying){
       _isCompleted = true;
+      _controller.pause();
     }
   }
 }

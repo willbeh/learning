@@ -1,10 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:learning/models/vimeo.dart';
+import 'package:learning/pages/video/video_question.dart';
 import 'package:learning/states/vimeo_state.dart';
 import 'package:learning/utils/datetime_util.dart';
 import 'package:learning/utils/image_util.dart';
 import 'package:learning/utils/logger.dart';
+import 'package:learning/widgets/app_video_progress_bar.dart';
 import 'package:learning/widgets/common_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,7 +29,12 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
   int quarterTurns = 0;
   bool _isCompleted = false;
   bool _isPlaying = false;
+  Timer _hideTimer;
+  bool _hideStuff = false;
 //  Orientation currentOrientation = Orientation.portrait;
+
+  List<bool> _taken = [false];
+  bool _showInVideoQuestion = false;
 
   @override
   void didChangeDependencies() {
@@ -64,15 +73,14 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
       }).catchError((error) {
         log.w('load video error $error');
       })
-      ..addListener(() {
-        _logInfo();
-      });
+      ..addListener(_logInfo);
 
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _hideTimer?.cancel();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
@@ -110,72 +118,100 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
     double ratio = vimeo.width / vimeo.height;
     double height = (quarterTurns == 0) ? MediaQuery.of(context).size.width / ratio : MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-
-    FadeAnimation imageFadeAnim = FadeAnimation(
-      child: VideoPlayerOverlay(_controller, width, height, () => _setOrientation(), quarterTurns, () => _playVideo(), _isCompleted),
-      duration: Duration(seconds: 1),
-      controller: _controller,
-    );
     
-    return Column(
+    return Stack(
       children: <Widget>[
-        Container(
-          height: height,
-          width: width,
-          child: Stack(
-            children: <Widget>[
-              Container(
-                height: height,
-                width: width,
-                child: _controller.value.initialized
-                    ? Center(
-                      child: AspectRatio(
-                  aspectRatio: ratio, //_controller.value.aspectRatio,
-                  child: GestureDetector(
-                        child: VideoPlayer(_controller),
-                      onTap: () {
-                          if(_controller.value.isPlaying){
-                            setState(() {});
-                          }
-                      },
+        Column(
+          children: <Widget>[
+            Container(
+              height: height,
+              width: width,
+              child: Stack(
+                children: <Widget>[
+                  Container(
+                    height: height,
+                    width: width,
+                    child: _controller.value.initialized
+                        ? Center(
+                          child: AspectRatio(
+                      aspectRatio: ratio, //_controller.value.aspectRatio,
+                      child: GestureDetector(
+                            child: VideoPlayer(_controller),
+                          onTap: () {
+                              if(_controller.value.isPlaying){
+                                setState(() {});
+                              }
+                          },
+                      ),
+                    ),
+                        )
+                        : Container(
+                      child: Center(child: CircularProgressIndicator()),
+                    ),
                   ),
-                ),
-                    )
-                    : Container(
-                  child: Center(child: CircularProgressIndicator()),
-                ),
+                  GestureDetector(
+                    onTap: () {
+                      if (_controller.value.isPlaying)
+                        _restartTimer();
+                    },
+                    child: AnimatedOpacity(
+                      opacity: _hideStuff ? 0 : 1,
+                      duration: Duration(seconds: _hideStuff ? 1 : 0, milliseconds: _hideStuff ? 0: 300),
+                      child: AppVideoControl(_controller, width: width, height: height, playVideo: () => _playVideo(),
+                        changeOrientation: () => _setOrientation(),
+                        quarterTurns: quarterTurns,
+                        isCompleted: _isCompleted,
+                        cancelTimer: () => _cancelTimer(),
+                        restartTimer: () => _restartTimer(),
+                        isHide: _hideStuff,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              _controller.value.isPlaying ?
-              imageFadeAnim :
-              VideoPlayerOverlay(_controller, width, height, () => _setOrientation(), quarterTurns, () => _playVideo(), _isCompleted),
-            ],
-          ),
-        ),
-        if(quarterTurns == 0)
-          Column(
-            children: <Widget>[
-              ListTile(
-                leading: ImageUtil.showCircularImage(
-                    25, vimeo.user.pictures.sizes[2].link),
-                title: Text(vimeo.name, style: ThemeData.dark().textTheme.display1),
-                subtitle: Text(
-                  vimeo.user.name,
-                  style: ThemeData.dark().textTheme.display3,
-                ),
-                trailing: Column(
-                  children: <Widget>[
-                    Icon(Icons.thumb_up),
-                    Text('123')
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(20),
-                child: Text(vimeo.description),
+            ),
+            if(quarterTurns == 0)
+              Column(
+                children: <Widget>[
+                  ListTile(
+                    leading: ImageUtil.showCircularImage(
+                        25, vimeo.user.pictures.sizes[2].link),
+                    title: Text(vimeo.name, style: ThemeData.dark().textTheme.display1),
+                    subtitle: Text(
+                      vimeo.user.name,
+                      style: ThemeData.dark().textTheme.display3,
+                    ),
+                    trailing: Column(
+                      children: <Widget>[
+                        Icon(Icons.thumb_up),
+                        Text('123')
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Text(vimeo.description),
+                  )
+                ],
               )
-            ],
-          )
 
+          ],
+        ),
+        if (_showInVideoQuestion)
+          Container(
+            height: (quarterTurns == 0) ? MediaQuery.of(context).size.height - 20 : height,
+            padding: EdgeInsets.all((quarterTurns == 0) ? 20 : 40),
+            width: width,
+            child: VideoQuestion(
+              orientation: quarterTurns,
+              continueVideo: (){
+                setState(() {
+                  _showInVideoQuestion = false;
+                });
+                _playVideo();
+              },
+            ),
+          ),
       ],
     );
   }
@@ -189,6 +225,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
     _controller.value.isPlaying ? Wakelock.disable() : Wakelock.enable();
     _controller.value.isPlaying ? _controller.pause() : _controller.play();
     _isPlaying = _controller.value.isPlaying;
+    _isPlaying ? _startHideTimer() : _cancelTimer();
     setState(() {});
   }
 
@@ -196,6 +233,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
     if(quarterTurns == 0) {
       SystemChrome.setPreferredOrientations([
         DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
       ]);
       SystemChrome.setEnabledSystemUIOverlays([]);
     }else {
@@ -211,23 +249,34 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
 
   _logInfo() async {
     if(_controller.value.position.inSeconds > _prefPosition){
-      log.d('update Pref position');
       if(_controller.value.position.inSeconds - _prefPosition > 1) {
+        _controller.removeListener(_logInfo);
         _controller.seekTo(Duration(seconds: _prefPosition)).then((_) {
-          _controller.pause();
+          if(_controller.value.isPlaying)
+            _playVideo();
+          _controller.addListener(_logInfo);
+//            _controller.pause();
           setState(() {});
         });
+
         CommonUI.alertBox(context, title: 'Cannot skip', msg: 'Cannot skip to front', onPress: () {
           Navigator.pop(context);
         });
       } else {
-        _prefPosition = _controller.value.position.inSeconds;
-        prefs.setInt(vimeoState.selectedVideoId, _prefPosition);
+        if(_controller.value.isPlaying){
+          _prefPosition = _controller.value.position.inSeconds;
+          prefs.setInt(vimeoState.selectedVideoId, _prefPosition);
+        }
       }
     }
     if(_controller.value.duration == _controller.value.position){
-      _isCompleted = true;
+      log.d('end ${_controller.value.isPlaying}');
       Wakelock.disable();
+      _isCompleted = true;
+      _cancelTimer();
+      if (quarterTurns != 0) {
+        _setOrientation();
+      }
       _controller.seekTo(Duration(seconds: 0)).then((_) {
         _controller.pause().then((_) {
           if (quarterTurns != 0) {
@@ -241,10 +290,50 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
       _isPlaying = _controller.value.isPlaying;
       setState(() {});
     }
+    _showQuestion();
+  }
+
+  _showQuestion(){
+    if(_taken[0] == false && _controller.value.position.inSeconds == 22 && _controller.value.isPlaying){
+      _playVideo();
+      setState(() {
+        _taken[0] = true;
+        _showInVideoQuestion = true;
+      });
+    }
+  }
+
+  void _cancelTimer() {
+    _hideTimer?.cancel();
+//    _startHideTimer();
+
+    setState(() {
+      _hideStuff = false;
+    });
+  }
+
+  void _restartTimer() {
+    _hideTimer?.cancel();
+
+    setState(() {
+      _hideStuff = false;
+    });
+
+    if(_controller.value.isPlaying) {
+      _startHideTimer();
+    }
+  }
+
+  void _startHideTimer() {
+    _hideTimer = Timer(const Duration(seconds: 2), () {
+      setState(() {
+        _hideStuff = true;
+      });
+    });
   }
 }
 
-class VideoPlayerOverlay extends StatefulWidget {
+class AppVideoControl extends StatefulWidget {
   final VideoPlayerController controller;
   final double width;
   final double height;
@@ -252,198 +341,155 @@ class VideoPlayerOverlay extends StatefulWidget {
   final int quarterTurns;
   final Function playVideo;
   final bool isCompleted;
+  final Function cancelTimer;
+  final Function restartTimer;
+  final bool isHide;
 
-  VideoPlayerOverlay(this.controller, this.width, this.height, this.changeOrientation, this.quarterTurns, this.playVideo, this.isCompleted);
+  AppVideoControl(this.controller, {this.width, this.height, this.playVideo, this.changeOrientation, this.quarterTurns, this.isCompleted, this.cancelTimer, this.restartTimer, this.isHide});
+
   @override
-  _VideoPlayerOverlayState createState() => _VideoPlayerOverlayState();
+  _AppVideoControlState createState() => _AppVideoControlState();
 }
 
-class _VideoPlayerOverlayState extends State<VideoPlayerOverlay> {
-  VideoPlayerController _controller;
-  double _iconSize = 36;
+class _AppVideoControlState extends State<AppVideoControl> {
+//  bool _dragging = false;
+//  VideoPlayerController _controller;
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _controller = widget.controller;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Container(
-          color: Color(0x77000000),
-          height: widget.height,
-          width: widget.width,
-          child: Center(
-              child: IconButton(
-                icon: Icon(_controller.value.isPlaying ? Icons.pause : Icons.play_arrow, size: _iconSize,),
-                onPressed: widget.playVideo,
-              ),
-          ),
-        ),
-        Container(
-          width: widget.width,
-          alignment: Alignment.bottomRight,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: (_controller.value.position == null) ? Text('0') :Text('${DateTimeUtil.formatDurationHMMSS(_controller.value.position)}'),
-              ),
-              if(widget.quarterTurns == 1)
-                Expanded(
-                  child: VideoProgressIndicator(_controller,
-                    colors: VideoProgressColors(
-                        playedColor: Colors.red,
-                        backgroundColor: Colors.grey.shade200
-                    ),
-                    allowScrubbing: true,
-                  ),
-                ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: Row(
-                  children: <Widget>[
-                    (_controller.value.duration == null) ? Text('0') :Text('${DateTimeUtil.formatDurationHMMSS(_controller.value.duration)}'),
-                    IconButton(
-                      icon: Icon((widget.quarterTurns == 0) ? Icons.fullscreen : Icons.fullscreen_exit, color: Colors.white,),
-                      onPressed: widget.changeOrientation,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        if(widget.quarterTurns == 0)
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: VideoProgressIndicator(_controller,
-            colors: VideoProgressColors(
-                playedColor: Colors.red,
-                backgroundColor: Colors.grey.shade200
-            ),
-            allowScrubbing: true,
-          ),
-        ),
-
-        if (widget.isCompleted)
-          Align(
-            alignment: Alignment.topRight,
-            child: Padding(
-              padding: EdgeInsets.all(10),
-              child: Text('Completed'),
-            ),
-          ),
-      ],
-    );
-  }
-}
-
-class FadeAnimation extends StatefulWidget {
-  FadeAnimation(
-      {this.child, this.duration = const Duration(milliseconds: 500), this.controller});
-
-  final Widget child;
-  final Duration duration;
-  VideoPlayerController controller;
-
-  @override
-  _FadeAnimationState createState() => _FadeAnimationState();
-}
-
-class _FadeAnimationState extends State<FadeAnimation>
-    with TickerProviderStateMixin { // SingleTickerProviderStateMixin {
-  AnimationController animationController;
-  AnimationController inAnimationController;
-
-  bool _showWidget = true;
-  bool _isLoaded = false;
+  var log = getLogger('_AppVideoControlState');
 
   @override
   void initState() {
     super.initState();
-    animationController =
-        AnimationController(duration: widget.duration, vsync: this);
-    inAnimationController = AnimationController(duration: Duration(milliseconds: 300), vsync: this);
-    animationController.addListener(() {
-      if (mounted) {
-        setState(() {});
-      }
-    });
-    inAnimationController.addListener(() {
-      if (mounted) {
-        setState(() {});
-      }
-    });
-    Future.delayed(Duration(seconds: 1), () {
-      _showWidget = false;
-//      _isLoaded = true;
-      if (mounted)
-        animationController.forward(from: 0.0);
-    });
-  }
-
-  @override
-  void deactivate() {
-    animationController.stop();
-    super.deactivate();
-  }
-
-  @override
-  void didUpdateWidget(FadeAnimation oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.child != widget.child) {
-      _showWidget = true;
-      inAnimationController.forward(from: 0.0);
-      Future.delayed(Duration(seconds: 1), () {
-        _showWidget = false;
-        if (mounted)
-          animationController.forward(from: 0.0);
-      });
-//      animationController.forward(from: 0.0);
-    }
-  }
-
-  @override
-  void dispose() {
-    animationController.dispose();
-    inAnimationController.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    bool _controllerWasPlaying = false;
-    return GestureDetector(
-      onLongPress: () {
-        _isLoaded = true;
-      },
-      onLongPressEnd: (_) {
-        _isLoaded = false;
-        animationController.forward(from: 0.0);
-      },
-      child: _buildWidget(context),
+
+    if(!widget.controller.value.initialized)
+      return Container();
+
+    return AbsorbPointer(
+      absorbing: widget.isHide,
+      child: Container(
+        color: Colors.black.withOpacity(0.4),
+        width: widget.width,
+        height: widget.height,
+        child: Stack(
+          children: <Widget>[
+            Align(
+              alignment: Alignment.center,
+              child: IconButton(
+                icon: Icon(widget.controller.value.isPlaying ? Icons.pause : Icons.play_arrow, size: 36, color: Colors.white,),
+                onPressed: widget.playVideo,
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: 40,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: AppVideoPosition(widget.controller), // (widget.controller.value.position == null) ? Text('0') :Text('${DateTimeUtil.formatDuration(widget.controller.value.position)}'),
+                    ),
+                    Expanded(
+                      child: AppVideoProgressBar(controller: widget.controller,
+                        onDragStart: () {
+                          widget.cancelTimer();
+                        },
+                        onDragEnd: () {
+                          widget.restartTimer();
+                        },
+                        onTapDown: () {
+                          widget.restartTimer();
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Row(
+                        children: <Widget>[
+                          (widget.controller.value.duration == null) ? Text('0') :Text('${DateTimeUtil.formatDuration(widget.controller.value.duration)}'),
+                          IconButton(
+                            icon: Icon((widget.quarterTurns == 0) ? Icons.fullscreen : Icons.fullscreen_exit, color: Colors.white,),
+                            onPressed: widget.changeOrientation,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            if (widget.isCompleted)
+              Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Text('Completed'),
+                ),
+              ),
+
+            _buildBackButton(),
+          ],
+        ),
+      ),
     );
   }
-  
-  Widget _buildWidget(BuildContext context) {
-    if (_showWidget) {
-      return inAnimationController.isAnimating ? Opacity(opacity: 0.0 + inAnimationController.value,child: widget.child) : widget.child;
-    }
-    if (_isLoaded) {
-      return widget.child;
-    }
 
-    return animationController.isAnimating
-        ? Opacity(
-      opacity: 1.0 - animationController.value,
-      child: widget.child,
-    )
-        : Container();
+  Widget _buildBackButton(){
+    return Align(
+      alignment: Alignment.topLeft,
+      child: IconButton(
+        icon: Icon(widget.quarterTurns == 0 ? Icons.keyboard_arrow_left :Icons.keyboard_arrow_down, color: Colors.white,),
+        onPressed: () {
+          if(widget.quarterTurns == 0) {
+            Navigator.of(context).pop();
+          } else {
+            widget.changeOrientation();
+          }
+        },
+      ),
+    );
+  }
+}
+
+class AppVideoPosition extends StatefulWidget {
+  final VideoPlayerController controller;
+
+  AppVideoPosition(this.controller);
+  @override
+  _AppVideoPositionState createState() => _AppVideoPositionState();
+}
+
+class _AppVideoPositionState extends State<AppVideoPosition> {
+  _AppVideoPositionState() {
+    listener = () {
+      if(_displayDuration.inSeconds != controller.value.position.inSeconds){
+        _displayDuration = controller.value.position;
+        if(mounted)
+          setState(() {});
+      }
+    };
+  }
+
+  VoidCallback listener;
+  Duration _displayDuration = Duration(seconds: 0);
+
+  VideoPlayerController get controller => widget.controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller.addListener(listener);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return (_displayDuration == null) ? Text('0') :Text('${DateTimeUtil.formatDuration(_displayDuration)}');
+//    return (controller.value.position == null) ? Text('0') :Text('${DateTimeUtil.formatDuration(controller.value.position)}');
   }
 }
