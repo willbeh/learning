@@ -1,9 +1,13 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:learning/models/video.dart';
+import 'package:learning/models/watch.dart';
 import 'package:learning/pages/video/video_question.dart';
+import 'package:learning/services/firestore/watch_service.dart';
 import 'package:learning/states/vimeo_state.dart';
 import 'package:learning/utils/datetime_util.dart';
 import 'package:learning/utils/image_util.dart';
@@ -36,12 +40,15 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
   List<bool> _taken = [false];
   bool _showInVideoQuestion = false;
 
+  Watch _watch;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
     prefs = Provider.of(context);
     vimeoState = Provider.of<VimeoState>(context);
+    getWatch(context);
 
     _controller = VideoPlayerController.network(vimeoState.selectedVideo.files[1].link)
       ..initialize().then((_) {
@@ -66,6 +73,26 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
         log.w('load video error $error');
       })
       ..addListener(_logInfo);
+
+  }
+
+  getWatch(BuildContext context) async {
+    FirebaseUser user = Provider.of(context);
+    _watch = await WatchService.getById(id: vimeoState.selectedVideoId, uid: user.uid);
+    
+    if(_watch == null){
+      log.d('no watch');
+      _watch = Watch(
+        vid: vimeoState.selectedVideoId,
+        uid: user.uid,
+        data: vimeoState.selectedVideo
+      );
+      log.d('watch ${_watch.toJson()}');
+
+      WatchService.insert(_watch.toJson());
+    } else {
+      log.d('watch ${_watch.toJson()}');
+    }
 
   }
 

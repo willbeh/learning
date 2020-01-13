@@ -120,6 +120,7 @@ class VideoPage extends StatelessWidget {
   }
 
   Widget _buildVideoContainer(BuildContext context, Vimeo vimeo, String id) {
+    log.d('vimeo $vimeo');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
