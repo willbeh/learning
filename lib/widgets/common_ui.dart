@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:learning/widgets/app_button.dart';
+
+enum AlertType { error, success }
 
 class CommonUI {
   static Widget heightPadding({double height = 20.0, Widget child}){
@@ -25,24 +28,34 @@ class CommonUI {
     return Text(text, style: Theme.of(context).textTheme.headline,);
   }
 
-  static alertBox(BuildContext context, {String title, String msg, Function onPress}) {
+  static alertBox(BuildContext context, {@required String title, String msg, Widget child, Color titleColor = Colors.black, List<Widget> actions, String closeText}) {
     return showDialog<void>(
       context: context,
 //      barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(title),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
+          title: Text(title, style: Theme.of(context).textTheme.display1.copyWith(color: titleColor, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
           content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text(msg),
-              ],
-            ),
+            child: (child != null) ? child : Text(msg, textAlign: TextAlign.center,),
           ),
           actions: <Widget>[
-            FlatButton(
-              child: Text('OK'),
-              onPressed: (onPress == null) ? Navigator.pop(context) : onPress,
+            Container(
+              width: MediaQuery.of(context).size.width,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  (closeText != null) ?
+                      AppButton.roundedButton(context,
+                        text: closeText,
+                        paddingVertical: 5,
+                        onPressed: () => Navigator.pop(context)
+                      ) :
+                  actions
+                ],
+              ),
             ),
           ],
         );

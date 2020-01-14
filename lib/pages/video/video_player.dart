@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:learning/app_routes.dart';
 import 'package:learning/models/video.dart';
 import 'package:learning/models/watch.dart';
 import 'package:learning/pages/video/video_question.dart';
@@ -11,6 +12,7 @@ import 'package:learning/states/vimeo_state.dart';
 import 'package:learning/utils/datetime_util.dart';
 import 'package:learning/utils/image_util.dart';
 import 'package:learning/utils/logger.dart';
+import 'package:learning/widgets/app_button.dart';
 import 'package:learning/widgets/app_video_progress_bar.dart';
 import 'package:learning/widgets/common_ui.dart';
 import 'package:provider/provider.dart';
@@ -88,7 +90,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
       );
       log.d('watch ${_watch.toJson()}');
 
-      WatchService.insert(_watch.toJson());
+//      WatchService.insert(_watch.toJson());
     } else {
       log.d('watch ${_watch.toJson()}');
     }
@@ -203,6 +205,11 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                       ],
                     ),
                   ),
+                  if(_isCompleted)
+                    AppButton.roundedButton(context,
+                      text: 'Take Exam',
+                      onPressed: () => Navigator.pushNamed(context, AppRoutes.routeExam)
+                    ),
                   Padding(
                     padding: EdgeInsets.all(20),
                     child: Text(vimeo.description),
@@ -274,9 +281,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
           setState(() {});
         });
 
-        CommonUI.alertBox(context, title: 'Cannot skip', msg: 'Cannot skip to front', onPress: () {
-          Navigator.pop(context);
-        });
+        CommonUI.alertBox(context, title: 'Cannot skip', msg: 'Cannot skip to front', closeText: 'Continue');
       } else {
         if(_controller.value.isPlaying){
           _prefPosition = _controller.value.position.inSeconds;

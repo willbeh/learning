@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 
 class AppButton {
-  static roundedButton(BuildContext context, {String text, Function onPressed, double width = 200, Color color, TextStyle style, double borderRadius = 10}) {
+  static roundedButton(BuildContext context, {String text, Function onPressed, Widget child, double width = 200, Color textColor, Color color, double borderRadius = 5, double paddingVertical = 15,
+    Color borderColor, double elevation = 1
+  }) {
     return RaisedButton(
-      textColor: Colors.white,
-      color: color,
+      textColor: textColor == null ? Colors.white : textColor,
+      color: color != null ? color : Theme.of(context).primaryColor,
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 15.0),
+        padding: EdgeInsets.symmetric(vertical: paddingVertical),
         width: width,
-        child: Text(text, style: style ?? TextStyle(color: Colors.white), textAlign: TextAlign.center,),
+        child: (child != null) ? child : Text(text, textAlign: TextAlign.center,),
       ),
       onPressed: onPressed,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(borderRadius),
+        side: BorderSide(color: borderColor == null ? Theme.of(context).primaryColor : borderColor),
       ),
+      elevation: elevation,
     );
   }
 }

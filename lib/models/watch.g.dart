@@ -22,7 +22,7 @@ Map<String, dynamic> _$WatchToJson(Watch instance) => <String, dynamic>{
       'id': instance.id,
       'vid': instance.vid,
       'uid': instance.uid,
-      'data': instance.data,
+      'data': Vimeo.utilToJson(instance.data),
       'position': instance.position,
       'furthest': instance.furthest,
       'status': instance.status,

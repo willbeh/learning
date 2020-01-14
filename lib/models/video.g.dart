@@ -50,7 +50,7 @@ VimeoPicture _$VimeoPictureFromJson(Map json) {
 Map<String, dynamic> _$VimeoPictureToJson(VimeoPicture instance) =>
     <String, dynamic>{
       'uri': instance.uri,
-      'sizes': instance.sizes,
+      'sizes': VimeoSize.utilToJson(instance.sizes),
     };
 
 VimeoUser _$VimeoUserFromJson(Map json) {
@@ -66,7 +66,7 @@ VimeoUser _$VimeoUserFromJson(Map json) {
 Map<String, dynamic> _$VimeoUserToJson(VimeoUser instance) => <String, dynamic>{
       'uri': instance.uri,
       'name': instance.name,
-      'pictures': instance.pictures,
+      'pictures': VimeoPicture.utilToJson(instance.pictures),
     };
 
 Vimeo _$VimeoFromJson(Map json) {
@@ -92,9 +92,9 @@ Map<String, dynamic> _$VimeoToJson(Vimeo instance) => <String, dynamic>{
       'description': instance.description,
       'link': instance.link,
       'duration': instance.duration,
-      'pictures': instance.pictures,
+      'pictures': VimeoPicture.utilToJson(instance.pictures),
       'user': instance.user,
-      'files': instance.files,
+      'files': VimeoFile.utilToJson(instance.files),
       'width': instance.width,
       'height': instance.height,
     };
@@ -104,11 +104,13 @@ Video _$VideoFromJson(Map json) {
     vid: json['vid'] as String,
     status: json['status'] as String,
     data: json['data'] == null ? null : Vimeo.fromJson(json['data'] as Map),
+    exam: json['exam'] as bool,
   );
 }
 
 Map<String, dynamic> _$VideoToJson(Video instance) => <String, dynamic>{
       'vid': instance.vid,
       'status': instance.status,
-      'data': instance.data,
+      'data': Vimeo.utilToJson(instance.data),
+      'exam': instance.exam,
     };

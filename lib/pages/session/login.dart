@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:learning/app_color.dart';
 import 'package:learning/services/user_repository.dart';
 import 'package:learning/utils/app_traslation_util.dart';
 import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/app_dotted_seperator.dart';
+import 'package:learning/widgets/app_text.dart';
 import 'package:learning/widgets/loading_stack_screen.dart';
 import '../../app_routes.dart';
 import '../../utils/app_icon_icons.dart';
@@ -87,9 +89,17 @@ class _LoginPageState extends State<LoginPage> {
             AppTextField(
               controller: emailCtrl,
               label: '${AppTranslate.text(context, 'login_email')}',
-              errorMsg: '${AppTranslate.text(context, 'login_email_err')}',
               keyboardType: TextInputType.emailAddress,
               borderColor: AppColor.greyLight,
+              validatorFn: (String value) {
+                if(value.trim() == '')
+                  return '${AppTranslate.text(context, 'login_email_err')}';
+
+                if(!AppText.validateEmail(value))
+                  return '${AppTranslate.text(context, 'login_email_err_valid')}';
+
+                return null;
+              },
             ),
             CommonUI.heightPadding(),
             AppTextField(
@@ -106,7 +116,6 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: () => _signInEmail(), // Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.routeHomePage, (route) => false),
               color: Theme.of(context).primaryColor,
               width: MediaQuery.of(context).size.width,
-              borderRadius: 5,
             ),
           ],
         ),
@@ -131,14 +140,16 @@ class _LoginPageState extends State<LoginPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              _buildSocialButton(
+              _buildSocialButton( context,
                 text: 'Facebook',
                 color: AppColor.facebook,
+                icon: AppIcon.facebook
               ),
-              _buildSocialButton(
+              _buildSocialButton( context,
                 text: 'Google',
                 color: AppColor.google,
-                onTap: _signInGoogle
+                onTap: _signInGoogle,
+                icon: AppIcon.google
               )
             ],
           )
@@ -147,25 +158,23 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildSocialButton({String text, Color color, Function onTap}){
-    return InkWell(
-      onTap: () => onTap(),
-      child: Container(
-        width: 150,
-        padding: EdgeInsets.symmetric(vertical: 9, horizontal: 24),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
-          border: Border.all(color: AppColor.greyLight),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Icon(AppIcon.google, color: color),
-            CommonUI.widthPadding(width: 5),
-            Text('$text', style: TextStyle(color: color, fontSize: 14, fontWeight: FontWeight.w500))
-          ],
-        ),
+  Widget _buildSocialButton(BuildContext context, {IconData icon, String text, Color color, Function onTap}){
+    return AppButton.roundedButton(
+      context,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Icon(icon, color: color),
+          CommonUI.widthPadding(width: 5),
+          Text('$text', style: TextStyle(color: color, fontSize: 14, fontWeight: FontWeight.w500))
+        ],
       ),
+      onPressed: () => onTap(), // Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.routeHomePage, (route) => false),
+      color: Colors.white,
+      width: 110,
+      elevation: 0,
+      paddingVertical: 12,
+      borderColor: AppColor.greyLight,
     );
   }
 
@@ -180,7 +189,12 @@ class _LoginPageState extends State<LoginPage> {
         setState(() {
           _isLoading = false;
         });
-        log.d('email login error $error');
+        CommonUI.alertBox(context,
+            title: 'Whoops',
+            msg: '${error.message}',
+            titleColor: AppColor.redAlert,
+            closeText: 'Okay'
+        );
       });
     }
 

@@ -10,6 +10,7 @@ class Watch {
   String id;
   String vid;
   String uid;
+  @JsonKey( toJson: Vimeo.utilToJson)
   Vimeo data;
   int position;
   int furthest;

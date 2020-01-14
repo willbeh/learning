@@ -1,25 +1,37 @@
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:learning/app_color.dart';
 import 'package:learning/models/answer.dart';
 import 'package:learning/models/question.dart';
 import 'package:learning/services/firestore/answer_service.dart';
 import 'package:learning/services/firestore/question_service.dart';
+import 'package:learning/states/vimeo_state.dart';
 import 'package:learning/utils/logger.dart';
 import 'package:provider/provider.dart';
-
-var _vid = '382521859';
 
 class ExamPage extends StatelessWidget {
   final log = getLogger('ExamPage');
 
   @override
   Widget build(BuildContext context) {
+    String vid = '382521859';
+    String title = 'Exam';
     FirebaseUser user = Provider.of(context);
-    var answerStream = AnswerService.findByUId(uid: user.uid, vid: _vid);
+    VimeoState vimeoState = Provider.of(context);
+
+    if(vimeoState != null && vimeoState.selectedVideoId != null){
+      vid = vimeoState.selectedVideoId;
+      title = vimeoState.selectedVideo.name;
+    }
+
+    log.d('vid $vid');
+
+    var answerStream = AnswerService.findByUId(uid: user.uid, vid: vid);
     return Scaffold(
       appBar: AppBar(
-
+        title: Text('$title'),
+        centerTitle: true,
       ),
       body: MultiProvider(
         providers: [
@@ -34,7 +46,7 @@ class ExamPage extends StatelessWidget {
               if(error.toString().contains('No element'))
                 AnswerService.insert({
                   'uid': user.uid,
-                  'vid': _vid,
+                  'vid': vid,
                   'status': 'draft',
                   'answers': [],
                 });
@@ -71,32 +83,21 @@ class _ExamDetailState extends State<ExamDetail> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _answer = Provider.of(context);
-//    FirebaseUser user = Provider.of(context);
-
-//    if(answer == null){
-//      log.d('new answer');
-//      _answer = Answer(uid: user.uid, vid: _vid, answers: [], status: 'draft');
-//    } else {
-//      log.d('set answer ${answer.toJson()}}');
-//      _answer = answer;
-//    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<List<Question>>(
       builder: (_, questions, child) {
-
         if(questions == null || questions.length == 0)
           return Center(child: CircularProgressIndicator(),);
-
-
 
         return Column(
           children: <Widget>[
             if(_controller != null)
               LinearProgressIndicator(
                 value: (_currentPage+1)/questions.length,
+                backgroundColor: AppColor.greyLight,
               ),
             Expanded(
               child: PageView(

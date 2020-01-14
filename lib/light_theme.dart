@@ -71,6 +71,9 @@ final ThemeData lightTheme = ThemeData(
   appBarTheme: AppBarTheme(
       color: Colors.transparent,
       elevation: 0,
+      iconTheme: IconThemeData(
+        color: Colors.black
+      ),
       textTheme: GoogleFonts.robotoTextTheme(
           TextTheme(
               title: TextStyle(
