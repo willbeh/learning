@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:learning/services/user_repository.dart';
 import 'package:learning/utils/app_traslation_util.dart';
+import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/loading_stack_screen.dart';
 import '../../app_routes.dart';
 import '../../utils/app_icon_icons.dart';
@@ -17,7 +18,9 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailCtrl = TextEditingController();
   final TextEditingController passwordCtrl = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+  var log = getLogger('_LoginPageState');
 
   @override
   Widget build(BuildContext context) {
@@ -57,46 +60,52 @@ class _LoginPageState extends State<LoginPage> {
                       borderRadius: BorderRadius.circular(5),
                       color: Colors.white,
                     ),
-                    child: Column(
-                      children: <Widget>[
-                        Text('${AppTranslate.text(context, 'login')}', style: Theme.of(context).textTheme.title.copyWith(color: Theme.of(context).primaryColor),),
-                        CommonUI.heightPadding(),
-                        AppTextField(
-                          controller: emailCtrl,
-                          label: 'Email',
-                          keyboardType: TextInputType.emailAddress,
-                        ),
-                        CommonUI.heightPadding(),
-                        AppTextField(
-                          controller: passwordCtrl,
-                          label: 'Password',
-                          obscureText: true,
-                        ),
-                        CommonUI.heightPadding(),
-                        AppButton.roundedButton(
-                            context,
-                            text: 'Login',
-                            onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.routeHomePage, (route) => false),
-                            color: Theme.of(context).primaryColor,
-                            width: MediaQuery.of(context).size.width
-                        ),
-                        CommonUI.heightPadding(),
-                        Text('or continue with', style: Theme.of(context).textTheme.display3,),
-                        CommonUI.heightPadding(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            IconButton(
-                              icon: Icon(AppIcon.google, color: Color(0xffDB4437)),
-                              onPressed: () => _signInGoogle(),
-                            ),
-                            IconButton(
-                              icon: Icon(AppIcon.facebook, color: Color(0xff4267B2)),
-                              onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.routeHomePage, (route) => false),
-                            )
-                          ],
-                        )
-                      ],
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: <Widget>[
+                          Text('${AppTranslate.text(context, 'login')}', style: Theme.of(context).textTheme.title.copyWith(color: Theme.of(context).primaryColor),),
+                          CommonUI.heightPadding(),
+                          AppTextField(
+                            controller: emailCtrl,
+                            label: 'Email',
+                            errorMsg: 'Please key in your email',
+                            keyboardType: TextInputType.emailAddress,
+                          ),
+                          CommonUI.heightPadding(),
+                          AppTextField(
+                            controller: passwordCtrl,
+                            label: 'Password',
+                            errorMsg: 'Please key in your password',
+                            obscureText: true,
+                          ),
+                          CommonUI.heightPadding(),
+                          AppButton.roundedButton(
+                              context,
+                              text: 'Login',
+                              onPressed: () => _signInEmail(), // Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.routeHomePage, (route) => false),
+                              color: Theme.of(context).primaryColor,
+                              width: MediaQuery.of(context).size.width,
+                            borderRadius: 5,
+                          ),
+                          CommonUI.heightPadding(),
+                          Text('or continue with', style: Theme.of(context).textTheme.display3,),
+                          CommonUI.heightPadding(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              IconButton(
+                                icon: Icon(AppIcon.google, color: Color(0xffDB4437)),
+                                onPressed: () => _signInGoogle(),
+                              ),
+                              IconButton(
+                                icon: Icon(AppIcon.facebook, color: Color(0xff4267B2)),
+                                onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.routeHomePage, (route) => false),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -106,6 +115,23 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  _signInEmail(){
+    if(_formKey.currentState.validate()){
+      setState(() {
+        _isLoading = true;
+      });
+      userRepository.signInWithCredentials(emailCtrl.text, passwordCtrl.text).then((user) {
+        Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.routeHomePage, (route) => false);
+      }).catchError((error) {
+        setState(() {
+          _isLoading = false;
+        });
+        log.d('email login error $error');
+      });
+    }
+
   }
 
   _signInGoogle() async{

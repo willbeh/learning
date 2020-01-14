@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppButton {
-  static roundedButton(BuildContext context, {String text, Function onPressed, double width = 200, Color color, TextStyle style, double borderRadius}) {
+  static roundedButton(BuildContext context, {String text, Function onPressed, double width = 200, Color color, TextStyle style, double borderRadius = 10}) {
     return RaisedButton(
       textColor: Colors.white,
       color: color,
@@ -12,7 +12,7 @@ class AppButton {
       ),
       onPressed: onPressed,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
+        borderRadius: BorderRadius.circular(borderRadius),
       ),
     );
   }

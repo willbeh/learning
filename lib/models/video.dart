@@ -4,11 +4,10 @@ part 'video.g.dart';
 
 @JsonSerializable(anyMap: true)
 class VimeoSize {
-  VimeoSize(this.width, this.height, this.link, this.link_with_play_button);
+  VimeoSize(this.width, this.height, this.link);
   int width;
   int height;
   String link;
-  String link_with_play_button;
 
   factory VimeoSize.fromJson(Map<dynamic, dynamic> json) => _$VimeoSizeFromJson(json);
 

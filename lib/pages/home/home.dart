@@ -12,6 +12,11 @@ class HomePage extends StatelessWidget {
       'routeName': AppRoutes.routeVideo,
       'icon': Icons.video_library,
     },
+    {
+      'title': 'Exam',
+      'routeName': AppRoutes.routeExam,
+      'icon': Icons.border_color,
+    },
   ];
 
   @override

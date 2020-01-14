@@ -11,7 +11,6 @@ VimeoSize _$VimeoSizeFromJson(Map json) {
     json['width'] as int,
     json['height'] as int,
     json['link'] as String,
-    json['link_with_play_button'] as String,
   );
 }
 
@@ -19,7 +18,6 @@ Map<String, dynamic> _$VimeoSizeToJson(VimeoSize instance) => <String, dynamic>{
       'width': instance.width,
       'height': instance.height,
       'link': instance.link,
-      'link_with_play_button': instance.link_with_play_button,
     };
 
 VimeoFile _$VimeoFileFromJson(Map json) {
