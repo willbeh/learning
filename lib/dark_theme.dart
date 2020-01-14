@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 final ThemeData darkTheme = ThemeData(
   primarySwatch: MaterialColor(4280361249, {
@@ -77,183 +78,100 @@ final ThemeData darkTheme = ThemeData(
       brightness: Brightness.dark,
     ),
   ),
-  textTheme: TextTheme(
-    display4: TextStyle(
-      color: Color(0xb3ffffff),
-      fontSize: 12,
-      fontWeight: FontWeight.w400,
-      fontStyle: FontStyle.normal,
-    ),
-    display3: TextStyle(
-      color: Color(0xb3ffffff),
-      fontSize: 14,
-      fontWeight: FontWeight.w400,
-      fontStyle: FontStyle.normal,
-    ),
-    display2: TextStyle(
-      color: Color(0xb3ffffff),
-      fontSize: 16,
-      fontWeight: FontWeight.w400,
-      fontStyle: FontStyle.normal,
-    ),
-    display1: TextStyle(
-      color: Color(0xb3ffffff),
-      fontSize: 18,
-      fontWeight: FontWeight.w400,
-      fontStyle: FontStyle.normal,
-    ),
-    headline: TextStyle(
-      color: Color(0xffffffff),
-      fontSize: 20,
-      fontWeight: FontWeight.w400,
-      fontStyle: FontStyle.normal,
-    ),
-    title: TextStyle(
-      color: Color(0xffffffff),
-      fontSize: 22,
-      fontWeight: FontWeight.w400,
-      fontStyle: FontStyle.normal,
-    ),
-    subhead: TextStyle(
-      color: Color(0xffffffff),
-      fontSize: 20,
-      fontWeight: FontWeight.w400,
-      fontStyle: FontStyle.normal,
-    ),
-    body2: TextStyle(
-      color: Color(0xffffffff),
-      fontSize: 16,
-      fontWeight: FontWeight.w400,
-      fontStyle: FontStyle.normal,
-    ),
-    body1: TextStyle(
-      color: Color(0xffffffff),
-      fontSize: 18,
-      fontWeight: FontWeight.w400,
-      fontStyle: FontStyle.normal,
-    ),
-    caption: TextStyle(
-      color: Color(0xb3ffffff),
-      fontSize: 14,
-      fontWeight: FontWeight.w400,
-      fontStyle: FontStyle.normal,
-    ),
-    button: TextStyle(
-      color: Color(0xffffffff),
-      fontSize: 16,
-      fontWeight: FontWeight.w400,
-      fontStyle: FontStyle.normal,
-    ),
-    subtitle: TextStyle(
-      color: Color(0xffffffff),
-      fontSize: 18,
-      fontWeight: FontWeight.w400,
-      fontStyle: FontStyle.normal,
-    ),
-    overline: TextStyle(
-      color: Color(0xffffffff),
-      fontWeight: FontWeight.w400,
-      fontStyle: FontStyle.normal,
-    ),
+  appBarTheme: AppBarTheme(
+      color: Colors.transparent,
+      elevation: 0,
+      textTheme: GoogleFonts.robotoTextTheme(
+          TextTheme(
+              title: TextStyle(
+                color: Color(0xddffffff),
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+                fontStyle: FontStyle.normal,
+              )
+          )
+      )
   ),
-  inputDecorationTheme: InputDecorationTheme(
-    labelStyle: TextStyle(
-      color: Color(0xffffffff),
-      fontSize: null,
-      fontWeight: FontWeight.w400,
-      fontStyle: FontStyle.normal,
-    ),
-    helperStyle: TextStyle(
-      color: Color(0xffffffff),
-      fontSize: null,
-      fontWeight: FontWeight.w400,
-      fontStyle: FontStyle.normal,
-    ),
-    hintStyle: TextStyle(
-      color: Color(0xffffffff),
-      fontSize: null,
-      fontWeight: FontWeight.w400,
-      fontStyle: FontStyle.normal,
-    ),
-    errorStyle: TextStyle(
-      color: Color(0xffffffff),
-      fontSize: null,
-      fontWeight: FontWeight.w400,
-      fontStyle: FontStyle.normal,
-    ),
-    errorMaxLines: null,
-    hasFloatingPlaceholder: true,
-    isDense: false,
-    contentPadding: EdgeInsets.only(top: 12, bottom: 12, left: 0, right: 0),
-    isCollapsed: false,
-    prefixStyle: TextStyle(
-      color: Color(0xffffffff),
-      fontSize: null,
-      fontWeight: FontWeight.w400,
-      fontStyle: FontStyle.normal,
-    ),
-    suffixStyle: TextStyle(
-      color: Color(0xffffffff),
-      fontSize: null,
-      fontWeight: FontWeight.w400,
-      fontStyle: FontStyle.normal,
-    ),
-    counterStyle: TextStyle(
-      color: Color(0xffffffff),
-      fontSize: null,
-      fontWeight: FontWeight.w400,
-      fontStyle: FontStyle.normal,
-    ),
-    filled: false,
-    fillColor: Color(0x00000000),
-    errorBorder: UnderlineInputBorder(
-      borderSide: BorderSide(
-        color: Color(0xff000000),
-        width: 1,
-        style: BorderStyle.solid,
-      ),
-      borderRadius: BorderRadius.all(Radius.circular(4.0)),
-    ),
-    focusedBorder: UnderlineInputBorder(
-      borderSide: BorderSide(
-        color: Color(0xff000000),
-        width: 1,
-        style: BorderStyle.solid,
-      ),
-      borderRadius: BorderRadius.all(Radius.circular(4.0)),
-    ),
-    focusedErrorBorder: UnderlineInputBorder(
-      borderSide: BorderSide(
-        color: Color(0xff000000),
-        width: 1,
-        style: BorderStyle.solid,
-      ),
-      borderRadius: BorderRadius.all(Radius.circular(4.0)),
-    ),
-    disabledBorder: UnderlineInputBorder(
-      borderSide: BorderSide(
-        color: Color(0xff000000),
-        width: 1,
-        style: BorderStyle.solid,
-      ),
-      borderRadius: BorderRadius.all(Radius.circular(4.0)),
-    ),
-    enabledBorder: UnderlineInputBorder(
-      borderSide: BorderSide(
-        color: Color(0xff000000),
-        width: 1,
-        style: BorderStyle.solid,
-      ),
-      borderRadius: BorderRadius.all(Radius.circular(4.0)),
-    ),
-    border: UnderlineInputBorder(
-      borderSide: BorderSide(
-        color: Color(0xff000000),
-        width: 1,
-        style: BorderStyle.solid,
-      ),
-      borderRadius: BorderRadius.all(Radius.circular(4.0)),
-    ),
+  textTheme: GoogleFonts.robotoTextTheme(
+      TextTheme(
+        display4: TextStyle(
+          color: Color(0xb3ffffff),
+          fontSize: 12,
+          fontWeight: FontWeight.w400,
+          fontStyle: FontStyle.normal,
+        ),
+        display3: TextStyle(
+          color: Color(0xb3ffffff),
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+          fontStyle: FontStyle.normal,
+        ),
+        display2: TextStyle(
+          color: Color(0xb3ffffff),
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+          fontStyle: FontStyle.normal,
+        ),
+        display1: TextStyle(
+          color: Color(0xb3ffffff),
+          fontSize: 18,
+          fontWeight: FontWeight.w400,
+          fontStyle: FontStyle.normal,
+        ),
+        headline: TextStyle(
+          color: Color(0xffffffff),
+          fontSize: 20,
+          fontWeight: FontWeight.w400,
+          fontStyle: FontStyle.normal,
+        ),
+        title: TextStyle(
+          color: Color(0xffffffff),
+          fontSize: 22,
+          fontWeight: FontWeight.w400,
+          fontStyle: FontStyle.normal,
+        ),
+        subhead: TextStyle(
+          color: Color(0xffffffff),
+          fontSize: 20,
+          fontWeight: FontWeight.w400,
+          fontStyle: FontStyle.normal,
+        ),
+        body2: TextStyle(
+          color: Color(0xffffffff),
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+          fontStyle: FontStyle.normal,
+        ),
+        body1: TextStyle(
+          color: Color(0xffffffff),
+          fontSize: 18,
+          fontWeight: FontWeight.w400,
+          fontStyle: FontStyle.normal,
+        ),
+        caption: TextStyle(
+          color: Color(0xb3ffffff),
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+          fontStyle: FontStyle.normal,
+        ),
+        button: TextStyle(
+          color: Color(0xffffffff),
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+          fontStyle: FontStyle.normal,
+        ),
+        subtitle: TextStyle(
+          color: Color(0xffffffff),
+          fontSize: 18,
+          fontWeight: FontWeight.w400,
+          fontStyle: FontStyle.normal,
+        ),
+        overline: TextStyle(
+          color: Color(0xffffffff),
+          fontWeight: FontWeight.w400,
+          fontStyle: FontStyle.normal,
+        ),
+      )
   ),
   iconTheme: IconThemeData(
     color: Color(0xffffffff),
