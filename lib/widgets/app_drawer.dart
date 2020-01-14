@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:learning/routes/router.gr.dart';
 import 'package:learning/services/user_repository.dart';
 import 'package:learning/utils/image_util.dart';
 import 'package:provider/provider.dart';
@@ -45,7 +46,10 @@ class AppDrawer extends StatelessWidget {
           ),
           ListTile(
             title: Text('Logout'),
-            onTap: () => userRepository.signOut().then((_) => Navigator.pushReplacementNamed(context, '/')),
+            onTap: () {
+              userRepository.signOut();
+              AppRouter.navigator.pushNamedAndRemoveUntil(AppRouter.splashPage, (route) => false);
+            }//userRepository.signOut().then((_) => Navigator.pushReplacementNamed(context, '/')),
           ),
         ],
       ),

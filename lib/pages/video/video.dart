@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:learning/app_routes.dart';
 import 'package:learning/models/video.dart';
+import 'package:learning/routes/router.gr.dart';
 //import 'package:learning/models/vimeo.dart';
 import 'package:learning/services/firestore/video_service.dart';
 import 'package:learning/states/vimeo_state.dart';
@@ -127,7 +127,7 @@ class VideoPage extends StatelessWidget {
           onTap: () {
             Provider.of<VimeoState>(context, listen: false).selectedVideo = vimeo;
             Provider.of<VimeoState>(context, listen: false).selectedVideoId = id;
-            Navigator.of(context).pushNamed(AppRoutes.routeVideoPlayer);
+            AppRouter.navigator.pushNamed(AppRouter.videoPlayerPage);
           },
           child: CachedNetworkImage(
             imageUrl: vimeo.pictures.sizes[3].link,

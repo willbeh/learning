@@ -2,10 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:learning/app_routes.dart';
 import 'package:learning/dark_theme.dart';
 import 'package:learning/light_theme.dart';
 import 'package:learning/pages/splash.dart';
+import 'package:learning/routes/router.gr.dart';
 import 'package:learning/services/user_repository.dart';
 import 'package:learning/states/theme_state.dart';
 import 'package:learning/states/vimeo_state.dart';
@@ -78,7 +78,9 @@ class MyAppLoad extends StatelessWidget {
       theme: (Provider.of<ThemeState>(context).isLightTheme) ? lightTheme : darkTheme, // AppTheme.themeData(),
 //      darkTheme: darkTheme,
       home: SplashPage(),
-      routes: AppRoutes.appRoutes(context),
+      initialRoute: AppRouter.splashPage,
+      onGenerateRoute: AppRouter.onGenerateRoute,
+      navigatorKey: AppRouter.navigatorKey,
     );
   }
 }

@@ -2,13 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:learning/app_color.dart';
+import 'package:learning/routes/router.gr.dart';
 import 'package:learning/services/user_repository.dart';
 import 'package:learning/utils/app_traslation_util.dart';
 import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/app_dotted_seperator.dart';
 import 'package:learning/widgets/app_text.dart';
 import 'package:learning/widgets/loading_stack_screen.dart';
-import '../../app_routes.dart';
 import '../../utils/app_icon_icons.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/app_text_field.dart';
@@ -184,7 +184,7 @@ class _LoginPageState extends State<LoginPage> {
         _isLoading = true;
       });
       userRepository.signInWithCredentials(emailCtrl.text, passwordCtrl.text).then((user) {
-        Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.routeHomePage, (route) => false);
+        AppRouter.navigator.pushNamedAndRemoveUntil(AppRouter.homePage, (route)=>false);
       }).catchError((error) {
         setState(() {
           _isLoading = false;
@@ -209,7 +209,7 @@ class _LoginPageState extends State<LoginPage> {
       _isLoading = false;
     });
     if(user != null){
-      Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.routeHomePage, (route) => false);
+      AppRouter.navigator.pushNamedAndRemoveUntil(AppRouter.homePage, (route)=>false);
     }
   }
 }

@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:learning/app_routes.dart';
 import 'package:learning/models/video.dart';
 import 'package:learning/models/watch.dart';
 import 'package:learning/pages/video/video_question.dart';
+import 'package:learning/routes/router.gr.dart';
 import 'package:learning/services/firestore/watch_service.dart';
 import 'package:learning/states/vimeo_state.dart';
 import 'package:learning/utils/datetime_util.dart';
@@ -208,7 +208,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                   if(_isCompleted)
                     AppButton.roundedButton(context,
                       text: 'Take Exam',
-                      onPressed: () => Navigator.pushNamed(context, AppRoutes.routeExam)
+                      onPressed: () => AppRouter.navigator.pushNamed(AppRouter.examPage),
                     ),
                   Padding(
                     padding: EdgeInsets.all(20),

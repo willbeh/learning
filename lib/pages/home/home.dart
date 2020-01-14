@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:learning/app_routes.dart';
+import 'package:learning/routes/router.gr.dart';
 import 'package:learning/widgets/app_drawer.dart';
 import 'package:learning/states/theme_state.dart';
 import 'package:learning/widgets/common_ui.dart';
@@ -9,12 +9,12 @@ class HomePage extends StatelessWidget {
   final List<Map<String, dynamic>> gridItems = [
     {
       'title': 'Video',
-      'routeName': AppRoutes.routeVideo,
+      'routeName': AppRouter.videoPage,
       'icon': Icons.video_library,
     },
     {
       'title': 'Exam',
-      'routeName': AppRoutes.routeExam,
+      'routeName': AppRouter.examPage,
       'icon': Icons.border_color,
     },
   ];
@@ -50,7 +50,7 @@ class HomePage extends StatelessWidget {
               maxCrossAxisExtent: 100,
               children: gridItems.map((item){
                 return InkWell(
-                  onTap: () => Navigator.pushNamed(context, item['routeName']),
+                  onTap: () => AppRouter.navigator.pushNamed(item['routeName']),
                   child: Container(
                     height: double.infinity,
                     child: Column(
