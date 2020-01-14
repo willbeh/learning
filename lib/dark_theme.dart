@@ -85,7 +85,7 @@ final ThemeData darkTheme = ThemeData(
           TextTheme(
               title: TextStyle(
                 color: Color(0xddffffff),
-                fontSize: 20,
+                fontSize: 18,
                 fontWeight: FontWeight.w500,
                 fontStyle: FontStyle.normal,
               )
@@ -114,37 +114,37 @@ final ThemeData darkTheme = ThemeData(
         ),
         display1: TextStyle(
           color: Color(0xb3ffffff),
-          fontSize: 18,
+          fontSize: 16,
           fontWeight: FontWeight.w400,
           fontStyle: FontStyle.normal,
         ),
         headline: TextStyle(
           color: Color(0xffffffff),
-          fontSize: 20,
+          fontSize: 18,
           fontWeight: FontWeight.w400,
           fontStyle: FontStyle.normal,
         ),
         title: TextStyle(
           color: Color(0xffffffff),
-          fontSize: 22,
+          fontSize: 18,
           fontWeight: FontWeight.w400,
           fontStyle: FontStyle.normal,
         ),
         subhead: TextStyle(
           color: Color(0xffffffff),
-          fontSize: 20,
+          fontSize: 16,
           fontWeight: FontWeight.w400,
           fontStyle: FontStyle.normal,
         ),
         body2: TextStyle(
           color: Color(0xffffffff),
-          fontSize: 16,
+          fontSize: 14,
           fontWeight: FontWeight.w400,
           fontStyle: FontStyle.normal,
         ),
         body1: TextStyle(
           color: Color(0xffffffff),
-          fontSize: 18,
+          fontSize: 16,
           fontWeight: FontWeight.w400,
           fontStyle: FontStyle.normal,
         ),
@@ -156,7 +156,7 @@ final ThemeData darkTheme = ThemeData(
         ),
         button: TextStyle(
           color: Color(0xffffffff),
-          fontSize: 16,
+          fontSize: 14,
           fontWeight: FontWeight.w400,
           fontStyle: FontStyle.normal,
         ),

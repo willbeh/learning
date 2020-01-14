@@ -78,7 +78,7 @@ final ThemeData lightTheme = ThemeData(
           TextTheme(
               title: TextStyle(
                 color: Color(0xdd000000),
-                fontSize: 20,
+                fontSize: 18,
                 fontWeight: FontWeight.w500,
                 fontStyle: FontStyle.normal,
               )
@@ -107,19 +107,19 @@ final ThemeData lightTheme = ThemeData(
         ),
         display1: TextStyle(
           color: Color(0x8a000000),
-          fontSize: 18,
+          fontSize: 16,
           fontWeight: FontWeight.w400,
           fontStyle: FontStyle.normal,
         ),
         headline: TextStyle(
           color: Color(0xdd000000),
-          fontSize: 20,
+          fontSize: 18,
           fontWeight: FontWeight.w400,
           fontStyle: FontStyle.normal,
         ),
         title: TextStyle(
           color: Color(0xdd000000),
-          fontSize: 22,
+          fontSize: 18,
           fontWeight: FontWeight.w400,
           fontStyle: FontStyle.normal,
         ),
@@ -131,13 +131,13 @@ final ThemeData lightTheme = ThemeData(
         ),
         body2: TextStyle(
           color: Color(0xdd000000),
-          fontSize: 16,
+          fontSize: 14,
           fontWeight: FontWeight.w400,
           fontStyle: FontStyle.normal,
         ),
         body1: TextStyle(
           color: Color(0xdd000000),
-          fontSize: 18,
+          fontSize: 16,
           fontWeight: FontWeight.w400,
           fontStyle: FontStyle.normal,
         ),
@@ -149,7 +149,7 @@ final ThemeData lightTheme = ThemeData(
         ),
         button: TextStyle(
           color: Color(0xdd000000),
-          fontSize: 16,
+          fontSize: 14,
           fontWeight: FontWeight.w400,
           fontStyle: FontStyle.normal,
         ),

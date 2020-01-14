@@ -23,6 +23,7 @@ class AppTextField extends StatelessWidget {
   InputDecoration _buildInputDecoration(BuildContext context) {
     return InputDecoration(
       labelText: label,
+
       suffixIcon: Icon(iconData),
       contentPadding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 10.0),
       focusedBorder: OutlineInputBorder(
@@ -41,7 +42,7 @@ class AppTextField extends StatelessWidget {
         borderSide: BorderSide(color: Colors.red.shade400),
       ),
       focusedErrorBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: Theme.of(context).primaryColor),
+        borderSide: BorderSide(color: Colors.red.shade400),
       )
     );
   }
@@ -50,6 +51,7 @@ class AppTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       decoration: _buildInputDecoration(context),
+      style: Theme.of(context).textTheme.display3,
 //      style: Theme.of(context).textTheme.display1,
       controller: controller,
       textInputAction: textInputAction,

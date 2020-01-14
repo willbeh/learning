@@ -60,7 +60,7 @@ class HomePage extends StatelessWidget {
                           icon: Icon(item['icon'], size: 40, color: (themeState.isLightTheme) ? Theme.of(context).primaryColor : Colors.white,),
                         ),
                         CommonUI.heightPadding(height: 3),
-                        Text(item['title'], textAlign: TextAlign.center, style: Theme.of(context).textTheme.display2,),
+                        Text(item['title'], textAlign: TextAlign.center, style: Theme.of(context).textTheme.display3.copyWith(fontWeight: FontWeight.w500),),
                       ],
                     ),
                   ),
