@@ -10,6 +10,7 @@ import 'package:auto_route/router_utils.dart';
 import 'package:learning/pages/home/home.dart';
 import 'package:learning/pages/splash.dart';
 import 'package:learning/pages/session/login.dart';
+import 'package:learning/pages/session/forget.dart';
 import 'package:learning/pages/video/video.dart';
 import 'package:learning/pages/video/video_player.dart';
 import 'package:learning/pages/exam/exam.dart';
@@ -18,6 +19,7 @@ class AppRouter {
   static const homePage = '/homePage';
   static const splashPage = '/';
   static const loginPage = '/loginPage';
+  static const forgetPage = '/forgetPage';
   static const videoPage = '/videoPage';
   static const videoPlayerPage = '/videoPlayerPage';
   static const examPage = '/examPage';
@@ -41,6 +43,11 @@ class AppRouter {
       case AppRouter.loginPage:
         return MaterialPageRoute(
           builder: (_) => LoginPage(),
+          settings: settings,
+        );
+      case AppRouter.forgetPage:
+        return MaterialPageRoute(
+          builder: (_) => ForgetPage(),
           settings: settings,
         );
       case AppRouter.videoPage:

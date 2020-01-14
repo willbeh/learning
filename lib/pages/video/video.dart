@@ -14,7 +14,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class VideoPage extends StatelessWidget {
-//  final List<String> videoId = ['379049079', '379879805', '378753132'];
   final List<String> videoId = ['382521859', '382353755', '382117382', '382248454'];
   final log = getLogger('VideoPage');
 
@@ -129,11 +128,14 @@ class VideoPage extends StatelessWidget {
             Provider.of<VimeoState>(context, listen: false).selectedVideoId = id;
             AppRouter.navigator.pushNamed(AppRouter.videoPlayerPage);
           },
-          child: CachedNetworkImage(
-            imageUrl: vimeo.pictures.sizes[3].link,
-            fit: BoxFit.fitWidth,
-            placeholder: (context, i) => Container(
-              height: MediaQuery.of(context).size.width * 0.5625,
+          child: Hero(
+            tag: id,
+            child: CachedNetworkImage(
+              imageUrl: vimeo.pictures.sizes[3].link,
+              fit: BoxFit.fitWidth,
+              placeholder: (context, i) => Container(
+                height: MediaQuery.of(context).size.width * 0.5625,
+              ),
             ),
           ),
         ),

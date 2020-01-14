@@ -37,9 +37,9 @@ class CommonUI {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5),
           ),
-          title: Text(title, style: Theme.of(context).textTheme.display1.copyWith(color: titleColor, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+          title: Text(title, style: Theme.of(context).textTheme.headline.copyWith(color: titleColor, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
           content: SingleChildScrollView(
-            child: (child != null) ? child : Text(msg, textAlign: TextAlign.center,),
+            child: (child != null) ? child : Text(msg, textAlign: TextAlign.center, style: Theme.of(context).textTheme.display2),
           ),
           actions: <Widget>[
             Container(
@@ -51,6 +51,7 @@ class CommonUI {
                       AppButton.roundedButton(context,
                         text: closeText,
                         paddingVertical: 5,
+                        textStyle: Theme.of(context).textTheme.display4.copyWith(color: Colors.white),
                         onPressed: () => Navigator.pop(context)
                       ) :
                   actions

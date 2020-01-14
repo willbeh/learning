@@ -41,8 +41,7 @@ dependencies:
   provider: ^4.0.1
   intl: ^0.16.0
   json_annotation: ^3.0.1
-  video_player: ^0.10.5
-  webview_flutter: ^0.3.18+1
+  video_player: ^0.10.5+1
 
   # third party
   logger: ^0.8.2

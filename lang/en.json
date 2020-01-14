@@ -8,5 +8,6 @@
   "login_password_err": "Please enter your password",
   "login_forget": "Forget Password?",
   "login_donot": "Do not have an account? ",
-  "login_signup": "Sign up"
+  "login_signup": "Sign up",
+  "forget_title": "Forget Password"
 }

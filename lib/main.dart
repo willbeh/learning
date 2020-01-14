@@ -62,6 +62,10 @@ class MyAppLoad extends StatelessWidget {
       ],
       // Returns a locale which will be used by the app
       localeResolutionCallback: (locale, supportedLocales) {
+        if (locale == null) {
+          return supportedLocales.first;
+        }
+
         // Check if the current device locale is supported
         for (var supportedLocale in supportedLocales) {
           if (supportedLocale.languageCode == locale.languageCode &&

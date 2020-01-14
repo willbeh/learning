@@ -55,6 +55,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
       ..initialize().then((_) {
         // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
         int position = prefs.getInt(vimeoState.selectedVideoId);
+        log.d('position $position == ${vimeoState.selectedVideo.duration}');
         // if no prefs then set a 0
         if (position == null){
           prefs.setInt(vimeoState.selectedVideoId, 0);
@@ -79,22 +80,18 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
 
   getWatch(BuildContext context) async {
     FirebaseUser user = Provider.of(context);
-    _watch = await WatchService.getById(id: vimeoState.selectedVideoId, uid: user.uid);
-    
-    if(_watch == null){
-      log.d('no watch');
+    WatchService.getById(id: vimeoState.selectedVideoId, uid: user.uid).then((watch){
+      log.d('$watch');
+      _watch = watch;
+    }).catchError((error) {
+      log.d('no watch $error');
       _watch = Watch(
-        vid: vimeoState.selectedVideoId,
-        uid: user.uid,
-        data: vimeoState.selectedVideo
+          vid: vimeoState.selectedVideoId,
+          uid: user.uid,
+          data: vimeoState.selectedVideo
       );
       log.d('watch ${_watch.toJson()}');
-
-//      WatchService.insert(_watch.toJson());
-    } else {
-      log.d('watch ${_watch.toJson()}');
-    }
-
+    });
   }
 
   @override
@@ -152,13 +149,16 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                         ? Center(
                           child: AspectRatio(
                       aspectRatio: ratio, //_controller.value.aspectRatio,
-                      child: GestureDetector(
-                            child: VideoPlayer(_controller),
-                          onTap: () {
-                              if(_controller.value.isPlaying){
-                                setState(() {});
-                              }
-                          },
+                      child: Hero(
+                        tag: vimeoState?.selectedVideoId,
+                        child: GestureDetector(
+                              child: VideoPlayer(_controller),
+                            onTap: () {
+                                if(_controller.value.isPlaying){
+                                  setState(() {});
+                                }
+                            },
+                        ),
                       ),
                     ),
                         )
@@ -290,18 +290,20 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
       }
     }
     if(_controller.value.duration == _controller.value.position){
-      log.d('end ${_controller.value.isPlaying}');
+      // set to last position
+      _prefPosition = vimeoState.selectedVideo.duration;
+      prefs.setInt(vimeoState.selectedVideoId, _prefPosition);
+
       Wakelock.disable();
       _isCompleted = true;
       _cancelTimer();
+
+      // if full screen then scwith back to small screen
       if (quarterTurns != 0) {
         _setOrientation();
       }
       _controller.seekTo(Duration(seconds: 0)).then((_) {
         _controller.pause().then((_) {
-          if (quarterTurns != 0) {
-            _setOrientation();
-          }
           setState(() {});
         });
       });

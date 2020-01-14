@@ -22,6 +22,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailCtrl = TextEditingController();
   final TextEditingController passwordCtrl = TextEditingController();
+  final FocusNode _passwordFocus = FocusNode();
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
   var log = getLogger('_LoginPageState');
@@ -36,22 +37,23 @@ class _LoginPageState extends State<LoginPage> {
           centerTitle: true,
         ),
         backgroundColor: Colors.grey.shade50,
-        body: SingleChildScrollView(
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height - 80,
-            child: Column(
+        body: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            return Column(
               children: <Widget>[
-                Expanded(
-                  child: Column(
-                    children: <Widget>[
-                      _buildEmailSignIn(context),
-                      FlatButton(
-                        child: Text('${AppTranslate.text(context, 'login_forget')}', style: Theme.of(context).textTheme.display3.copyWith(color: Theme.of(context).primaryColor),),
-                        onPressed: () => null,
-                      ),
-                      _buildSocialSignIn(context)
-                    ],
+                Container(
+                  height: constraints.constrainHeight() - 50,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        _buildEmailSignIn(context),
+                        FlatButton(
+                          child: Text('${AppTranslate.text(context, 'login_forget')}', style: Theme.of(context).textTheme.display3.copyWith(color: Theme.of(context).primaryColor),),
+                          onPressed: () => AppRouter.navigator.pushNamed(AppRouter.forgetPage),
+                        ),
+                        _buildSocialSignIn(context)
+                      ],
+                    ),
                   ),
                 ),
                 Container(
@@ -66,8 +68,8 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 )
               ],
-            ),
-          ),
+            );
+          },
         ),
       ),
     );
@@ -76,8 +78,8 @@ class _LoginPageState extends State<LoginPage> {
   Widget _buildEmailSignIn(BuildContext context) {
     return Container(
       margin: EdgeInsets.all(20),
-      width: MediaQuery.of(context).size.width - 40,
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+//      width: MediaQuery.of(context).size.width - 40,
+      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 30),
       decoration: BoxDecoration(
 //        border: Border.all(color: Theme.of(context).primaryColor),
         borderRadius: BorderRadius.circular(5),
@@ -101,6 +103,9 @@ class _LoginPageState extends State<LoginPage> {
 
                 return null;
               },
+              onFieldSubmittedFn: (_) {
+                FocusScope.of(context).requestFocus(_passwordFocus);
+              },
             ),
             CommonUI.heightPadding(),
             AppTextField(
@@ -109,6 +114,11 @@ class _LoginPageState extends State<LoginPage> {
               errorMsg: '${AppTranslate.text(context, 'login_password_err')}',
               obscureText: true,
               borderColor: AppColor.greyLight,
+              textInputAction: TextInputAction.done,
+              focusNode: _passwordFocus,
+              onFieldSubmittedFn: (_) {
+                _signInEmail();
+              },
             ),
             CommonUI.heightPadding(),
             AppButton.roundedButton(
