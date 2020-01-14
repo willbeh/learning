@@ -46,16 +46,16 @@ class CommonUI {
               width: MediaQuery.of(context).size.width,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
+                children:
                   (closeText != null) ?
-                      AppButton.roundedButton(context,
+                      [AppButton.roundedButton(context,
                         text: closeText,
                         paddingVertical: 5,
                         textStyle: Theme.of(context).textTheme.display4.copyWith(color: Colors.white),
                         onPressed: () => Navigator.pop(context)
-                      ) :
+                      )] :
                   actions
-                ],
+                ,
               ),
             ),
           ],

@@ -194,6 +194,7 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         _isLoading = true;
       });
+      CommonUI.dismissKeyboard(context);
       userRepository.signInWithCredentials(emailCtrl.text, passwordCtrl.text).then((user) {
         AppRouter.navigator.pushNamedAndRemoveUntil(AppRouter.homePage, (route)=>false);
       }).catchError((error) {
