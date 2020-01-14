@@ -8,7 +8,7 @@ class AppButton {
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 15.0),
         width: width,
-        child: Text(text, style: style ?? Theme.of(context).textTheme.headline.copyWith(color: Colors.white), textAlign: TextAlign.center,),
+        child: Text(text, style: style ?? TextStyle(color: Colors.white), textAlign: TextAlign.center,),
       ),
       onPressed: onPressed,
       shape: RoundedRectangleBorder(

@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:learning/app_color.dart';
 import 'package:learning/services/user_repository.dart';
 import 'package:learning/utils/app_traslation_util.dart';
 import 'package:learning/utils/logger.dart';
+import 'package:learning/widgets/app_dotted_seperator.dart';
 import 'package:learning/widgets/loading_stack_screen.dart';
 import '../../app_routes.dart';
 import '../../utils/app_icon_icons.dart';
@@ -26,92 +28,142 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return LoadingStackScreen(
       isLoading: _isLoading,
-      child: Container(
-        decoration: BoxDecoration(
-          // Box decoration takes a gradient
-          gradient: LinearGradient(
-            // Where the linear gradient begins and ends
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-            // Add one stop for each color. Stops should increase from 0 to 1
-            stops: [0.1, 0.9],
-            colors: [
-              Theme.of(context).primaryColorLight,
-              Theme.of(context).primaryColorDark,
-            ],
-          ),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('${AppTranslate.text(context, 'login_title')}'),
+          centerTitle: true,
         ),
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: SingleChildScrollView(
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.all(20),
-                    width: MediaQuery.of(context).size.width - 40,
-                    padding: EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Theme.of(context).primaryColor),
-                      borderRadius: BorderRadius.circular(5),
-                      color: Colors.white,
-                    ),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        children: <Widget>[
-                          Text('${AppTranslate.text(context, 'login')}', style: Theme.of(context).textTheme.title.copyWith(color: Theme.of(context).primaryColor),),
-                          CommonUI.heightPadding(),
-                          AppTextField(
-                            controller: emailCtrl,
-                            label: 'Email',
-                            errorMsg: 'Please key in your email',
-                            keyboardType: TextInputType.emailAddress,
-                          ),
-                          CommonUI.heightPadding(),
-                          AppTextField(
-                            controller: passwordCtrl,
-                            label: 'Password',
-                            errorMsg: 'Please key in your password',
-                            obscureText: true,
-                          ),
-                          CommonUI.heightPadding(),
-                          AppButton.roundedButton(
-                              context,
-                              text: 'Login',
-                              onPressed: () => _signInEmail(), // Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.routeHomePage, (route) => false),
-                              color: Theme.of(context).primaryColor,
-                              width: MediaQuery.of(context).size.width,
-                            borderRadius: 5,
-                          ),
-                          CommonUI.heightPadding(),
-                          Text('or continue with', style: Theme.of(context).textTheme.display3,),
-                          CommonUI.heightPadding(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              IconButton(
-                                icon: Icon(AppIcon.google, color: Color(0xffDB4437)),
-                                onPressed: () => _signInGoogle(),
-                              ),
-                              IconButton(
-                                icon: Icon(AppIcon.facebook, color: Color(0xff4267B2)),
-                                onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.routeHomePage, (route) => false),
-                              )
-                            ],
-                          )
-                        ],
+        backgroundColor: Colors.grey.shade50,
+        body: SingleChildScrollView(
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height - 80,
+            child: Column(
+              children: <Widget>[
+                Expanded(
+                  child: Column(
+                    children: <Widget>[
+                      _buildEmailSignIn(context),
+                      FlatButton(
+                        child: Text('${AppTranslate.text(context, 'login_forget')}', style: TextStyle(color: Theme.of(context).primaryColor),),
+                        onPressed: () => null,
                       ),
-                    ),
+                      _buildSocialSignIn(context)
+                    ],
                   ),
-                ],
-              ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text('${AppTranslate.text(context, 'login_donot')}', style: Theme.of(context).textTheme.display2,),
+                      Text('${AppTranslate.text(context, 'login_signup')}', style: Theme.of(context).textTheme.display2.copyWith(color: Theme.of(context).primaryColor),),
+                    ],
+                  ),
+                )
+              ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildEmailSignIn(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.all(20),
+      width: MediaQuery.of(context).size.width - 40,
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+      decoration: BoxDecoration(
+//        border: Border.all(color: Theme.of(context).primaryColor),
+        borderRadius: BorderRadius.circular(5),
+        color: Colors.white,
+      ),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: <Widget>[
+            AppTextField(
+              controller: emailCtrl,
+              label: '${AppTranslate.text(context, 'login_email')}',
+              errorMsg: '${AppTranslate.text(context, 'login_email_err')}',
+              keyboardType: TextInputType.emailAddress,
+              borderColor: AppColor.greyLight,
+            ),
+            CommonUI.heightPadding(),
+            AppTextField(
+              controller: passwordCtrl,
+              label: '${AppTranslate.text(context, 'login_password')}',
+              errorMsg: '${AppTranslate.text(context, 'login_password_err')}',
+              obscureText: true,
+              borderColor: AppColor.greyLight,
+            ),
+            CommonUI.heightPadding(),
+            AppButton.roundedButton(
+              context,
+              text: 'Login',
+              onPressed: () => _signInEmail(), // Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.routeHomePage, (route) => false),
+              color: Theme.of(context).primaryColor,
+              width: MediaQuery.of(context).size.width,
+              borderRadius: 5,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildSocialSignIn(BuildContext context){
+    return Container(
+      margin: EdgeInsets.all(20.0),
+      child: Column(
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Container(width: MediaQuery.of(context).size.width/2 - 90, child: AppDottedSeparator(color: AppColor.greyDottedLine,)),
+              Text('or continue with', style: Theme.of(context).textTheme.display2,),
+              Container(width: MediaQuery.of(context).size.width/2 - 90, child: AppDottedSeparator(color: AppColor.greyDottedLine,)),
+            ],
+          ),
+          CommonUI.heightPadding(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              _buildSocialButton(
+                text: 'Facebook',
+                color: AppColor.facebook,
+              ),
+              _buildSocialButton(
+                text: 'Google',
+                color: AppColor.google,
+                onTap: _signInGoogle
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSocialButton({String text, Color color, Function onTap}){
+    return InkWell(
+      onTap: () => onTap(),
+      child: Container(
+        width: 150,
+        padding: EdgeInsets.symmetric(vertical: 9, horizontal: 24),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          border: Border.all(color: AppColor.greyLight),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(AppIcon.google, color: color),
+            CommonUI.widthPadding(width: 5),
+            Text('$text', style: TextStyle(color: color, fontSize: 14, fontWeight: FontWeight.w500))
+          ],
         ),
       ),
     );

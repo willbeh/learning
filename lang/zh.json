@@ -1,4 +1,9 @@
 {
   "title": "学习",
-  "login": "登录"
+  "login_title": "Login",
+  "login_email": "Email",
+  "login_email_err": "Please enter your email",
+  "login_password": "Password",
+  "login_password_err": "Please enter your password",
+  "login_forget": "Forget Password?"
 }

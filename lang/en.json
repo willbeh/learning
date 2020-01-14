@@ -1,4 +1,11 @@
 {
   "title": "Learning",
-  "login": "Login"
+  "login_title": "Login",
+  "login_email": "Email",
+  "login_email_err": "Please enter your email",
+  "login_password": "Password",
+  "login_password_err": "Please enter your password",
+  "login_forget": "Forget Password?",
+  "login_donot": "Do not have an account? ",
+  "login_signup": "Sign up"
 }
