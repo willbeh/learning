@@ -1,6 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:learning/models/video.dart';
-import 'package:learning/utils/logger.dart';
 
 part 'answer.g.dart';
 

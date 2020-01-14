@@ -5,7 +5,7 @@ class AppStreamBuilder extends StatelessWidget {
   final Stream stream;
   final Function fn;
   final Function fnNone;
-  bool showLoading;
+  final bool showLoading;
 
   final log = getLogger('AppStreamBuilder');
 
