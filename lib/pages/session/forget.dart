@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:learning/app_color.dart';
 import 'package:learning/services/user_repository.dart';
-import 'package:learning/states/theme_state.dart';
 import 'package:learning/utils/app_traslation_util.dart';
 import 'package:learning/widgets/app_button.dart';
 import 'package:learning/widgets/app_text.dart';

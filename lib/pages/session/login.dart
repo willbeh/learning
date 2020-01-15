@@ -26,6 +26,8 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
   var log = getLogger('_LoginPageState');
+  bool _obscurePassword = true;
+  double _initHeight = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -35,16 +37,21 @@ class _LoginPageState extends State<LoginPage> {
         appBar: AppBar(
           title: Text('${AppTranslate.text(context, 'login_title')}'),
           centerTitle: true,
+          brightness: Brightness.light,
         ),
-        backgroundColor: Colors.grey.shade50,
+        backgroundColor: AppColor.greyLightBg,
         body: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
-            return Column(
-              children: <Widget>[
-                Container(
-                  height: constraints.constrainHeight() - 50,
-                  child: SingleChildScrollView(
+            if(_initHeight == 0)
+              _initHeight = constraints.constrainHeight();
+
+            return SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    height: ((_initHeight == 0) ? constraints.constrainHeight() : _initHeight) - 44,
                     child: Column(
+                      mainAxisSize: MainAxisSize.max,
                       children: <Widget>[
                         _buildEmailSignIn(context),
                         FlatButton(
@@ -55,19 +62,19 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                     ),
                   ),
-                ),
-                Container(
-                  color: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text('${AppTranslate.text(context, 'login_donot')}', style: Theme.of(context).textTheme.display3,),
-                      Text('${AppTranslate.text(context, 'login_signup')}', style: Theme.of(context).textTheme.display3.copyWith(color: Theme.of(context).primaryColor),),
-                    ],
-                  ),
-                )
-              ],
+                  Container(
+                    color: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text('${AppTranslate.text(context, 'login_donot')}', style: Theme.of(context).textTheme.display3,),
+                        Text('${AppTranslate.text(context, 'login_signup')}', style: Theme.of(context).textTheme.display3.copyWith(fontWeight: FontWeight.w500 ,color: Theme.of(context).primaryColor),),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             );
           },
         ),
@@ -77,7 +84,7 @@ class _LoginPageState extends State<LoginPage> {
   
   Widget _buildEmailSignIn(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(20),
+      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
 //      width: MediaQuery.of(context).size.width - 40,
       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 30),
       decoration: BoxDecoration(
@@ -112,13 +119,21 @@ class _LoginPageState extends State<LoginPage> {
               controller: passwordCtrl,
               label: '${AppTranslate.text(context, 'login_password')}',
               errorMsg: '${AppTranslate.text(context, 'login_password_err')}',
-              obscureText: true,
+              obscureText: _obscurePassword,
               borderColor: AppColor.greyLight,
               textInputAction: TextInputAction.done,
               focusNode: _passwordFocus,
               onFieldSubmittedFn: (_) {
                 _signInEmail();
               },
+              suffixIcon: InkWell(
+                onTap: () {
+                  setState(() {
+                    _obscurePassword = !_obscurePassword;
+                  });
+                },
+                child: Icon((_obscurePassword) ? Icons.visibility_off : Icons.visibility),
+              ),
             ),
             CommonUI.heightPadding(),
             AppButton.roundedButton(
@@ -154,13 +169,13 @@ class _LoginPageState extends State<LoginPage> {
               _buildSocialButton( context,
                 text: 'Facebook',
                 color: AppColor.facebook,
-                icon: AppIcon.facebook
+                icon: Image.asset('assets/images/icons/facebook.png', height: 30,)
               ),
               _buildSocialButton( context,
                 text: 'Google',
                 color: AppColor.google,
                 onTap: _signInGoogle,
-                icon: AppIcon.google
+                icon: Image.asset('assets/images/icons/google.png', height: 30,)
               )
             ],
           )
@@ -169,15 +184,15 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildSocialButton(BuildContext context, {IconData icon, String text, Color color, Function onTap}){
+  Widget _buildSocialButton(BuildContext context, {Widget icon, String text, Color color, Function onTap}){
     return AppButton.roundedButton(
       context,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Icon(icon, color: color),
-          CommonUI.widthPadding(width: 5),
-          Text('$text', style: TextStyle(color: color, fontSize: 14, fontWeight: FontWeight.w500))
+          icon,
+          CommonUI.widthPadding(width: 10),
+          Text('$text', style: TextStyle(color: color, fontSize: 14, fontWeight: FontWeight.bold))
         ],
       ),
       onPressed: () => onTap(), // Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.routeHomePage, (route) => false),

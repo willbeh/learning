@@ -14,17 +14,18 @@ class AppTextField extends StatelessWidget {
   final bool obscureText;
   final int maxLines;
   final Color borderColor;
+  final Function onChange;
+  final Widget suffixIcon;
 
   AppTextField({this.label, this.errorMsg = '', this.saveFn, this.validatorFn, this.iconData, this.focusNode, this.onFieldSubmittedFn,
     this.keyboardType = TextInputType.text, this.textInputAction = TextInputAction.done, this.controller, this.obscureText = false, this.maxLines = 1,
-    this.borderColor = Colors.grey
+    this.borderColor = Colors.grey, this.onChange, this.suffixIcon
   });
 
   InputDecoration _buildInputDecoration(BuildContext context) {
     return InputDecoration(
       labelText: label,
-
-      suffixIcon: Icon(iconData),
+      suffixIcon: suffixIcon,
       contentPadding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 10.0),
       focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(color: Theme.of(context).primaryColor),
@@ -43,7 +44,7 @@ class AppTextField extends StatelessWidget {
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderSide: BorderSide(color: Colors.red.shade400),
-      )
+      ),
     );
   }
 
@@ -68,7 +69,7 @@ class AppTextField extends StatelessWidget {
         }
       } : validatorFn,
       onSaved: saveFn,
-
+      onChanged: (onChange == null) ? null : onChange ,
     );
   }
 }
