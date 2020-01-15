@@ -70,6 +70,7 @@ final ThemeData lightTheme = ThemeData(
   ),
   appBarTheme: AppBarTheme(
       color: Colors.transparent,
+      brightness: Brightness.light,
       elevation: 0,
       iconTheme: IconThemeData(
         color: Colors.black

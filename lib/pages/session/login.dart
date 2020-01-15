@@ -9,7 +9,6 @@ import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/app_dotted_seperator.dart';
 import 'package:learning/widgets/app_text.dart';
 import 'package:learning/widgets/loading_stack_screen.dart';
-import '../../utils/app_icon_icons.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/app_text_field.dart';
 import '../../widgets/common_ui.dart';
@@ -37,7 +36,6 @@ class _LoginPageState extends State<LoginPage> {
         appBar: AppBar(
           title: Text('${AppTranslate.text(context, 'login_title')}'),
           centerTitle: true,
-          brightness: Brightness.light,
         ),
         backgroundColor: AppColor.greyLightBg,
         body: LayoutBuilder(

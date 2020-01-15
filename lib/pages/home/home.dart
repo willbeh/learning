@@ -29,6 +29,7 @@ class HomePage extends StatelessWidget {
             SliverAppBar(
 //            pinned: true,
               floating: true,
+              brightness: Brightness.dark,
               backgroundColor: Theme.of(context).primaryColor,
               iconTheme: IconThemeData(
                   color: Colors.white
