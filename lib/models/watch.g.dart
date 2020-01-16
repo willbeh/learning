@@ -10,6 +10,8 @@ Watch _$WatchFromJson(Map json) {
   return Watch(
     id: json['id'] as String,
     vid: json['vid'] as String,
+    vname: json['vname'] as String,
+    vpicture: json['vpicture'] as String,
     uid: json['uid'] as String,
     position: json['position'] as int,
     furthest: json['furthest'] as int,
@@ -21,6 +23,8 @@ Watch _$WatchFromJson(Map json) {
 Map<String, dynamic> _$WatchToJson(Watch instance) => <String, dynamic>{
       'id': instance.id,
       'vid': instance.vid,
+      'vname': instance.vname,
+      'vpicture': instance.vpicture,
       'uid': instance.uid,
       'position': instance.position,
       'furthest': instance.furthest,

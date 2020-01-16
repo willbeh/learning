@@ -252,6 +252,8 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
 
       Map<String, dynamic> data = {
         'vid': vimeoState.selectedVideoId,
+        'vname': vimeoState.selectedVideo.name,
+        'vpicture': vimeoState.selectedVideo.pictures.sizes[0].link,
         'uid': user.uid,
         'position': 0,
         'furthest': 0,
