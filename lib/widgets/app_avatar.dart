@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:learning/utils/image_util.dart';
 
 class AppAvatar extends StatelessWidget {
   final double radius;
   final String image;
-  AppAvatar({@required this.image, this.radius = 30});
+  final String text;
+  final double fontSize;
+  AppAvatar({@required this.image, this.radius = 30, this.text = '', this.fontSize = 24});
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(radius),
-      child: Container(
-        width: radius * 2,
-          child: Image.asset(image, fit: BoxFit.cover, height: radius*2,),
-      ),
+    return (image != null && image != '')
+        ? ImageUtil.showCircularImage(radius, image)
+        : CircleAvatar(
+      child: Text('$text', style: TextStyle(fontSize: fontSize),), //Icon(Icons.person, size: 32,),
+      radius: radius,
     );
   }
 }

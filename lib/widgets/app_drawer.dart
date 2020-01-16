@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:learning/routes/router.gr.dart';
 import 'package:learning/services/user_repository.dart';
 import 'package:learning/utils/image_util.dart';
+import 'package:learning/widgets/app_avatar.dart';
 import 'package:provider/provider.dart';
 import '../states/theme_state.dart';
 import '../widgets/common_ui.dart';
@@ -25,14 +26,10 @@ class AppDrawer extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                (user?.photoUrl != null && user?.photoUrl != '')
-                ? ImageUtil.showCircularImage(30, user?.photoUrl)
-                : CircleAvatar(
-                  child: Icon(Icons.person, size: 32,),
-                  radius: 27,
-                ),
+                AppAvatar(image: user?.photoUrl, radius: 30, text: '${user?.email[0].toUpperCase()}',),
                 CommonUI.heightPadding(),
-                Text('${user?.displayName}', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                if(user?.displayName != null)
+                  Text('${user?.displayName}', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
                 Text('${user?.email}', style: TextStyle(color: Colors.white),),
               ],
             ),
@@ -45,10 +42,17 @@ class AppDrawer extends StatelessWidget {
             onTap: () => themeState.invertTheme(),
           ),
           ListTile(
+            title: Text('Profile'),
+            onTap: (){
+              Navigator.pop(context);
+              AppRouter.navigator.pushNamed(AppRouter.profilePage);
+            }
+          ),
+          ListTile(
             title: Text('Logout'),
             onTap: () {
-              userRepository.signOut();
               AppRouter.navigator.pushNamedAndRemoveUntil(AppRouter.splashPage, (route) => false);
+              userRepository.signOut();
             }//userRepository.signOut().then((_) => Navigator.pushReplacementNamed(context, '/')),
           ),
         ],
