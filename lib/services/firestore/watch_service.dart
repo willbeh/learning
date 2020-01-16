@@ -14,6 +14,16 @@ class WatchService {
     });
   }
 
+  static Stream<List<Watch>> findByUId({String uid}) {
+    return Firestore.instance.collection(_col).where('uid', isEqualTo: uid).snapshots().map((list) {
+      return list.documents.map((doc) {
+        Map data = doc.data;
+        data['id'] = doc.documentID;
+        return Watch.fromJson(data);
+      }).toList();
+    });
+  }
+
   static Stream<Watch> findById({String id, String uid}) {
     return Firestore.instance.collection(_col).where('uid', isEqualTo: uid).where('vid', isEqualTo: id).snapshots().map((list) {
       return list.documents.map((doc) {

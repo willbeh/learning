@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:learning/models/video.dart';
+import 'package:learning/models/watch.dart';
 import 'package:learning/routes/router.gr.dart';
 //import 'package:learning/models/vimeo.dart';
 import 'package:learning/services/firestore/video_service.dart';
@@ -126,6 +127,14 @@ class VideoPage extends StatelessWidget {
           onTap: () {
             Provider.of<VimeoState>(context, listen: false).selectedVideo = vimeo;
             Provider.of<VimeoState>(context, listen: false).selectedVideoId = id;
+            List watchs = Provider.of<List<Watch>>(context, listen: false);
+
+            log.d('watchs $watchs');
+            List<Watch> getWatch = (watchs == null) ? [] : watchs.where((w) => w.vid == id).toList();
+            if(getWatch != null && getWatch.length > 0) {
+              log.d('get Watch ${getWatch.first.toJson()}');
+              Provider.of<VimeoState>(context, listen: false).selectedWatch = getWatch.first;
+            }
             AppRouter.navigator.pushNamed(AppRouter.videoPlayerPage);
           },
           child: Hero(

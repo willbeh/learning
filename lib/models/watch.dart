@@ -5,15 +5,14 @@ part 'watch.g.dart';
 
 @JsonSerializable(anyMap: true)
 class Watch {
-  Watch({this.id, this.vid, this.uid, this.data, this.position = 0, this.furthest = 0, this.status = ''});
+  Watch({this.id, this.vid, this.uid, this.position = 0, this.furthest = 0, this.status = ''});
 
   String id;
   String vid;
   String uid;
-  @JsonKey( toJson: Vimeo.utilToJson)
-  Vimeo data;
   int position;
   int furthest;
+  bool test;
   String status;
 
 

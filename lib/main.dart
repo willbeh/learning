@@ -4,8 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:learning/dark_theme.dart';
 import 'package:learning/light_theme.dart';
+import 'package:learning/models/watch.dart';
 import 'package:learning/pages/splash.dart';
 import 'package:learning/routes/router.gr.dart';
+import 'package:learning/services/firestore/watch_service.dart';
 import 'package:learning/services/user_repository.dart';
 import 'package:learning/states/theme_state.dart';
 import 'package:learning/states/vimeo_state.dart';
@@ -33,9 +35,7 @@ class MyApp extends StatelessWidget {
           create: (_) => ThemeState(isLightTheme: true),
           lazy: false,
         ),
-        ChangeNotifierProvider(
-          create: (_) => VimeoState(),
-        )
+
       ],
       child: MyAppLoad(),
     );
@@ -45,46 +45,57 @@ class MyApp extends StatelessWidget {
 class MyAppLoad extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      supportedLocales: [
-        Locale('en'),
-        Locale('zh'),
-      ],
-      // These delegates make sure that the localization data for the proper language is loaded
-      localizationsDelegates: [
-        // THIS CLASS WILL BE ADDED LATER
-        // A class which loads the translations from JSON files
-        AppLocalizations.delegate,
-        // Built-in localization of basic text for Material widgets
-        GlobalMaterialLocalizations.delegate,
-        // Built-in localization for text direction LTR/RTL
-        GlobalWidgetsLocalizations.delegate,
-      ],
-      // Returns a locale which will be used by the app
-      localeResolutionCallback: (locale, supportedLocales) {
-        if (locale == null) {
-          return supportedLocales.first;
-        }
+    FirebaseUser user = Provider.of(context);
+    Stream<List<Watch>> watchStream = WatchService.findByUId(uid: user?.uid);
 
-        // Check if the current device locale is supported
-        for (var supportedLocale in supportedLocales) {
-          if (supportedLocale.languageCode == locale.languageCode &&
-              supportedLocale.countryCode == locale.countryCode) {
-            return supportedLocale;
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => VimeoState(),
+        ),
+        StreamProvider<List<Watch>>.value(value: watchStream),
+      ],
+      child: MaterialApp(
+        supportedLocales: [
+          Locale('en'),
+          Locale('zh'),
+        ],
+        // These delegates make sure that the localization data for the proper language is loaded
+        localizationsDelegates: [
+          // THIS CLASS WILL BE ADDED LATER
+          // A class which loads the translations from JSON files
+          AppLocalizations.delegate,
+          // Built-in localization of basic text for Material widgets
+          GlobalMaterialLocalizations.delegate,
+          // Built-in localization for text direction LTR/RTL
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        // Returns a locale which will be used by the app
+        localeResolutionCallback: (locale, supportedLocales) {
+          if (locale == null) {
+            return supportedLocales.first;
           }
-        }
-        // If the locale of the device is not supported, use the first one
-        // from the list (English, in this case).
-        return supportedLocales.first;
-      },
-      onGenerateTitle: (BuildContext context) => AppLocalizations.of(context).translate('title'),
-      debugShowCheckedModeBanner: false,
-      theme: (Provider.of<ThemeState>(context).isLightTheme) ? lightTheme : darkTheme, // AppTheme.themeData(),
+
+          // Check if the current device locale is supported
+          for (var supportedLocale in supportedLocales) {
+            if (supportedLocale.languageCode == locale.languageCode &&
+                supportedLocale.countryCode == locale.countryCode) {
+              return supportedLocale;
+            }
+          }
+          // If the locale of the device is not supported, use the first one
+          // from the list (English, in this case).
+          return supportedLocales.first;
+        },
+        onGenerateTitle: (BuildContext context) => AppLocalizations.of(context).translate('title'),
+        debugShowCheckedModeBanner: false,
+        theme: (Provider.of<ThemeState>(context).isLightTheme) ? lightTheme : darkTheme, // AppTheme.themeData(),
 //      darkTheme: darkTheme,
-      home: SplashPage(),
-      initialRoute: AppRouter.splashPage,
-      onGenerateRoute: AppRouter.onGenerateRoute,
-      navigatorKey: AppRouter.navigatorKey,
+        home: SplashPage(),
+        initialRoute: AppRouter.splashPage,
+        onGenerateRoute: AppRouter.onGenerateRoute,
+        navigatorKey: AppRouter.navigatorKey,
+      ),
     );
   }
 }

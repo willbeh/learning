@@ -97,8 +97,9 @@ class Vimeo {
 
 @JsonSerializable(anyMap: true)
 class Video {
-  Video({this.vid, this.status, this.data, this.exam});
+  Video({this.sid, this.vid, this.status, this.data, this.exam});
 
+  String sid;
   String vid;
   String status;
   @JsonKey( toJson: Vimeo.utilToJson)

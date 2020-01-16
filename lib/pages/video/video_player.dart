@@ -31,67 +31,99 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
   VimeoState vimeoState;
   SharedPreferences prefs;
   int _prefPosition = 0;
+  int _position = 0;
+  int _furthest = 0;
   int quarterTurns = 0;
   bool _isCompleted = false;
   bool _isPlaying = false;
   Timer _hideTimer;
   bool _hideStuff = false;
+  Watch _watch;
+  bool _loaded = false;
 //  Orientation currentOrientation = Orientation.portrait;
 
   List<bool> _taken = [false];
   bool _showInVideoQuestion = false;
 
-  Watch _watch;
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    prefs = Provider.of(context);
-    vimeoState = Provider.of<VimeoState>(context);
-    getWatch(context);
+    if(!_loaded){
+      prefs = Provider.of(context);
+      vimeoState = Provider.of<VimeoState>(context);
+      _getWatch(context);
 
-    _controller = VideoPlayerController.network(vimeoState.selectedVideo.files[1].link)
-      ..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-        int position = prefs.getInt(vimeoState.selectedVideoId);
-        log.d('position $position == ${vimeoState.selectedVideo.duration}');
-        // if no prefs then set a 0
-        if (position == null){
-          prefs.setInt(vimeoState.selectedVideoId, 0);
-        } else if(position > 0){
-          _prefPosition = position;
-          // if prefs position > 0 then seek to the position
-          if(position < vimeoState.selectedVideo.duration){
-            _controller.seekTo(Duration(seconds: position)).then((_) {
-              setState(() {});
-            });
-          } else if(position == vimeoState.selectedVideo.duration) {
-            _isCompleted = true;
-          }
+      int fileIndex = 0;
+      // if file with height 360 exist select it
+      for(int i=0; i<vimeoState.selectedVideo.files.length; i++) {
+        if(vimeoState.selectedVideo.files[i].height == 360){
+          fileIndex = i;
+          break;
         }
-        setState(() {});
-      }).catchError((error) {
-        log.w('load video error $error');
-      })
-      ..addListener(_logInfo);
+      }
 
+      _controller = VideoPlayerController.network(vimeoState.selectedVideo.files[fileIndex].link)
+        ..initialize().then((_) {
+          // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+          if(_watch != null && _watch.status != 'completed') {
+            _position = _watch.position;
+            _furthest = _furthest;
+
+            if(_position > 0) {
+              _controller.seekTo(Duration(seconds: _position)).then((_) {
+                setState(() {});
+              });
+            }
+          }
+//          int position = prefs.getInt(vimeoState.selectedVideoId);
+//          log.d('position $position == ${vimeoState.selectedVideo.duration}');
+//          // if no prefs then set a 0
+//          if (position == null){
+//            prefs.setInt(vimeoState.selectedVideoId, 0);
+//          } else if(position > 0){
+//            _prefPosition = position;
+//            // if prefs position > 0 then seek to the position
+//            if(position < vimeoState.selectedVideo.duration){
+//              _controller.seekTo(Duration(seconds: position)).then((_) {
+//                setState(() {});
+//              });
+//            } else if(position == vimeoState.selectedVideo.duration) {
+//              _isCompleted = true;
+//            }
+//          }
+//          setState(() {});
+        }).catchError((error) {
+          log.w('load video error $error');
+        })
+        ..addListener(_logInfo);
+    }
+
+    _loaded = true;
   }
 
-  getWatch(BuildContext context) async {
-    FirebaseUser user = Provider.of(context);
-    WatchService.getById(id: vimeoState.selectedVideoId, uid: user.uid).then((watch){
-      log.d('$watch');
-      _watch = watch;
-    }).catchError((error) {
-      log.d('no watch $error');
-      _watch = Watch(
-          vid: vimeoState.selectedVideoId,
-          uid: user.uid,
-          data: vimeoState.selectedVideo
-      );
-      log.d('watch ${_watch.toJson()}');
-    });
+  _getWatch(BuildContext context) async {
+    if(vimeoState.selectedWatch != null){
+      _watch = vimeoState.selectedWatch;
+    } else {
+      // insert a new document if not exist
+      FirebaseUser user = Provider.of(context);
+
+      Map<String, dynamic> data = {
+        'vid': vimeoState.selectedVideoId,
+        'uid': user.uid,
+        'position': 0,
+        'furthest': 0,
+        'status': '',
+      };
+      WatchService.insert(data).then((w) {
+        data['id'] = w.documentID;
+        _watch = Watch.fromJson(data);
+      })
+      .catchError((error) {
+        log.w('Insert watch error $error');
+      });
+    }
   }
 
   @override
@@ -286,6 +318,11 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
         if(_controller.value.isPlaying){
           _prefPosition = _controller.value.position.inSeconds;
           prefs.setInt(vimeoState.selectedVideoId, _prefPosition);
+          if(_watch != null && _watch.status != 'completed' && _prefPosition > _watch.furthest){
+            _updateWatchDocument({'position': _prefPosition, 'furthest': _prefPosition});
+          } else {
+            _updateWatchDocument({'position': _prefPosition});
+          }
         }
       }
     }
@@ -293,6 +330,9 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
       // set to last position
       _prefPosition = vimeoState.selectedVideo.duration;
       prefs.setInt(vimeoState.selectedVideoId, _prefPosition);
+      if(_watch != null && _watch.status != 'completed'){
+        _updateWatchDocument({'position': _prefPosition, 'furthest': _prefPosition, 'status': 'completed'});
+      }
 
       Wakelock.disable();
       _isCompleted = true;
@@ -313,6 +353,15 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
       setState(() {});
     }
     _showQuestion();
+  }
+
+  _updateWatchDocument(Map<String, dynamic> data){
+    if(_watch != null && _watch.id != ''){
+      WatchService.update(id: _watch.id, data: data)
+          .catchError((error) {
+            log.w('Update error $error');
+      });
+    }
   }
 
   _showQuestion(){
