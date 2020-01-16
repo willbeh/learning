@@ -14,7 +14,8 @@ Watch _$WatchFromJson(Map json) {
     position: json['position'] as int,
     furthest: json['furthest'] as int,
     status: json['status'] as String,
-  )..test = json['test'] as bool;
+    test: json['test'] as bool,
+  );
 }
 
 Map<String, dynamic> _$WatchToJson(Watch instance) => <String, dynamic>{

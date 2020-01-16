@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
   Timer _hideTimer;
   bool _hideStuff = false;
   Watch _watch;
+  Watch _prefs;
   bool _loaded = false;
 //  Orientation currentOrientation = Orientation.portrait;
 
@@ -52,7 +54,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
     if(!_loaded){
       prefs = Provider.of(context);
       vimeoState = Provider.of<VimeoState>(context);
-      _getWatch(context);
+      _initWatch(context);
 
       int fileIndex = 0;
       // if file with height 360 exist select it
@@ -62,13 +64,12 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
           break;
         }
       }
-
       _controller = VideoPlayerController.network(vimeoState.selectedVideo.files[fileIndex].link)
         ..initialize().then((_) {
           // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
           if(_watch != null && _watch.status != 'completed') {
             _position = _watch.position;
-            _furthest = _furthest;
+            _furthest = _watch.furthest;
 
             if(_position > 0) {
               _controller.seekTo(Duration(seconds: _position)).then((_) {
@@ -76,6 +77,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
               });
             }
           }
+          setState(() {});
 //          int position = prefs.getInt(vimeoState.selectedVideoId);
 //          log.d('position $position == ${vimeoState.selectedVideo.duration}');
 //          // if no prefs then set a 0
@@ -102,34 +104,11 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
     _loaded = true;
   }
 
-  _getWatch(BuildContext context) async {
-    if(vimeoState.selectedWatch != null){
-      _watch = vimeoState.selectedWatch;
-    } else {
-      // insert a new document if not exist
-      FirebaseUser user = Provider.of(context);
-
-      Map<String, dynamic> data = {
-        'vid': vimeoState.selectedVideoId,
-        'uid': user.uid,
-        'position': 0,
-        'furthest': 0,
-        'status': '',
-      };
-      WatchService.insert(data).then((w) {
-        data['id'] = w.documentID;
-        _watch = Watch.fromJson(data);
-      })
-      .catchError((error) {
-        log.w('Insert watch error $error');
-      });
-    }
-  }
-
   @override
   void dispose() {
     _controller.dispose();
     _hideTimer?.cancel();
+    _updateWatchDocument(_watch.toJson());
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
@@ -275,6 +254,47 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
     return false;
   }
 
+  _initWatch(BuildContext context) async {
+    Watch wp; // preference watch
+    if (prefs.getString(vimeoState.selectedVideoId) != null) {
+      wp = Watch.fromJson(jsonDecode(prefs.getString(vimeoState.selectedVideoId)));
+    }
+
+    if(vimeoState.selectedWatch != null){
+      // preference watch is further than firestore
+      if(wp != null && wp.furthest > vimeoState.selectedWatch.furthest) {
+        _watch = wp;
+      } else {
+        _watch = vimeoState.selectedWatch;
+      }
+
+    } else {
+      // insert a new document if not exist
+      FirebaseUser user = Provider.of(context);
+
+      Map<String, dynamic> data = {
+        'vid': vimeoState.selectedVideoId,
+        'uid': user.uid,
+        'position': 0,
+        'furthest': 0,
+        'test': false,
+        'status': '',
+      };
+
+      WatchService.insert(data).then((w) {
+        data['id'] = w.documentID;
+        if(wp != null && wp.furthest > 0) {
+          _watch = wp;
+        } else {
+          prefs.setString(w.documentID, jsonEncode(data));
+          _watch = Watch.fromJson(data);
+        }
+      }).catchError((error) {
+        log.w('Insert watch error $error');
+      });
+    }
+  }
+
   _playVideo(){
     _controller.value.isPlaying ? Wakelock.disable() : Wakelock.enable();
     _controller.value.isPlaying ? _controller.pause() : _controller.play();
@@ -302,60 +322,58 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
   }
 
   _logInfo() async {
-    if(_controller.value.position.inSeconds > _prefPosition){
-      if(_controller.value.position.inSeconds - _prefPosition > 1) {
+    if(_watch != null){
+      if(_controller.value.position.inSeconds > _watch.furthest + 1) {
+        // if try to scroll further than 1 second, prevent the user
         _controller.removeListener(_logInfo);
         _controller.seekTo(Duration(seconds: _prefPosition)).then((_) {
           if(_controller.value.isPlaying)
             _playVideo();
           _controller.addListener(_logInfo);
-//            _controller.pause();
           setState(() {});
         });
-
         CommonUI.alertBox(context, title: 'Cannot skip', msg: 'Cannot skip to front', closeText: 'Continue');
-      } else {
-        if(_controller.value.isPlaying){
-          _prefPosition = _controller.value.position.inSeconds;
-          prefs.setInt(vimeoState.selectedVideoId, _prefPosition);
-          if(_watch != null && _watch.status != 'completed' && _prefPosition > _watch.furthest){
-            _updateWatchDocument({'position': _prefPosition, 'furthest': _prefPosition});
-          } else {
-            _updateWatchDocument({'position': _prefPosition});
-          }
+      } else if(_controller.value.isPlaying && _controller.value.position.inSeconds != _watch.position){
+        _watch.position = _controller.value.position.inSeconds;
+        if(_watch != null && _watch.status != 'completed' && _watch.position > _watch.furthest){
+          _watch.furthest = _watch.position;
         }
+        if(_controller.value.duration == _controller.value.position){
+          _watch.status = 'completed';
+
+          Wakelock.disable();
+          _isCompleted = true;
+          _cancelTimer();
+
+          // if full screen then switch back to small screen
+          if (quarterTurns != 0) {
+            _setOrientation();
+          }
+          _controller.removeListener(_logInfo);
+          _controller.seekTo(Duration(seconds: 0)).then((_) {
+            _controller.pause().then((_) {
+              _controller.addListener(_logInfo);
+              setState(() {});
+            });
+          });
+          _updateWatchDocument(_watch.toJson());
+        }
+
+        prefs.setString(_watch.id, jsonEncode(_watch.toJson()));
+        log.d('pref ${prefs.getString(_watch.id)}');
       }
     }
-    if(_controller.value.duration == _controller.value.position){
-      // set to last position
-      _prefPosition = vimeoState.selectedVideo.duration;
-      prefs.setInt(vimeoState.selectedVideoId, _prefPosition);
-      if(_watch != null && _watch.status != 'completed'){
-        _updateWatchDocument({'position': _prefPosition, 'furthest': _prefPosition, 'status': 'completed'});
-      }
 
-      Wakelock.disable();
-      _isCompleted = true;
-      _cancelTimer();
-
-      // if full screen then scwith back to small screen
-      if (quarterTurns != 0) {
-        _setOrientation();
-      }
-      _controller.seekTo(Duration(seconds: 0)).then((_) {
-        _controller.pause().then((_) {
-          setState(() {});
-        });
-      });
-    }
     if(_isPlaying != _controller.value.isPlaying){
       _isPlaying = _controller.value.isPlaying;
       setState(() {});
     }
-    _showQuestion();
+//    _showQuestion();
   }
 
+
   _updateWatchDocument(Map<String, dynamic> data){
+    log.d('_updateWatchDocument $data');
     if(_watch != null && _watch.id != ''){
       WatchService.update(id: _watch.id, data: data)
           .catchError((error) {

@@ -1,11 +1,10 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:learning/models/video.dart';
 
 part 'watch.g.dart';
 
 @JsonSerializable(anyMap: true)
 class Watch {
-  Watch({this.id, this.vid, this.uid, this.position = 0, this.furthest = 0, this.status = ''});
+  Watch({this.id, this.vid, this.uid, this.position = 0, this.furthest = 0, this.status = '', this.test = false});
 
   String id;
   String vid;

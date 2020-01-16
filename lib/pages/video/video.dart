@@ -37,7 +37,7 @@ class VideoPage extends StatelessWidget {
               if(result == 0) {
                 SharedPreferences prefs = Provider.of<SharedPreferences>(context, listen: false);
                 videoId.forEach((id) {
-                  prefs.setInt(id, 0);
+                  prefs.setString(id, null);
                 });
               }
             },
@@ -120,6 +120,7 @@ class VideoPage extends StatelessWidget {
   }
 
   Widget _buildVideoContainer(BuildContext context, Vimeo vimeo, String id) {
+    List watchs = Provider.of<List<Watch>>(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -127,12 +128,9 @@ class VideoPage extends StatelessWidget {
           onTap: () {
             Provider.of<VimeoState>(context, listen: false).selectedVideo = vimeo;
             Provider.of<VimeoState>(context, listen: false).selectedVideoId = id;
-            List watchs = Provider.of<List<Watch>>(context, listen: false);
 
-            log.d('watchs $watchs');
             List<Watch> getWatch = (watchs == null) ? [] : watchs.where((w) => w.vid == id).toList();
             if(getWatch != null && getWatch.length > 0) {
-              log.d('get Watch ${getWatch.first.toJson()}');
               Provider.of<VimeoState>(context, listen: false).selectedWatch = getWatch.first;
             }
             AppRouter.navigator.pushNamed(AppRouter.videoPlayerPage);
