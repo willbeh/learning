@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:learning/routes/router.gr.dart';
 import 'package:learning/services/user_repository.dart';
-import 'package:learning/utils/image_util.dart';
 import 'package:learning/widgets/app_avatar.dart';
 import 'package:provider/provider.dart';
 import '../states/theme_state.dart';

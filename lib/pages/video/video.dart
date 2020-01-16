@@ -58,6 +58,7 @@ class VideoPage extends StatelessWidget {
   }
 
   _buildPage(BuildContext context, List<Video> videos) {
+    List watchs = Provider.of<List<Watch>>(context);
     return ListView.separated(
       itemCount: videos.length,
       separatorBuilder: (_, __) => Divider(height: 0,),
@@ -65,7 +66,7 @@ class VideoPage extends StatelessWidget {
         Video video = videos[i];
         if (video.data != null) {
           return _buildVideoContainer(
-              context, video.data, video.vid);
+              context, video.data, video.vid, watchs);
         }
 
         return FutureBuilder(
@@ -103,7 +104,7 @@ class VideoPage extends StatelessWidget {
                     ).catchError((error) {
                       log.d('updateError $error');
                     });
-                    return _buildVideoContainer(context, vimeo, video.vid);
+                    return _buildVideoContainer(context, vimeo, video.vid, watchs);
                   }
                 }
                 break;
@@ -119,8 +120,7 @@ class VideoPage extends StatelessWidget {
     );
   }
 
-  Widget _buildVideoContainer(BuildContext context, Vimeo vimeo, String id) {
-    List watchs = Provider.of<List<Watch>>(context);
+  Widget _buildVideoContainer(BuildContext context, Vimeo vimeo, String id, List<Watch> watchs) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -128,10 +128,11 @@ class VideoPage extends StatelessWidget {
           onTap: () {
             Provider.of<VimeoState>(context, listen: false).selectedVideo = vimeo;
             Provider.of<VimeoState>(context, listen: false).selectedVideoId = id;
-
             List<Watch> getWatch = (watchs == null) ? [] : watchs.where((w) => w.vid == id).toList();
             if(getWatch != null && getWatch.length > 0) {
               Provider.of<VimeoState>(context, listen: false).selectedWatch = getWatch.first;
+            } else {
+              Provider.of<VimeoState>(context, listen: false).selectedWatch = null;
             }
             AppRouter.navigator.pushNamed(AppRouter.videoPlayerPage);
           },

@@ -31,20 +31,13 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
   final log = getLogger('_VideoPlayerPageState');
   VimeoState vimeoState;
   SharedPreferences prefs;
-  int _prefPosition = 0;
-  int _position = 0;
-  int _furthest = 0;
   int quarterTurns = 0;
   bool _isCompleted = false;
-  bool _isPlaying = false;
   Timer _hideTimer;
   bool _hideStuff = false;
   Watch _watch;
-  Watch _prefs;
   bool _loaded = false;
-//  Orientation currentOrientation = Orientation.portrait;
 
-  List<bool> _taken = [false];
   bool _showInVideoQuestion = false;
 
   @override
@@ -67,34 +60,16 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
       _controller = VideoPlayerController.network(vimeoState.selectedVideo.files[fileIndex].link)
         ..initialize().then((_) {
           // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-          if(_watch != null && _watch.status != 'completed') {
-            _position = _watch.position;
-            _furthest = _watch.furthest;
-
-            if(_position > 0) {
-              _controller.seekTo(Duration(seconds: _position)).then((_) {
-                setState(() {});
-              });
-            }
+          if(_watch != null && _watch.position > 0 && _watch.furthest == vimeoState.selectedVideo.duration) {
+            _controller.seekTo(Duration(seconds: _watch.position)).then((_) {
+              setState(() {});
+            });
+          }
+          // set is completed if true
+          if(_watch.furthest == vimeoState.selectedVideo.duration || _watch.status == 'completed') {
+            _isCompleted = true;
           }
           setState(() {});
-//          int position = prefs.getInt(vimeoState.selectedVideoId);
-//          log.d('position $position == ${vimeoState.selectedVideo.duration}');
-//          // if no prefs then set a 0
-//          if (position == null){
-//            prefs.setInt(vimeoState.selectedVideoId, 0);
-//          } else if(position > 0){
-//            _prefPosition = position;
-//            // if prefs position > 0 then seek to the position
-//            if(position < vimeoState.selectedVideo.duration){
-//              _controller.seekTo(Duration(seconds: position)).then((_) {
-//                setState(() {});
-//              });
-//            } else if(position == vimeoState.selectedVideo.duration) {
-//              _isCompleted = true;
-//            }
-//          }
-//          setState(() {});
         }).catchError((error) {
           log.w('load video error $error');
         })
@@ -251,6 +226,8 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
 
   Future<bool> _onWillPop() async {
     _setOrientation();
+    if (_controller.value.isPlaying)
+      _restartTimer();
     return false;
   }
 
@@ -266,6 +243,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
         _watch = wp;
       } else {
         _watch = vimeoState.selectedWatch;
+        log.d('stream _watch = ${_watch.toJson()}');
       }
 
     } else {
@@ -284,11 +262,12 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
       WatchService.insert(data).then((w) {
         data['id'] = w.documentID;
         if(wp != null && wp.furthest > 0) {
+          _watch.id = w.documentID;
           _watch = wp;
         } else {
-          prefs.setString(w.documentID, jsonEncode(data));
           _watch = Watch.fromJson(data);
         }
+        prefs.setString(w.documentID, jsonEncode(_watch.toJson()));
       }).catchError((error) {
         log.w('Insert watch error $error');
       });
@@ -296,10 +275,15 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
   }
 
   _playVideo(){
-    _controller.value.isPlaying ? Wakelock.disable() : Wakelock.enable();
-    _controller.value.isPlaying ? _controller.pause() : _controller.play();
-    _isPlaying = _controller.value.isPlaying;
-    _isPlaying ? _startHideTimer() : _cancelTimer();
+    if (_controller.value.isPlaying) {
+      Wakelock.disable();
+      _controller.pause();
+      _cancelTimer();
+    } else {
+      Wakelock.enable();
+      _controller.play();
+      _startHideTimer();
+    }
     setState(() {});
   }
 
@@ -326,7 +310,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
       if(_controller.value.position.inSeconds > _watch.furthest + 1) {
         // if try to scroll further than 1 second, prevent the user
         _controller.removeListener(_logInfo);
-        _controller.seekTo(Duration(seconds: _prefPosition)).then((_) {
+        _controller.seekTo(Duration(seconds: _watch.furthest)).then((_) {
           if(_controller.value.isPlaying)
             _playVideo();
           _controller.addListener(_logInfo);
@@ -338,37 +322,30 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
         if(_watch != null && _watch.status != 'completed' && _watch.position > _watch.furthest){
           _watch.furthest = _watch.position;
         }
-        if(_controller.value.duration == _controller.value.position){
-          _watch.status = 'completed';
-
-          Wakelock.disable();
-          _isCompleted = true;
-          _cancelTimer();
-
-          // if full screen then switch back to small screen
-          if (quarterTurns != 0) {
-            _setOrientation();
-          }
-          _controller.removeListener(_logInfo);
-          _controller.seekTo(Duration(seconds: 0)).then((_) {
-            _controller.pause().then((_) {
-              _controller.addListener(_logInfo);
-              setState(() {});
-            });
-          });
-          _updateWatchDocument(_watch.toJson());
-        }
-
         prefs.setString(_watch.id, jsonEncode(_watch.toJson()));
-        log.d('pref ${prefs.getString(_watch.id)}');
+      }
+
+      if(_controller.value.duration == _controller.value.position){
+        _watch.status = 'completed';
+        _updateWatchDocument(_watch.toJson());
+
+        Wakelock.disable();
+        _isCompleted = true;
+        _cancelTimer();
+
+        // if full screen then switch back to small screen
+        if (quarterTurns != 0) {
+          _setOrientation();
+        }
+        _controller.removeListener(_logInfo);
+        _controller.seekTo(Duration(seconds: 0)).then((_) {
+          _controller.pause().then((_) {
+            _controller.addListener(_logInfo);
+            setState(() {});
+          });
+        });
       }
     }
-
-    if(_isPlaying != _controller.value.isPlaying){
-      _isPlaying = _controller.value.isPlaying;
-      setState(() {});
-    }
-//    _showQuestion();
   }
 
 
@@ -382,15 +359,15 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
     }
   }
 
-  _showQuestion(){
-    if(_taken[0] == false && _controller.value.position.inSeconds == 22 && _controller.value.isPlaying){
-      _playVideo();
-      setState(() {
-        _taken[0] = true;
-        _showInVideoQuestion = true;
-      });
-    }
-  }
+//  _showQuestion(){
+//    if(_taken[0] == false && _controller.value.position.inSeconds == 22 && _controller.value.isPlaying){
+//      _playVideo();
+//      setState(() {
+//        _taken[0] = true;
+//        _showInVideoQuestion = true;
+//      });
+//    }
+//  }
 
   void _cancelTimer() {
     _hideTimer?.cancel();
