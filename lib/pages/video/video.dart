@@ -9,7 +9,7 @@ import 'package:learning/models/video.dart';
 import 'package:learning/models/watch.dart';
 import 'package:learning/routes/router.gr.dart';
 import 'package:learning/services/firestore/video_service.dart';
-import 'package:learning/states/vimeo_state.dart';
+import 'package:learning/states/video_state.dart';
 import 'package:learning/utils/datetime_util.dart';
 import 'package:learning/utils/image_util.dart';
 import 'package:learning/utils/logger.dart';
@@ -131,7 +131,7 @@ class VideoPage extends StatelessWidget {
     return InkWell(
       onTap: () {
         if (contain) {
-          Future.delayed(Duration(milliseconds: 100), () => _openVideo(context, video.data, video.vid, watchs));
+          Future.delayed(Duration(milliseconds: 100), () => _openVideo(context, video, watchs));
         }
       },
       splashColor: Theme.of(context).splashColor,
@@ -215,16 +215,16 @@ class VideoPage extends StatelessWidget {
     return contain;
   }
 
-  _openVideo(BuildContext context, Vimeo vimeo, String id, List<Watch> watchs){
-    Provider.of<VimeoState>(context, listen: false).selectedVideo = vimeo;
-    Provider.of<VimeoState>(context, listen: false).selectedVideoId = id;
+  _openVideo(BuildContext context, Video video, List<Watch> watchs){
+    Provider.of<VideoState>(context, listen: false).selectedVideo = video;
+    Provider.of<VideoState>(context, listen: false).selectedVideoId = video.vid;
 
     if(watchs == null || watchs.length == 0) {
-      Provider.of<VimeoState>(context, listen: false).selectedWatch = null;
+      Provider.of<VideoState>(context, listen: false).selectedWatch = null;
     } else {
-      List<Watch> getWatch = watchs.where((w) => w.vid == id).toList();
+      List<Watch> getWatch = watchs.where((w) => w.vid == video.vid).toList();
       if(getWatch != null && getWatch.length > 0) {
-        Provider.of<VimeoState>(context, listen: false).selectedWatch = getWatch.first;
+        Provider.of<VideoState>(context, listen: false).selectedWatch = getWatch.first;
       }
     }
     AppRouter.navigator.pushNamed(AppRouter.videoPlayerPage);

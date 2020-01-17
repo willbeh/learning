@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:learning/models/video.dart';
-import 'package:learning/states/vimeo_state.dart';
+import 'package:learning/states/video_state.dart';
 import 'package:learning/utils/image_util.dart';
 import 'package:provider/provider.dart';
 
 class VideoDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Vimeo vimeo = Provider.of<VimeoState>(context).selectedVideo;
+    Vimeo vimeo = Provider.of<VideoState>(context).selectedVideo.data;
     return Column(
       children: <Widget>[
         ListTile(

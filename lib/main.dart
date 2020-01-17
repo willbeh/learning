@@ -4,13 +4,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:learning/dark_theme.dart';
 import 'package:learning/light_theme.dart';
+import 'package:learning/models/series.dart';
 import 'package:learning/models/watch.dart';
 import 'package:learning/pages/splash.dart';
 import 'package:learning/routes/router.gr.dart';
+import 'package:learning/services/firestore/series_service.dart';
 import 'package:learning/services/firestore/watch_service.dart';
 import 'package:learning/services/user_repository.dart';
 import 'package:learning/states/theme_state.dart';
-import 'package:learning/states/vimeo_state.dart';
+import 'package:learning/states/video_state.dart';
 import 'package:learning/utils/app_localization.dart';
 import 'package:learning/utils/logger.dart';
 import 'package:provider/provider.dart';
@@ -53,8 +55,8 @@ class MyAppLoad extends StatelessWidget {
 
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (_) => VimeoState(),
+        ChangeNotifierProvider<VideoState>(
+          create: (_) => VideoState(),
         ),
         StreamProvider<List<Watch>>.value(
           value: watchStream,
@@ -63,6 +65,14 @@ class MyAppLoad extends StatelessWidget {
             return;
           } ,
         ),
+        StreamProvider<List<Series>>(
+          create: (_) => SeriesService.find(),
+          lazy: false,
+          catchError: (context, error) {
+            log.w('SeriesService error $error');
+            return;
+          } ,
+        )
       ],
       child: MaterialApp(
         supportedLocales: [

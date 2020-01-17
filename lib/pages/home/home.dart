@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:learning/models/series.dart';
 import 'package:learning/routes/router.gr.dart';
 import 'package:learning/widgets/app_drawer.dart';
 import 'package:learning/states/theme_state.dart';
@@ -27,6 +28,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThemeState themeState = Provider.of(context);
+    List<Series> series = Provider.of(context);
 
     return Scaffold(
       body: CustomScrollView(
@@ -51,6 +53,27 @@ class HomePage extends StatelessWidget {
 //              background: Image.asset('assets/images/bg1.jpeg', fit: BoxFit.cover,),
               ),
               snap: true,
+            ),
+            SliverGrid.extent(
+              maxCrossAxisExtent: 100,
+              children: series.map((item){
+                return InkWell(
+//                  onTap: () => AppRouter.navigator.pushNamed(item['routeName']),
+                  child: Container(
+                    height: double.infinity,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        _buildCircleIcon(context,
+                          icon: Icon(Icons.video_library, size: 40, color: (themeState.isLightTheme) ? Theme.of(context).primaryColor : Colors.white,),
+                        ),
+                        CommonUI.heightPadding(height: 3),
+                        Text('${item.name}', textAlign: TextAlign.center, style: Theme.of(context).textTheme.display3.copyWith(fontWeight: FontWeight.w500),),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
             ),
             SliverGrid.extent(
               maxCrossAxisExtent: 100,

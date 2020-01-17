@@ -9,7 +9,7 @@ import 'package:learning/models/watch.dart';
 import 'package:learning/pages/video/video_question.dart';
 import 'package:learning/routes/router.gr.dart';
 import 'package:learning/services/firestore/watch_service.dart';
-import 'package:learning/states/vimeo_state.dart';
+import 'package:learning/states/video_state.dart';
 import 'package:learning/utils/datetime_util.dart';
 import 'package:learning/utils/image_util.dart';
 import 'package:learning/utils/logger.dart';
@@ -29,7 +29,7 @@ class VideoPlayerPage extends StatefulWidget {
 class _VideoPlayerPageState extends State<VideoPlayerPage> {
   VideoPlayerController _controller;
   final log = getLogger('_VideoPlayerPageState');
-  VimeoState vimeoState;
+  VideoState videoState;
   SharedPreferences prefs;
   int quarterTurns = 0;
   bool _isCompleted = false;
@@ -46,29 +46,29 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
 
     if(!_loaded){
       prefs = Provider.of(context);
-      vimeoState = Provider.of<VimeoState>(context);
+      videoState = Provider.of<VideoState>(context);
       _initWatch(context);
 
       int fileIndex = 0;
       // if file with height 360 exist select it
-      for(int i=0; i<vimeoState.selectedVideo.files.length; i++) {
-        if(vimeoState.selectedVideo.files[i].height == 360){
+      for(int i=0; i<videoState.selectedVideo.data.files.length; i++) {
+        if(videoState.selectedVideo.data.files[i].height == 360){
           fileIndex = i;
           break;
         }
       }
-      _controller = VideoPlayerController.network(vimeoState.selectedVideo.files[fileIndex].link)
+      _controller = VideoPlayerController.network(videoState.selectedVideo.data.files[fileIndex].link)
         ..initialize().then((_) {
           // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
           if(_watch != null){
             log.d('watch ${_watch.toJson()}');
-            if(_watch.position > 0 && _watch.furthest != vimeoState.selectedVideo.duration) {
+            if(_watch.position > 0 && _watch.furthest != videoState.selectedVideo.data.duration) {
               _controller.seekTo(Duration(seconds: _watch.position)).then((_) {
                 setState(() {});
               });
             }
             // set is completed if true
-            if(_watch.furthest == vimeoState.selectedVideo.duration || _watch.status == 'completed') {
+            if(_watch.furthest == videoState.selectedVideo.data.duration || _watch.status == 'completed') {
               _isCompleted = true;
             }
           }
@@ -98,7 +98,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
 
   @override
   Widget build(BuildContext context) {
-    Vimeo vimeo = vimeoState.selectedVideo;
+    Vimeo vimeo = videoState.selectedVideo.data;
 
     return Scaffold(
       body: OrientationBuilder(
@@ -140,7 +140,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                           child: AspectRatio(
                       aspectRatio: ratio, //_controller.value.aspectRatio,
                       child: Hero(
-                        tag: vimeoState?.selectedVideoId,
+                        tag: videoState?.selectedVideoId,
                         child: GestureDetector(
                               child: VideoPlayer(_controller),
                             onTap: () {
@@ -237,16 +237,16 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
 
   _initWatch(BuildContext context) async {
     Watch wp; // preference watch
-    if (prefs.getString(vimeoState.selectedVideoId) != null) {
-      wp = Watch.fromJson(jsonDecode(prefs.getString(vimeoState.selectedVideoId)));
+    if (prefs.getString(videoState.selectedVideoId) != null) {
+      wp = Watch.fromJson(jsonDecode(prefs.getString(videoState.selectedVideoId)));
     }
 
-    if(vimeoState.selectedWatch != null){
+    if(videoState.selectedWatch != null){
       // preference watch is further than firestore
-      if(wp != null && wp.furthest > vimeoState.selectedWatch.furthest) {
+      if(wp != null && wp.furthest > videoState.selectedWatch.furthest) {
         _watch = wp;
       } else {
-        _watch = vimeoState.selectedWatch;
+        _watch = videoState.selectedWatch;
         log.d('stream _watch = ${_watch.toJson()}');
       }
 
@@ -255,10 +255,10 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
       FirebaseUser user = Provider.of(context);
 
       Map<String, dynamic> data = {
-        'vid': vimeoState.selectedVideoId,
-        'vname': vimeoState.selectedVideo.name,
-        'vpicture': vimeoState.selectedVideo.pictures.sizes[0].link,
-        'vduration': vimeoState.selectedVideo.duration,
+        'vid': videoState.selectedVideoId,
+        'vname': videoState.selectedVideo.data.name,
+        'vpicture': videoState.selectedVideo.data.pictures.sizes[0].link,
+        'vduration': videoState.selectedVideo.data.duration,
         'uid': user.uid,
         'position': 0,
         'furthest': 0,
