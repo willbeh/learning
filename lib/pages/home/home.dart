@@ -17,6 +17,11 @@ class HomePage extends StatelessWidget {
       'routeName': AppRouter.examPage,
       'icon': Icons.border_color,
     },
+    {
+      'title': 'History',
+      'routeName': AppRouter.myVideosPage,
+      'icon': Icons.playlist_add_check,
+    },
   ];
 
   @override

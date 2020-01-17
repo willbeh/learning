@@ -48,6 +48,13 @@ class AppDrawer extends StatelessWidget {
             }
           ),
           ListTile(
+              title: Text('My Video'),
+              onTap: (){
+                Navigator.pop(context);
+                AppRouter.navigator.pushNamed(AppRouter.myVideosPage);
+              }
+          ),
+          ListTile(
             title: Text('Logout'),
             onTap: () {
               AppRouter.navigator.pushNamedAndRemoveUntil(AppRouter.splashPage, (route) => false);

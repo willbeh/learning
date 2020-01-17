@@ -60,14 +60,17 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
       _controller = VideoPlayerController.network(vimeoState.selectedVideo.files[fileIndex].link)
         ..initialize().then((_) {
           // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-          if(_watch != null && _watch.position > 0 && _watch.furthest == vimeoState.selectedVideo.duration) {
-            _controller.seekTo(Duration(seconds: _watch.position)).then((_) {
-              setState(() {});
-            });
-          }
-          // set is completed if true
-          if(_watch.furthest == vimeoState.selectedVideo.duration || _watch.status == 'completed') {
-            _isCompleted = true;
+          if(_watch != null){
+            log.d('watch ${_watch.toJson()}');
+            if(_watch.position > 0 && _watch.furthest != vimeoState.selectedVideo.duration) {
+              _controller.seekTo(Duration(seconds: _watch.position)).then((_) {
+                setState(() {});
+              });
+            }
+            // set is completed if true
+            if(_watch.furthest == vimeoState.selectedVideo.duration || _watch.status == 'completed') {
+              _isCompleted = true;
+            }
           }
           setState(() {});
         }).catchError((error) {
@@ -81,9 +84,10 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
 
   @override
   void dispose() {
+    if (_controller.value.isPlaying)
+      _updateWatchDocument(_watch.toJson());
     _controller.dispose();
     _hideTimer?.cancel();
-    _updateWatchDocument(_watch.toJson());
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
@@ -254,11 +258,14 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
         'vid': vimeoState.selectedVideoId,
         'vname': vimeoState.selectedVideo.name,
         'vpicture': vimeoState.selectedVideo.pictures.sizes[0].link,
+        'vduration': vimeoState.selectedVideo.duration,
         'uid': user.uid,
         'position': 0,
         'furthest': 0,
         'test': false,
         'status': '',
+        'date': DateTime.now(),
+        'created': DateTime.now(),
       };
 
       WatchService.insert(data).then((w) {
@@ -281,6 +288,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
       Wakelock.disable();
       _controller.pause();
       _cancelTimer();
+      _updateWatchDocument(_watch.toJson());
     } else {
       Wakelock.enable();
       _controller.play();

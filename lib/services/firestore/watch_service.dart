@@ -15,7 +15,7 @@ class WatchService {
   }
 
   static Stream<List<Watch>> findByUId({String uid}) {
-    return Firestore.instance.collection(_col).where('uid', isEqualTo: uid).snapshots().map((list) {
+    return Firestore.instance.collection(_col).where('uid', isEqualTo: uid).orderBy('date', descending: true).snapshots().map((list) {
       return list.documents.map((doc) {
         Map data = doc.data;
         data['id'] = doc.documentID;
@@ -52,6 +52,7 @@ class WatchService {
   }
 
   static Future<void> update({String id, Map<String, dynamic> data}){
+    data['date'] = DateTime.now();
     return Firestore.instance.collection(_col).document(id).updateData(data);
   }
 }

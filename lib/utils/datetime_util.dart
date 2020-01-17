@@ -1,25 +1,25 @@
-//import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 class DateTimeUtil {
-//  static DateTime fromTimestamp(var timestamp) {
-//    if (timestamp is Timestamp) {
-//      return timestamp == null ? null : timestamp.toDate();
-//    }
-//    else if(timestamp is String) {
-//      if (timestamp.contains(".")) {
-//        timestamp = timestamp.substring(0, timestamp.length - 1);
-//      }
-//
-//      return DateTime.parse(timestamp);
-//    }
-//    else {
-//      return timestamp;
-//    }
-//  }
-//
-//  static Timestamp toTimestamp(DateTime dt) =>
-//      dt == null ? null : Timestamp.fromDate(dt);
+  static DateTime fromTimestamp(var timestamp) {
+    if (timestamp is Timestamp) {
+      return timestamp == null ? null : timestamp.toDate();
+    }
+    else if(timestamp is String) {
+      if (timestamp.contains(".")) {
+        timestamp = timestamp.substring(0, timestamp.length - 1);
+      }
+
+      return DateTime.parse(timestamp);
+    }
+    else {
+      return timestamp;
+    }
+  }
+
+  static Timestamp toTimestamp(DateTime dt) =>
+      dt == null ? null : Timestamp.fromDate(dt);
 
   static DateTime fromMilliseconds(int milliseconds) =>
     milliseconds == null ? null : DateTime.fromMillisecondsSinceEpoch(milliseconds);

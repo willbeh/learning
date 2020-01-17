@@ -1,20 +1,26 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:learning/utils/datetime_util.dart';
 
 part 'watch.g.dart';
 
 @JsonSerializable(anyMap: true)
 class Watch {
-  Watch({this.id, this.vid, this.vname, this.vpicture, this.uid, this.position = 0, this.furthest = 0, this.status = '', this.test = false});
+  Watch({this.id, this.vid, this.vname, this.vpicture, this.vduration, this.uid, this.position = 0, this.furthest = 0, this.status = '', this.test = false, this.date, this.created});
 
   String id;
   String vid;
   String vname;
   String vpicture;
+  int vduration;
   String uid;
   int position;
   int furthest;
   bool test;
   String status;
+  @JsonKey(fromJson: DateTimeUtil.fromTimestamp)
+  DateTime date;
+  @JsonKey(fromJson: DateTimeUtil.fromTimestamp)
+  DateTime created;
 
 
   factory Watch.fromJson(Map<String, dynamic> json) => _$WatchFromJson(json);

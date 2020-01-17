@@ -12,6 +12,7 @@ import 'package:learning/services/user_repository.dart';
 import 'package:learning/states/theme_state.dart';
 import 'package:learning/states/vimeo_state.dart';
 import 'package:learning/utils/app_localization.dart';
+import 'package:learning/utils/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -43,6 +44,8 @@ class MyApp extends StatelessWidget {
 }
 
 class MyAppLoad extends StatelessWidget {
+  final log = getLogger('MyAppLoad');
+
   @override
   Widget build(BuildContext context) {
     FirebaseUser user = Provider.of(context);
@@ -53,7 +56,13 @@ class MyAppLoad extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => VimeoState(),
         ),
-        StreamProvider<List<Watch>>.value(value: watchStream),
+        StreamProvider<List<Watch>>.value(
+          value: watchStream,
+          catchError: (context, error) {
+            log.w('watchStream error $error');
+            return;
+          } ,
+        ),
       ],
       child: MaterialApp(
         supportedLocales: [

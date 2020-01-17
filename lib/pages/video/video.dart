@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 import 'package:learning/models/video.dart';
 import 'package:learning/models/watch.dart';
 import 'package:learning/routes/router.gr.dart';
-//import 'package:learning/models/vimeo.dart';
 import 'package:learning/services/firestore/video_service.dart';
 import 'package:learning/states/vimeo_state.dart';
 import 'package:learning/utils/image_util.dart';
@@ -36,9 +35,10 @@ class VideoPage extends StatelessWidget {
             onSelected: (int result) {
               if(result == 0) {
                 SharedPreferences prefs = Provider.of<SharedPreferences>(context, listen: false);
-                videoId.forEach((id) {
-                  prefs.setString(id, null);
-                });
+                prefs.clear();
+//                videoId.forEach((id) {
+//                  prefs.setString(id, null);
+//                });
               }
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
@@ -58,7 +58,6 @@ class VideoPage extends StatelessWidget {
   }
 
   _buildPage(BuildContext context, List<Video> videos) {
-    List watchs = Provider.of<List<Watch>>(context);
     return ListView.separated(
       itemCount: videos.length,
       separatorBuilder: (_, __) => Divider(height: 0,),
@@ -66,7 +65,7 @@ class VideoPage extends StatelessWidget {
         Video video = videos[i];
         if (video.data != null) {
           return _buildVideoContainer(
-              context, video.data, video.vid, watchs);
+              context, video.data, video.vid);
         }
 
         return FutureBuilder(
@@ -104,7 +103,7 @@ class VideoPage extends StatelessWidget {
                     ).catchError((error) {
                       log.d('updateError $error');
                     });
-                    return _buildVideoContainer(context, vimeo, video.vid, watchs);
+                    return _buildVideoContainer(context, vimeo, video.vid);
                   }
                 }
                 break;
@@ -120,21 +119,13 @@ class VideoPage extends StatelessWidget {
     );
   }
 
-  Widget _buildVideoContainer(BuildContext context, Vimeo vimeo, String id, List<Watch> watchs) {
+  Widget _buildVideoContainer(BuildContext context, Vimeo vimeo, String id) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         InkWell(
           onTap: () {
-            Provider.of<VimeoState>(context, listen: false).selectedVideo = vimeo;
-            Provider.of<VimeoState>(context, listen: false).selectedVideoId = id;
-            List<Watch> getWatch = (watchs == null) ? [] : watchs.where((w) => w.vid == id).toList();
-            if(getWatch != null && getWatch.length > 0) {
-              Provider.of<VimeoState>(context, listen: false).selectedWatch = getWatch.first;
-            } else {
-              Provider.of<VimeoState>(context, listen: false).selectedWatch = null;
-            }
-            AppRouter.navigator.pushNamed(AppRouter.videoPlayerPage);
+            _openVideo(context, vimeo, id);
           },
           child: Hero(
             tag: id,
@@ -158,5 +149,20 @@ class VideoPage extends StatelessWidget {
         )
       ],
     );
+  }
+
+  _openVideo(BuildContext context, Vimeo vimeo, String id){
+    Provider.of<VimeoState>(context, listen: false).selectedVideo = vimeo;
+    Provider.of<VimeoState>(context, listen: false).selectedVideoId = id;
+    List watchs = Provider.of<List<Watch>>(context, listen: false);
+    if(watchs == null) {
+      Provider.of<VimeoState>(context, listen: false).selectedWatch = null;
+    } else {
+      List<Watch> getWatch = watchs.where((w) => w.vid == id).toList();
+      if(getWatch != null && getWatch.length > 0) {
+        Provider.of<VimeoState>(context, listen: false).selectedWatch = getWatch.first;
+      }
+    }
+    AppRouter.navigator.pushNamed(AppRouter.videoPlayerPage);
   }
 }
