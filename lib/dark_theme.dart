@@ -102,13 +102,13 @@ final ThemeData darkTheme = ThemeData(
         ),
         display3: TextStyle(
           color: Color(0xb3ffffff),
-          fontSize: 14,
+          fontSize: 13,
           fontWeight: FontWeight.w400,
           fontStyle: FontStyle.normal,
         ),
         display2: TextStyle(
           color: Color(0xb3ffffff),
-          fontSize: 16,
+          fontSize: 14,
           fontWeight: FontWeight.w400,
           fontStyle: FontStyle.normal,
         ),

@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:learning/utils/datetime_util.dart';
 
 part 'video.g.dart';
 
@@ -97,14 +98,19 @@ class Vimeo {
 
 @JsonSerializable(anyMap: true)
 class Video {
-  Video({this.sid, this.vid, this.status, this.data, this.exam});
+  Video({this.sid, this.vid, this.status, this.data, this.exam, this.order, this.depend, this.vlist});
 
   String sid;
   String vid;
   String status;
   @JsonKey( toJson: Vimeo.utilToJson)
   Vimeo data;
+  @JsonKey(fromJson: DateTimeUtil.fromTimestamp)
+  DateTime date;
   bool exam;
+  int order;
+  String depend;
+  List<String> vlist;
 
   factory Video.fromJson(Map<String, dynamic> json) => _$VideoFromJson(json);
 

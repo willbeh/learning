@@ -53,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
                       children: <Widget>[
                         _buildEmailSignIn(context),
                         FlatButton(
-                          child: Text('${AppTranslate.text(context, 'login_forget')}', style: Theme.of(context).textTheme.display3.copyWith(color: Theme.of(context).primaryColor),),
+                          child: Text('${AppTranslate.text(context, 'login_forget')}', style: Theme.of(context).textTheme.display2.copyWith(color: Theme.of(context).primaryColor),),
                           onPressed: () => AppRouter.navigator.pushNamed(AppRouter.forgetPage),
                         ),
                         _buildSocialSignIn(context)
@@ -66,8 +66,8 @@ class _LoginPageState extends State<LoginPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text('${AppTranslate.text(context, 'login_donot')}', style: Theme.of(context).textTheme.display3,),
-                        Text('${AppTranslate.text(context, 'login_signup')}', style: Theme.of(context).textTheme.display3.copyWith(fontWeight: FontWeight.w500 ,color: Theme.of(context).primaryColor),),
+                        Text('${AppTranslate.text(context, 'login_donot')}', style: Theme.of(context).textTheme.display2,),
+                        Text('${AppTranslate.text(context, 'login_signup')}', style: Theme.of(context).textTheme.display2.copyWith(fontWeight: FontWeight.w500 ,color: Theme.of(context).primaryColor),),
                       ],
                     ),
                   )
@@ -156,7 +156,7 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Container(width: MediaQuery.of(context).size.width/2 - 85, child: AppDottedSeparator(color: AppColor.greyDottedLine,)),
-              Text('or continue with', style: Theme.of(context).textTheme.display3,),
+              Text('or continue with', style: Theme.of(context).textTheme.display2,),
               Container(width: MediaQuery.of(context).size.width/2 - 85, child: AppDottedSeparator(color: AppColor.greyDottedLine,)),
             ],
           ),

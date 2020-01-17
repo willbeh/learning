@@ -53,7 +53,7 @@ class _ForgetPageState extends State<ForgetPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 13),
                   child: Text(
                     '${AppTranslate.text(context, 'forget_msg')}',
-                    style: Theme.of(context).textTheme.display3,
+                    style: Theme.of(context).textTheme.display2,
                   ),
                 ),
                 CommonUI.heightPadding(),
@@ -99,7 +99,7 @@ class _ForgetPageState extends State<ForgetPage> {
                   borderRadius: BorderRadius.circular(5),
                   border: Border.all(color: AppColor.greyLight),
                 ),
-                child: Text('${emailCtrl.text}', style: Theme.of(context).textTheme.display3, textAlign: TextAlign.center),
+                child: Text('${emailCtrl.text}', style: Theme.of(context).textTheme.display2, textAlign: TextAlign.center),
               )
             ],
           ),

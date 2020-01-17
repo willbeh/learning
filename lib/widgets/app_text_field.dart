@@ -52,7 +52,7 @@ class AppTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       decoration: _buildInputDecoration(context),
-      style: Theme.of(context).textTheme.display3,
+      style: Theme.of(context).textTheme.display2,
 //      style: Theme.of(context).textTheme.display1,
       controller: controller,
       textInputAction: textInputAction,

@@ -96,13 +96,13 @@ final ThemeData lightTheme = ThemeData(
         ),
         display3: TextStyle(
           color: Colors.black,
-          fontSize: 14,
+          fontSize: 13,
           fontWeight: FontWeight.w400,
           fontStyle: FontStyle.normal,
         ),
         display2: TextStyle(
           color: Colors.black,
-          fontSize: 16,
+          fontSize: 14,
           fontWeight: FontWeight.w400,
           fontStyle: FontStyle.normal,
         ),

@@ -106,7 +106,10 @@ Video _$VideoFromJson(Map json) {
     status: json['status'] as String,
     data: json['data'] == null ? null : Vimeo.fromJson(json['data'] as Map),
     exam: json['exam'] as bool,
-  );
+    order: json['order'] as int,
+    depend: json['depend'] as String,
+    vlist: (json['vlist'] as List)?.map((e) => e as String)?.toList(),
+  )..date = DateTimeUtil.fromTimestamp(json['date']);
 }
 
 Map<String, dynamic> _$VideoToJson(Video instance) => <String, dynamic>{
@@ -114,5 +117,9 @@ Map<String, dynamic> _$VideoToJson(Video instance) => <String, dynamic>{
       'vid': instance.vid,
       'status': instance.status,
       'data': Vimeo.utilToJson(instance.data),
+      'date': instance.date?.toIso8601String(),
       'exam': instance.exam,
+      'order': instance.order,
+      'depend': instance.depend,
+      'vlist': instance.vlist,
     };

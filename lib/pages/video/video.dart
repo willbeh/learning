@@ -2,20 +2,24 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:timeago/timeago.dart' as timeago;
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:learning/models/video.dart';
 import 'package:learning/models/watch.dart';
 import 'package:learning/routes/router.gr.dart';
 import 'package:learning/services/firestore/video_service.dart';
 import 'package:learning/states/vimeo_state.dart';
+import 'package:learning/utils/datetime_util.dart';
 import 'package:learning/utils/image_util.dart';
 import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/app_stream_builder.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 
 class VideoPage extends StatelessWidget {
   final List<String> videoId = ['382521859', '382353755', '382117382', '382248454'];
   final log = getLogger('VideoPage');
+  DateTime now = DateTime.now();
 
   final Map<String, String> headers = {
     'Accept': 'application/vnd.vimeo.*+json;version=3.4',
@@ -36,9 +40,6 @@ class VideoPage extends StatelessWidget {
               if(result == 0) {
                 SharedPreferences prefs = Provider.of<SharedPreferences>(context, listen: false);
                 prefs.clear();
-//                videoId.forEach((id) {
-//                  prefs.setString(id, null);
-//                });
               }
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
@@ -58,14 +59,16 @@ class VideoPage extends StatelessWidget {
   }
 
   _buildPage(BuildContext context, List<Video> videos) {
+    List<Watch> watchs = Provider.of<List<Watch>>(context) ?? [];
+
     return ListView.separated(
       itemCount: videos.length,
       separatorBuilder: (_, __) => Divider(height: 0,),
       itemBuilder: (context, i) {
         Video video = videos[i];
+
         if (video.data != null) {
-          return _buildVideoContainer(
-              context, video.data, video.vid);
+          return _buildVideoContainer(context, video, watchs);
         }
 
         return FutureBuilder(
@@ -93,17 +96,20 @@ class VideoPage extends StatelessWidget {
               case ConnectionState.done:
                 if (snapshot.hasData) {
                   if (snapshot.data.statusCode == 200) {
-                    Vimeo vimeo = Vimeo.fromJson(json.decode(snapshot.data.body));
+//                    Vimeo vimeo = Vimeo.fromJson(json.decode(snapshot.data.body));
+                    video.data = json.decode(snapshot.data.body);
+                    video.date = DateTime.now();
                     log.d('${snapshot.data.body}');
                     VideoService.update(
                       id: video.vid,
                       data: {
-                        'data': json.decode(snapshot.data.body)
-                      }
+                        'data': json.decode(snapshot.data.body),
+                        'date': DateTime.now(),
+                      },
                     ).catchError((error) {
                       log.d('updateError $error');
                     });
-                    return _buildVideoContainer(context, vimeo, video.vid);
+                    return _buildVideoContainer(context, video, watchs);
                   }
                 }
                 break;
@@ -119,43 +125,101 @@ class VideoPage extends StatelessWidget {
     );
   }
 
-  Widget _buildVideoContainer(BuildContext context, Vimeo vimeo, String id) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        InkWell(
-          onTap: () {
-            _openVideo(context, vimeo, id);
-          },
-          child: Hero(
-            tag: id,
+  Widget _buildVideoContainer(BuildContext context, Video video, List<Watch> watchs) {
+    bool contain = _checkDependancy(video, watchs);
+
+    return InkWell(
+      onTap: () {
+        if (contain) {
+          Future.delayed(Duration(milliseconds: 100), () => _openVideo(context, video.data, video.vid, watchs));
+        }
+      },
+      splashColor: Theme.of(context).splashColor,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          (contain) ?
+          Hero(
+            tag: video.vid,
             child: CachedNetworkImage(
-              imageUrl: vimeo.pictures.sizes[3].link,
+              imageUrl: video.data.pictures.sizes[3].link,
               fit: BoxFit.fitWidth,
               placeholder: (context, i) => Container(
                 height: MediaQuery.of(context).size.width * 0.5625,
               ),
             ),
+          ) :
+          Stack(
+            children: <Widget>[
+              CachedNetworkImage(
+                imageUrl: video.data.pictures.sizes[3].link,
+                fit: BoxFit.fitWidth,
+                placeholder: (context, i) => Container(
+                  height: MediaQuery.of(context).size.width * 0.5625,
+                ),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.width * 0.5625,
+                color: Colors.black.withOpacity(0.5),
+                child: Center(
+                  child: Icon(Icons.lock, color: Colors.white,),
+                ),
+              )
+            ],
           ),
-        ),
-        ListTile(
-          leading: ImageUtil.showCircularImage(
-              25, vimeo.user.pictures.sizes[2].link),
-          title: Text(vimeo.name, style: Theme.of(context).textTheme.display1),
-          subtitle: Text(
-            vimeo.user.name,
-            style: Theme.of(context).textTheme.display3,
-          ),
-        )
-      ],
+          ListTile(
+            leading: ImageUtil.showCircularImage(
+                18, video.data.user.pictures.sizes[2].link),
+            title: Text(video.data.name, style: Theme.of(context).textTheme.display2),
+            subtitle: Text.rich(
+              TextSpan(
+                style: Theme.of(context).textTheme.display3.copyWith(color: Colors.black54),
+                children: [
+                  TextSpan(text: '${video.data.user.name} . '),
+                  TextSpan(text: '${now.difference(video.date).inDays < 8 ? timeago.format(video.date) : DateTimeUtil.displayDate(video.date)}'),
+                ]
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 
-  _openVideo(BuildContext context, Vimeo vimeo, String id){
+  bool _checkDependancy(Video video, List<Watch> watchs) {
+    bool contain = false;
+    switch(video.depend) {
+      // contains any of the video
+      case 'any':
+        video.vlist.forEach((vid) {
+          if(watchs.any((w) => (w.vid == vid && w.status == 'completed'))){
+            contain = true;
+          }
+        });
+        break;
+
+      // must contain all the video
+      case 'all':
+        bool exist = true;
+        video.vlist.forEach((vid) {
+          if(exist && !watchs.any((w) => (w.vid == vid && w.status == 'completed'))){
+            exist = false;
+          }
+        });
+        contain = exist;
+        break;
+
+      default:
+        contain = true;
+    }
+    return contain;
+  }
+
+  _openVideo(BuildContext context, Vimeo vimeo, String id, List<Watch> watchs){
     Provider.of<VimeoState>(context, listen: false).selectedVideo = vimeo;
     Provider.of<VimeoState>(context, listen: false).selectedVideoId = id;
-    List watchs = Provider.of<List<Watch>>(context, listen: false);
-    if(watchs == null) {
+
+    if(watchs == null || watchs.length == 0) {
       Provider.of<VimeoState>(context, listen: false).selectedWatch = null;
     } else {
       List<Watch> getWatch = watchs.where((w) => w.vid == id).toList();
