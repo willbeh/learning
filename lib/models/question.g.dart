@@ -6,16 +6,16 @@ part of 'question.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-QAns _$QAnsFromJson(Map json) {
-  return QAns(
-    answer: json['answer'] as String,
-    ansCode: json['ansCode'] as String,
+QOption _$QOptionFromJson(Map json) {
+  return QOption(
+    option: json['option'] as String,
+    optCode: json['optCode'] as String,
   );
 }
 
-Map<String, dynamic> _$QAnsToJson(QAns instance) => <String, dynamic>{
-      'answer': instance.answer,
-      'ansCode': instance.ansCode,
+Map<String, dynamic> _$QOptionToJson(QOption instance) => <String, dynamic>{
+      'option': instance.option,
+      'optCode': instance.optCode,
     };
 
 Question _$QuestionFromJson(Map json) {
@@ -23,19 +23,20 @@ Question _$QuestionFromJson(Map json) {
     id: json['id'] as String,
     vid: json['vid'] as String,
     question: json['question'] as String,
-    answers: (json['answers'] as List)
-        ?.map((e) => e == null ? null : QAns.fromJson(e as Map))
+    options: (json['options'] as List)
+        ?.map((e) => e == null ? null : QOption.fromJson(e as Map))
         ?.toList(),
     status: json['status'] as String,
     order: json['order'] as int,
-  );
+  )..answer = json['answer'] as String;
 }
 
 Map<String, dynamic> _$QuestionToJson(Question instance) => <String, dynamic>{
       'id': instance.id,
       'vid': instance.vid,
       'question': instance.question,
-      'answers': instance.answers,
+      'options': instance.options,
+      'answer': instance.answer,
       'status': instance.status,
       'order': instance.order,
     };

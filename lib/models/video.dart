@@ -98,7 +98,7 @@ class Vimeo {
 
 @JsonSerializable(anyMap: true)
 class Video {
-  Video({this.sid, this.vid, this.status, this.data, this.exam, this.order, this.depend, this.vlist});
+  Video({this.sid, this.vid, this.status, this.data, this.test, this.order, this.depend, this.vlist});
 
   String sid;
   String vid;
@@ -107,7 +107,7 @@ class Video {
   Vimeo data;
   @JsonKey(fromJson: DateTimeUtil.fromTimestamp)
   DateTime date;
-  bool exam;
+  bool test;
   int order;
   String depend;
   List<String> vlist;

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:learning/services/firestore/question_service.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,6 +31,8 @@ class VideoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    VideoState videoState = Provider.of(context);
+    
     return Scaffold(
       appBar: AppBar(
 //        backgroundColor: Colors.transparent,
@@ -40,6 +43,8 @@ class VideoPage extends StatelessWidget {
               if(result == 0) {
                 SharedPreferences prefs = Provider.of<SharedPreferences>(context, listen: false);
                 prefs.clear();
+              } else if (result == 1) {
+                _tempGenerateQuestions();
               }
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
@@ -47,18 +52,37 @@ class VideoPage extends StatelessWidget {
                 value: 0,
                 child: Text('Reset'),
               ),
+              const PopupMenuItem<int>(
+                value: 1,
+                child: Text('Generate Question'),
+              ),
             ],
           )
         ],
       ),
       body: AppStreamBuilder(
-        stream: VideoService.find(),
+        stream: (videoState.selectedSeries != null)
+            ? VideoService.findBySeries(id: videoState.selectedSeries.id)
+            : VideoService.find(),
         fn: _buildPage,
+        fnNone: _buildNoVideo,
+      ),
+    );
+  }
+
+  _buildNoVideo(BuildContext context) {
+    return Container(
+      child: Center(
+        child: Text('No Video'),
       ),
     );
   }
 
   _buildPage(BuildContext context, List<Video> videos) {
+    if(videos.length == 0){
+      return _buildNoVideo(context);
+    }
+
     List<Watch> watchs = Provider.of<List<Watch>>(context) ?? [];
 
     return ListView.separated(
@@ -180,10 +204,35 @@ class VideoPage extends StatelessWidget {
                 ]
               ),
             ),
+            trailing: _buildTrailingIcon(context, video, watchs),
           )
         ],
       ),
     );
+  }
+  
+  Widget _buildTrailingIcon(BuildContext context, Video video, List<Watch> watchs) {
+    Widget trailingIcon = Container(width: 0,);
+    if (watchs.any((w) => (w.vid == video.vid && w.status == 'completed' && w.test == true))) {
+      trailingIcon = Icon(Icons.check_circle, color: Colors.green,);
+    } else if (watchs.any((w) => (w.vid == video.vid && w.status == 'completed'))) {
+      if(video.test == true){
+        trailingIcon = InkWell(
+          onTap: () => _openTest(context, video, watchs),
+          child: Column(
+            children: <Widget>[
+              Icon(Icons.list, color: Theme.of(context).primaryColor,),
+              Text('test', style: Theme.of(context).textTheme.display4.copyWith(color: Theme.of(context).primaryColor),),
+            ],
+          ),
+        );
+      } else {
+        trailingIcon = Icon(Icons.check_circle, color: Colors.green,);
+      }
+    } else if (watchs.any((w) => (w.vid == video.vid))) {
+      trailingIcon = Icon(Icons.visibility);
+    }
+    return trailingIcon;
   }
 
   bool _checkDependancy(Video video, List<Watch> watchs) {
@@ -228,5 +277,68 @@ class VideoPage extends StatelessWidget {
       }
     }
     AppRouter.navigator.pushNamed(AppRouter.videoPlayerPage);
+  }
+
+  _openTest(BuildContext context, Video video, List<Watch> watchs){
+    Provider.of<VideoState>(context, listen: false).selectedVideo = video;
+    Provider.of<VideoState>(context, listen: false).selectedVideoId = video.vid;
+    List<Watch> getWatch = watchs.where((w) => w.vid == video.vid).toList();
+    if(getWatch != null && getWatch.length > 0) {
+      Provider.of<VideoState>(context, listen: false).selectedWatch = getWatch.first;
+    }
+    AppRouter.navigator.pushNamed(AppRouter.examPage);
+  }
+
+  _tempGenerateQuestions(){
+    List<Map<String, dynamic>> datas = [
+      {
+        'question': 'Question 1 ${UniqueKey()}',
+        'answer': '1',
+        'status': 'Publish',
+        'options': [
+          {'option': 'Option 1', 'optCode': '1'},
+          {'option': 'Option 2', 'optCode': '2'}
+        ],
+        'order': 0
+      },
+      {
+        'question': 'Question Two ${UniqueKey()}',
+        'answer': 'B',
+        'status': 'Publish',
+        'options': [
+          {'option': 'Option A', 'optCode': 'A'},
+          {'option': 'Option B', 'optCode': 'B'}
+        ],
+        'order': 1
+      },
+      {
+        'question': 'Question 3 ${UniqueKey()}',
+        'answer': 'Z',
+        'status': 'Publish',
+        'options': [
+          {'option': 'Option X', 'optCode': 'X'},
+          {'option': 'Option Y', 'optCode': 'Y'},
+          {'option': 'Option Z', 'optCode': 'Z'}
+        ],
+        'order': 2
+      },
+      {
+        'question': 'Question Four ${UniqueKey()}',
+        'answer': 'b',
+        'status': 'Publish',
+        'options': [
+          {'option': 'Option a', 'optCode': 'a'},
+          {'option': 'Option b', 'optCode': 'b'}
+        ],
+        'order': 3
+      }
+    ];
+
+    videoId.forEach((id) {
+      datas.forEach((data) {
+        data['vid'] = id;
+        QuestionService.insert(data);
+      });
+    });
   }
 }

@@ -45,7 +45,7 @@ class CommonUI {
             Container(
               width: MediaQuery.of(context).size.width,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children:
                   (closeText != null) ?
                       [AppButton.roundedButton(context,

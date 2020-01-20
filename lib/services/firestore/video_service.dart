@@ -1,11 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:learning/models/video.dart';
 
 class VideoService {
   static const String _col = 'videos';
 
   static Stream<List<Video>> find({String status = 'publish'}) {
+    print('VideoService find');
     return Firestore.instance.collection(_col).where('status', isEqualTo: status).orderBy('date', descending: true).snapshots().map((list) {
+      return list.documents.map((doc) {
+        Map data = doc.data;
+//        print(data);
+        return Video.fromJson(data);
+      }).toList();
+    });
+  }
+
+  static Stream<List<Video>> findBySeries({@required String id, String status = 'publish'}) {
+    return Firestore.instance.collection(_col).where('sid', isEqualTo: id).where('status', isEqualTo: status).orderBy('date', descending: true).snapshots().map((list) {
       return list.documents.map((doc) {
         Map data = doc.data;
 //        print(data);

@@ -3,25 +3,26 @@ import 'package:json_annotation/json_annotation.dart';
 part 'question.g.dart';
 
 @JsonSerializable(anyMap: true)
-class QAns {
-  QAns({this.answer, this.ansCode});
+class QOption {
+  QOption({this.option, this.optCode});
 
-  String answer;
-  String ansCode;
+  String option;
+  String optCode;
 
-  factory QAns.fromJson(Map<dynamic, dynamic> json) => _$QAnsFromJson(json);
+  factory QOption.fromJson(Map<dynamic, dynamic> json) => _$QOptionFromJson(json);
 
-  Map<String, dynamic> toJson() => _$QAnsToJson(this);
+  Map<String, dynamic> toJson() => _$QOptionToJson(this);
 }
 
 @JsonSerializable(anyMap: true)
 class Question {
-  Question({this.id, this.vid, this.question, this.answers, this.status = '', this.order});
+  Question({this.id, this.vid, this.question, this.options, this.status = '', this.order});
 
   String id;
   String vid;
   String question;
-  List<QAns> answers;
+  List<QOption> options;
+  String answer;
   String status;
   int order;
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:learning/models/series.dart';
 import 'package:learning/routes/router.gr.dart';
+import 'package:learning/states/video_state.dart';
 import 'package:learning/widgets/app_drawer.dart';
 import 'package:learning/states/theme_state.dart';
 import 'package:learning/widgets/common_ui.dart';
@@ -28,7 +29,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThemeState themeState = Provider.of(context);
-    List<Series> series = Provider.of(context);
+    List<Series> series = Provider.of(context) ?? [];
 
     return Scaffold(
       body: CustomScrollView(
@@ -54,11 +55,23 @@ class HomePage extends StatelessWidget {
               ),
               snap: true,
             ),
+            // Series
+            SliverList(
+              delegate: SliverChildListDelegate([
+                Container(
+                  padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                  child: Text('Series', style: Theme.of(context).textTheme.headline.copyWith(color: Theme.of(context).primaryColor)),
+                ),
+              ]),
+            ),
             SliverGrid.extent(
               maxCrossAxisExtent: 100,
               children: series.map((item){
                 return InkWell(
-//                  onTap: () => AppRouter.navigator.pushNamed(item['routeName']),
+                  onTap: () {
+                    Provider.of<VideoState>(context, listen: false).selectedSeries = item;
+                    AppRouter.navigator.pushNamed(AppRouter.videoPage);
+                  },
                   child: Container(
                     height: double.infinity,
                     child: Column(
@@ -75,11 +88,23 @@ class HomePage extends StatelessWidget {
                 );
               }).toList(),
             ),
+            SliverList(
+              delegate: SliverChildListDelegate([
+                Divider(height: 1,),
+                Container(
+                  padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                  child: Text('Items', style: Theme.of(context).textTheme.headline.copyWith(color: Theme.of(context).primaryColor)),
+                ),
+              ]),
+            ),
             SliverGrid.extent(
               maxCrossAxisExtent: 100,
               children: gridItems.map((item){
                 return InkWell(
-                  onTap: () => AppRouter.navigator.pushNamed(item['routeName']),
+                  onTap: () {
+                    Provider.of<VideoState>(context, listen: false).selectedSeries = null;
+                    AppRouter.navigator.pushNamed(item['routeName']);
+                  },
                   child: Container(
                     height: double.infinity,
                     child: Column(

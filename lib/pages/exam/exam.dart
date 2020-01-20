@@ -1,4 +1,3 @@
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:learning/app_color.dart';
@@ -6,8 +5,11 @@ import 'package:learning/models/answer.dart';
 import 'package:learning/models/question.dart';
 import 'package:learning/services/firestore/answer_service.dart';
 import 'package:learning/services/firestore/question_service.dart';
+import 'package:learning/services/firestore/watch_service.dart';
 import 'package:learning/states/video_state.dart';
 import 'package:learning/utils/logger.dart';
+import 'package:learning/widgets/app_button.dart';
+import 'package:learning/widgets/common_ui.dart';
 import 'package:provider/provider.dart';
 
 class ExamPage extends StatelessWidget {
@@ -25,9 +27,8 @@ class ExamPage extends StatelessWidget {
       title = videoState.selectedVideo.data.name;
     }
 
-    log.d('vid $vid');
-
     var answerStream = AnswerService.findByUId(uid: user.uid, vid: vid);
+    var questionStream = QuestionService.findByVId(id: vid);
     return Scaffold(
       appBar: AppBar(
         title: Text('$title'),
@@ -35,7 +36,7 @@ class ExamPage extends StatelessWidget {
       ),
       body: MultiProvider(
         providers: [
-          StreamProvider<List<Question>>(create: (_) => QuestionService.find(), lazy: false,
+          StreamProvider<List<Question>>.value(value: questionStream, lazy: false,
             catchError: (_, error) {
               log.d('QuestionService error $error');
               return;
@@ -72,6 +73,7 @@ class _ExamDetailState extends State<ExamDetail> {
   var log = getLogger('_ExamDetailState');
   int _currentPage = 0;
   Answer _answer;
+  List<Question> _questions;
 
   @override
   void dispose() {
@@ -89,6 +91,7 @@ class _ExamDetailState extends State<ExamDetail> {
   Widget build(BuildContext context) {
     return Consumer<List<Question>>(
       builder: (_, questions, child) {
+        _questions = questions;
         if(questions == null || questions.length == 0)
           return Center(child: CircularProgressIndicator(),);
 
@@ -117,6 +120,7 @@ class _ExamDetailState extends State<ExamDetail> {
                       moveUp: (i > 0) ? _moveUp : null,
                       moveNext: ((i+1) < questions.length) ? _moveNext: null,
                       updateAnswer: _updateAnswer,
+                      submitAnswer: _submitAnswer,
                     ) ,
                 ],
               ),
@@ -146,6 +150,61 @@ class _ExamDetailState extends State<ExamDetail> {
 //    log.d('answer - ${_answer.answers.length} - ${_answer.toJson()}');
   }
 
+  _submitAnswer(){
+    // if not all question is answered, the prompt message and bring to unanswered question
+    if(_answer.answers.length < _questions.length){
+      CommonUI.alertBox(context, title: 'Answer all question', titleColor: AppColor.redAlert, msg: 'Please answer all questions',
+        actions: [
+          AppButton.roundedButton(context,
+            text: 'Continue',
+            paddingVertical: 5,
+            textStyle: Theme.of(context).textTheme.display4.copyWith(color: Colors.white),
+            onPressed: () {
+              Navigator.pop(context);
+              for(int i=0; i< _questions.length-1; i++){
+                if (!_answer.answers.any((a) => a.qid == _questions[i].id)){
+                  _controller.animateToPage(i, duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+                  break;
+                }
+              }
+            },
+          )
+        ]
+      );
+    } else {
+      CommonUI.alertBox(context, title: 'Submit Question', titleColor: Theme.of(context).primaryColor, msg: 'Continue to submit question?',
+          actions: [
+            AppButton.roundedButton(context,
+              text: 'Cancel',
+              paddingVertical: 5,
+              width: 100,
+              color: Colors.white,
+              textStyle: Theme.of(context).textTheme.display4.copyWith(color: Theme.of(context).primaryColor),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            AppButton.roundedButton(context,
+              text: 'Continue',
+              paddingVertical: 5,
+              width: 100,
+              textStyle: Theme.of(context).textTheme.display4.copyWith(color: Colors.white),
+              onPressed: () {
+                AnswerService.update(id: _answer.id, data: {'status': 'completed'});
+                if(Provider.of<VideoState>(context, listen: false).selectedWatch != null){
+                  WatchService.update(
+                    id: Provider.of<VideoState>(context, listen: false).selectedWatch.id,
+                    data: {'test': true}
+                  );
+                }
+                Navigator.pop(context);
+              },
+            )
+          ]
+      );
+    }
+  }
+
   _moveUp(){
     if(_controller.page > 0){
       _controller.animateToPage(_controller.page.toInt() - 1,
@@ -169,8 +228,9 @@ class ExamQuestion extends StatefulWidget {
   final Function moveUp;
   final Function moveNext;
   final Function updateAnswer;
+  final Function submitAnswer;
 
-  ExamQuestion({this.i, @required this.question, this.answer, this.moveUp, this.moveNext, this.updateAnswer});
+  ExamQuestion({this.i, @required this.question, this.answer, this.moveUp, this.moveNext, this.updateAnswer, this.submitAnswer});
   @override
   _ExamQuestionState createState() => _ExamQuestionState();
 }
@@ -193,6 +253,15 @@ class _ExamQuestionState extends State<ExamQuestion> {
 
   @override
   Widget build(BuildContext context) {
+    Color boxColor = Theme.of(context).primaryColor;
+    if (widget.answer.status == 'completed') {
+      if(_answer == widget.question.answer){
+        boxColor = Colors.green.shade300;
+      } else {
+        boxColor = Colors.red.shade300;
+      }
+    }
+
     return Container(
       padding: EdgeInsets.all(20),
       child: Stack(
@@ -201,18 +270,41 @@ class _ExamQuestionState extends State<ExamQuestion> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text('${widget.i}) ${widget.question.question}'),
-              for(int i=0; i<widget.question.answers.length; i++)
-                ListTile(
-                  title: Text(widget.question.answers[i].answer),
-                  leading: Radio(
-                    value: widget.question.answers[i].ansCode,
-                    groupValue: _answer,
-                    onChanged: (value) {
-                      setState(() { _answer = value; });
-                      widget.updateAnswer(widget.question.id, value);
+              for(int i=0; i<widget.question.options.length; i++)
+                GestureDetector(
+                  onTap: () {
+                    if(widget.answer.status != 'completed' && _answer != widget.question.options[i].optCode) {
+                      setState(() {
+                        _answer = widget.question.options[i].optCode;
+                      });
+                      widget.updateAnswer(widget.question.id, widget.question.options[i].optCode);
                       if(widget.moveNext != null)
                         Future.delayed(Duration(milliseconds: 300), () => widget.moveNext());
-                    },
+                    } else {
+                      if(widget.moveNext != null)
+                        widget.moveNext();
+                    }
+                  },
+                  child: AnimatedContainer(
+                    duration: Duration(milliseconds: 200),
+                    curve: (_answer == widget.question.options[i].optCode) ? Curves.decelerate : Curves.fastOutSlowIn,
+                    margin: EdgeInsets.only(top: 10),
+                    padding: EdgeInsets.all(10),
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        border: Border.all(color: AppColor.greyLight),
+                        color: (_answer == widget.question.options[i].optCode) ? boxColor : Colors.white
+                    ),
+                    child: (widget.answer.status != 'completed') ?
+                    Text('${widget.question.options[i].option}', style: TextStyle(color: (_answer == widget.question.options[i].optCode) ? Colors.white : Colors.black),) :
+                    Row(
+                      children: <Widget>[
+                        Expanded(child: Text('${widget.question.options[i].option}', style: TextStyle(color: (_answer == widget.question.options[i].optCode) ? Colors.white : Colors.black),)),
+                        if(_answer != widget.question.options[i].optCode && widget.question.options[i].optCode == widget.question.answer)
+                          Icon(Icons.check_circle, color: Colors.green, size: 20,),
+                      ],
+                    ),
                   ),
                 ),
             ],
@@ -224,19 +316,26 @@ class _ExamQuestionState extends State<ExamQuestion> {
               children: <Widget>[
                 if(widget.moveUp != null)
                   RaisedButton(
-                    child: Icon(Icons.keyboard_arrow_up),
+                    child: Icon(Icons.keyboard_arrow_up, color: Colors.white,),
                     onPressed: () => widget.moveUp(),
                     color: Theme.of(context).primaryColor,
                   ),
+                CommonUI.widthPadding(width: 2),
                 if(widget.moveNext != null)
                   RaisedButton(
-                    child: Icon(Icons.keyboard_arrow_down),
+                    child: Icon(Icons.keyboard_arrow_down, color: Colors.white,),
                     onPressed: () => widget.moveNext(),
                     color: Theme.of(context).primaryColor,
                   ),
-                if(widget.moveNext == null)
+                if(widget.moveNext == null && widget.answer.status != 'completed')
                   RaisedButton(
-                    child: Icon(Icons.done),
+                    child: Text('Submit', style: TextStyle(fontWeight: FontWeight.w600),),
+                    onPressed: () => widget.submitAnswer(),
+                    color: Colors.yellow,
+                  ),
+                if(widget.moveNext == null && widget.answer.status == 'completed')
+                  RaisedButton(
+                    child: Icon(Icons.check, color: Colors.white,),
                     onPressed: () => null,
                     color: Colors.green,
                   ),
@@ -248,19 +347,21 @@ class _ExamQuestionState extends State<ExamQuestion> {
     );
   }
 
-  checkAnswer(String answer) async{
-    log.d('checkAnswer');
-    final HttpsCallable callable = CloudFunctions(region: 'asia-northeast1').getHttpsCallable(
-      functionName: 'checkAnswer',
-    );
-    log.d('callable');
-    HttpsCallableResult resp = await callable.call(<String, dynamic>{
-      'qid': 'YOUR_PARAMETER_VALUE',
-      'answer': 'answer'
-    }).catchError((error) {
-      log.w('call error $error');
-    });
-    log.d('resp $resp');
-  }
+
+
+//  checkAnswer(String answer) async{
+//    log.d('checkAnswer');
+//    final HttpsCallable callable = CloudFunctions(region: 'asia-northeast1').getHttpsCallable(
+//      functionName: 'checkAnswer',
+//    );
+//    log.d('callable');
+//    HttpsCallableResult resp = await callable.call(<String, dynamic>{
+//      'qid': 'YOUR_PARAMETER_VALUE',
+//      'answer': 'answer'
+//    }).catchError((error) {
+//      log.w('call error $error');
+//    });
+//    log.d('resp $resp');
+//  }
 }
 

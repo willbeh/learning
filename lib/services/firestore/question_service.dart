@@ -16,13 +16,13 @@ class QuestionService {
     });
   }
 
-  static Stream<Question> findById({String id}) {
-    return Firestore.instance.collection(_col).where('vid', isEqualTo: id).snapshots().map((list) {
+  static Stream<List<Question>> findByVId({String id}) {
+    return Firestore.instance.collection(_col).where('vid', isEqualTo: id).orderBy('order').snapshots().map((list) {
       return list.documents.map((doc) {
         Map data = doc.data;
         data['id'] = doc.documentID;
         return Question.fromJson(data);
-      }).first;
+      }).toList();
     });
   }
 

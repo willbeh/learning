@@ -24,11 +24,12 @@ class AppStreamBuilder extends StatelessWidget {
 
         switch (snapshot.connectionState) {
           case ConnectionState.none:
-            log.d('Connection None');
+//            log.d('Connection None');
             return AppStreamNone();
             break;
 
           case ConnectionState.waiting:
+//            log.d('Connection waiting');
             if(showLoading)
               return Center(child: CircularProgressIndicator(),);
             break;
