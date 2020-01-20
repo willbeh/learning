@@ -5,9 +5,7 @@ class SeriesService {
   static const String _col = 'series';
 
   static Stream<List<Series>> find({String status = 'publish'}) {
-    print('SeriesService find');
     return Firestore.instance.collection(_col).where('status', isEqualTo: status).orderBy('order').snapshots().map((list) {
-      print('SeriesService find list');
       return list.documents.map((doc) {
         Map data = doc.data;
         data['id'] = doc.documentID;

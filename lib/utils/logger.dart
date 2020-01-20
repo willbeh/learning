@@ -17,8 +17,6 @@ class SimpleLogPrinter extends LogPrinter {
   final String className;
   SimpleLogPrinter(this.className);
 
-
-
   @override
   List<String> log(LogEvent event) {
     var color = PrettyPrinter.levelColors[event.level];

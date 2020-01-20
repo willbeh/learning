@@ -52,10 +52,10 @@ class VideoPage extends StatelessWidget {
                 value: 0,
                 child: Text('Reset'),
               ),
-              const PopupMenuItem<int>(
-                value: 1,
-                child: Text('Generate Question'),
-              ),
+//              const PopupMenuItem<int>(
+//                value: 1,
+//                child: Text('Generate Question'),
+//              ),
             ],
           )
         ],
@@ -65,7 +65,6 @@ class VideoPage extends StatelessWidget {
             ? VideoService.findBySeries(id: videoState.selectedSeries.id)
             : VideoService.find(),
         fn: _buildPage,
-        fnNone: _buildNoVideo,
       ),
     );
   }
@@ -216,7 +215,7 @@ class VideoPage extends StatelessWidget {
     if (watchs.any((w) => (w.vid == video.vid && w.status == 'completed' && w.test == true))) {
       trailingIcon = Icon(Icons.check_circle, color: Colors.green,);
     } else if (watchs.any((w) => (w.vid == video.vid && w.status == 'completed'))) {
-      if(video.test == true){
+      if(video.hastest == true){
         trailingIcon = InkWell(
           onTap: () => _openTest(context, video, watchs),
           child: Column(
@@ -264,6 +263,10 @@ class VideoPage extends StatelessWidget {
     return contain;
   }
 
+  bool _checkWatchVideo(List<Watch> watchs, Video vid){
+
+  }
+
   _openVideo(BuildContext context, Video video, List<Watch> watchs){
     Provider.of<VideoState>(context, listen: false).selectedVideo = video;
     Provider.of<VideoState>(context, listen: false).selectedVideoId = video.vid;
@@ -292,27 +295,29 @@ class VideoPage extends StatelessWidget {
   _tempGenerateQuestions(){
     List<Map<String, dynamic>> datas = [
       {
-        'question': 'Question 1 ${UniqueKey()}',
-        'answer': '1',
+        'question': 'Question 5 ${UniqueKey()}',
+        'answer': '2',
         'status': 'Publish',
         'options': [
           {'option': 'Option 1', 'optCode': '1'},
-          {'option': 'Option 2', 'optCode': '2'}
+          {'option': 'Option 2', 'optCode': '2'},
+          {'option': 'Option 3', 'optCode': '3'}
         ],
-        'order': 0
+        'order': 4
       },
       {
-        'question': 'Question Two ${UniqueKey()}',
+        'question': 'Question Six ${UniqueKey()}',
         'answer': 'B',
         'status': 'Publish',
         'options': [
           {'option': 'Option A', 'optCode': 'A'},
-          {'option': 'Option B', 'optCode': 'B'}
+          {'option': 'Option B', 'optCode': 'B'},
+          {'option': 'Option C', 'optCode': 'C'}
         ],
-        'order': 1
+        'order': 5
       },
       {
-        'question': 'Question 3 ${UniqueKey()}',
+        'question': 'Question 7 ${UniqueKey()}',
         'answer': 'Z',
         'status': 'Publish',
         'options': [
@@ -320,17 +325,17 @@ class VideoPage extends StatelessWidget {
           {'option': 'Option Y', 'optCode': 'Y'},
           {'option': 'Option Z', 'optCode': 'Z'}
         ],
-        'order': 2
+        'order': 6
       },
       {
-        'question': 'Question Four ${UniqueKey()}',
-        'answer': 'b',
+        'question': 'Question Eight ${UniqueKey()}',
+        'answer': 'a',
         'status': 'Publish',
         'options': [
           {'option': 'Option a', 'optCode': 'a'},
           {'option': 'Option b', 'optCode': 'b'}
         ],
-        'order': 3
+        'order': 7
       }
     ];
 

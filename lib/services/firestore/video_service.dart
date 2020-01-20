@@ -17,7 +17,7 @@ class VideoService {
   }
 
   static Stream<List<Video>> findBySeries({@required String id, String status = 'publish'}) {
-    return Firestore.instance.collection(_col).where('sid', isEqualTo: id).where('status', isEqualTo: status).orderBy('date', descending: true).snapshots().map((list) {
+    return Firestore.instance.collection(_col).where('sid', isEqualTo: id).where('status', isEqualTo: status).orderBy('order').snapshots().map((list) {
       return list.documents.map((doc) {
         Map data = doc.data;
 //        print(data);
