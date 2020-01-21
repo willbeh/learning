@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:learning/models/video.dart';
 import 'package:learning/models/watch.dart';
+import 'package:learning/pages/video/video_detail.dart';
 import 'package:learning/pages/video/video_question.dart';
 import 'package:learning/routes/router.gr.dart';
 import 'package:learning/services/firestore/watch_service.dart';
@@ -79,6 +80,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
           setState(() {});
         }).catchError((error) {
           log.w('load video error $error');
+          CommonUI.alertBox(context, title: 'Error', msg: 'Load video error $error', closeText: 'Close');
         })
         ..addListener(_logInfo);
     }
@@ -105,17 +107,15 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
 
     return Scaffold(
       body: OrientationBuilder(builder: (context, orientation) {
-        return SingleChildScrollView(
-          child: (quarterTurns == 0)
-              ? SafeArea(
-                  child: _buildPage(context, vimeo),
-                )
-              :
-              // overwrite back button if shown on vertical
-              WillPopScope(
-                  onWillPop: () => _onWillPop(),
-                  child: _buildPage(context, vimeo),
-                ),
+        return (quarterTurns == 0)
+            ? SafeArea(
+          child: _buildPage(context, vimeo),
+        )
+            :
+        // overwrite back button if shown on vertical
+        WillPopScope(
+          onWillPop: () => _onWillPop(),
+          child: _buildPage(context, vimeo),
         );
       }),
     );
@@ -140,24 +140,28 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                   Container(
                     height: height,
                     width: width,
+                    color: Colors.white,
                     child: _controller.value.initialized
-                        ? Center(
-                            child: AspectRatio(
-                              aspectRatio:
-                                  ratio, //_controller.value.aspectRatio,
-                              child: Hero(
-                                tag: videoState?.selectedVideoId,
-                                child: GestureDetector(
-                                  child: VideoPlayer(_controller),
-                                  onTap: () {
-                                    if (_controller.value.isPlaying) {
-                                      setState(() {});
-                                    }
-                                  },
+                        ? Container(
+                          color: Colors.black,
+                          child: Center(
+                              child: AspectRatio(
+                                aspectRatio:
+                                    ratio, //_controller.value.aspectRatio,
+                                child: Hero(
+                                  tag: videoState?.selectedVideoId,
+                                  child: GestureDetector(
+                                    child: VideoPlayer(_controller),
+                                    onTap: () {
+                                      if (_controller.value.isPlaying) {
+                                        setState(() {});
+                                      }
+                                    },
+                                  ),
                                 ),
                               ),
                             ),
-                          )
+                        )
                         : AppLoadingContainer(height: height,),
                   ),
                   GestureDetector(

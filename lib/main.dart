@@ -5,10 +5,12 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:learning/dark_theme.dart';
 import 'package:learning/light_theme.dart';
 import 'package:learning/models/series.dart';
+import 'package:learning/models/video.dart';
 import 'package:learning/models/watch.dart';
 import 'package:learning/pages/splash.dart';
 import 'package:learning/routes/router.gr.dart';
 import 'package:learning/services/firestore/series_service.dart';
+import 'package:learning/services/firestore/video_service.dart';
 import 'package:learning/services/firestore/watch_service.dart';
 import 'package:learning/services/user_repository.dart';
 import 'package:learning/states/theme_state.dart';
@@ -38,7 +40,9 @@ class MyApp extends StatelessWidget {
           create: (_) => ThemeState(isLightTheme: true),
           lazy: false,
         ),
-
+        ChangeNotifierProvider<VideoState>(
+          create: (_) => VideoState(),
+        ),
       ],
       child: MyAppLoad(),
     );
@@ -52,12 +56,11 @@ class MyAppLoad extends StatelessWidget {
   Widget build(BuildContext context) {
     FirebaseUser user = Provider.of(context);
     Stream<List<Watch>> watchStream = WatchService.findByUId(uid: user?.uid);
+    Stream<List<Video>> videoStream = VideoService.findBySeries(id: Provider.of<VideoState>(context).selectedSeries?.id);
 
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<VideoState>(
-          create: (_) => VideoState(),
-        ),
+
         StreamProvider<List<Watch>>.value(
           value: watchStream,
           catchError: (context, error) {
@@ -70,6 +73,13 @@ class MyAppLoad extends StatelessWidget {
           lazy: false,
           catchError: (context, error) {
             log.w('SeriesService error $error');
+            return;
+          } ,
+        ),
+        StreamProvider<List<Video>>.value(
+          value: videoStream,
+          catchError: (context, error) {
+            log.w('VideoService error $error');
             return;
           } ,
         )

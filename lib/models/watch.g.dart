@@ -6,7 +6,7 @@ part of 'watch.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Watch _$WatchFromJson(Map json) {
+Watch _$WatchFromJson(Map<String, dynamic> json) {
   return Watch(
     id: json['id'] as String,
     vid: json['vid'] as String,

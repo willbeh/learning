@@ -1,3 +1,4 @@
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:learning/app_color.dart';
@@ -120,14 +121,61 @@ class _ExamDetailState extends State<ExamDetail> {
                       moveUp: (i > 0) ? _moveUp : null,
                       moveNext: ((i+1) < questions.length) ? _moveNext: null,
                       updateAnswer: _updateAnswer,
-                      submitAnswer: _submitAnswer,
                     ) ,
                 ],
               ),
             ),
+            if(_answer != null)
+              _buildPageScroll(questions),
           ],
         );
       },
+    );
+  }
+
+  Widget _buildPageScroll(List<Question> questions){
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          if(_answer.status == 'completed')
+            Text('${_answer.correct}/${questions.length} correct', style: Theme.of(context).textTheme.display2,),
+          if(_answer.status != 'completed')
+            Text('${questions.length} Questions', style: Theme.of(context).textTheme.display2,),
+          CommonUI.widthPadding(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              if(_currentPage > 0)
+                RaisedButton(
+                  child: Icon(Icons.keyboard_arrow_up, color: Colors.white,),
+                  onPressed: () => _moveUp(),
+                  color: Theme.of(context).primaryColor,
+                ),
+              CommonUI.widthPadding(width: 2),
+              if(_currentPage < (questions.length - 1))
+                RaisedButton(
+                  child: Icon(Icons.keyboard_arrow_down, color: Colors.white,),
+                  onPressed: () => _moveNext(),
+                  color: Theme.of(context).primaryColor,
+                ),
+              if(_currentPage == (questions.length - 1) && _answer.status != 'completed')
+                RaisedButton(
+                  child: Text('Submit', style: TextStyle(fontWeight: FontWeight.w600),),
+                  onPressed: () => _submitAnswer(),
+                  color: Colors.yellow,
+                ),
+              if(_currentPage == (questions.length - 1) && _answer.status == 'completed')
+                RaisedButton(
+                  child: Icon(Icons.check, color: Colors.white,),
+                  onPressed: () => null,
+                  color: Colors.green,
+                ),
+            ],
+          )
+        ],
+      ),
     );
   }
 
@@ -190,19 +238,49 @@ class _ExamDetailState extends State<ExamDetail> {
               width: 100,
               textStyle: Theme.of(context).textTheme.display4.copyWith(color: Colors.white),
               onPressed: () {
-                AnswerService.update(id: _answer.id, data: {'status': 'completed'});
-                if(Provider.of<VideoState>(context, listen: false).selectedWatch != null){
-                  WatchService.update(
-                    id: Provider.of<VideoState>(context, listen: false).selectedWatch.id,
-                    data: {'test': true}
-                  );
-                }
+                _checkAnswers();
+//                AnswerService.update(id: _answer.id, data: {'status': 'completed', 'correct': _checkAnswers()});
+//                if(Provider.of<VideoState>(context, listen: false).selectedWatch != null){
+//                  WatchService.update(
+//                    id: Provider.of<VideoState>(context, listen: false).selectedWatch.id,
+//                    data: {'test': true}
+//                  );
+//                }
                 Navigator.pop(context);
               },
             )
           ]
       );
     }
+  }
+
+  _checkAnswers(){
+    int count = 0;
+    for(int i = 0; i<_questions.length; i++){
+      Question question = _questions[i];
+      UserAnswer answer = _answer.answers.where((a) => a.qid == question.id).first;
+      if(answer.answer == question.answer){
+        count = count + 1;
+      }
+    }
+
+    final HttpsCallable callable = CloudFunctions(region: 'asia-northeast1').getHttpsCallable(
+      functionName: 'updateResult',
+    );
+
+    log.d('${{ 'vid': _answer.vid }}');
+    _questions.forEach((q) {
+      log.d('${q.toJson()}');
+    });
+    log.d('${{ 'answer': _answer.toJson() }}');
+
+    callable.call(<String, dynamic>{ 'vid': _answer.vid, 'questions': _questions.map((q) => q.toJson()).toList(), 'answer': _answer.toJson() }
+    ).then((res) {
+      log.d('OK ${res.toString()}');
+    }).catchError((error){
+      log.w('updateResult error $error}');
+    });
+    return count;
   }
 
   _moveUp(){
@@ -220,7 +298,6 @@ class _ExamDetailState extends State<ExamDetail> {
   }
 }
 
-
 class ExamQuestion extends StatefulWidget {
   final int i;
   final Question question;
@@ -228,9 +305,8 @@ class ExamQuestion extends StatefulWidget {
   final Function moveUp;
   final Function moveNext;
   final Function updateAnswer;
-  final Function submitAnswer;
 
-  ExamQuestion({this.i, @required this.question, this.answer, this.moveUp, this.moveNext, this.updateAnswer, this.submitAnswer});
+  ExamQuestion({this.i, @required this.question, this.answer, this.moveUp, this.moveNext, this.updateAnswer});
   @override
   _ExamQuestionState createState() => _ExamQuestionState();
 }
@@ -254,7 +330,7 @@ class _ExamQuestionState extends State<ExamQuestion> {
   @override
   Widget build(BuildContext context) {
     Color boxColor = Theme.of(context).primaryColor;
-    if (widget.answer.status == 'completed') {
+    if (widget.answer?.status == 'completed') {
       if(_answer == widget.question.answer){
         boxColor = Colors.green.shade300;
       } else {
@@ -273,11 +349,11 @@ class _ExamQuestionState extends State<ExamQuestion> {
               for(int i=0; i<widget.question.options.length; i++)
                 GestureDetector(
                   onTap: () {
-                    if(widget.answer.status != 'completed' && _answer != widget.question.options[i].optCode) {
+                    if(widget.answer.status != 'completed' && _answer != widget.question.options[i].code) {
                       setState(() {
-                        _answer = widget.question.options[i].optCode;
+                        _answer = widget.question.options[i].code;
                       });
-                      widget.updateAnswer(widget.question.id, widget.question.options[i].optCode);
+                      widget.updateAnswer(widget.question.id, widget.question.options[i].code);
                       if(widget.moveNext != null)
                         Future.delayed(Duration(milliseconds: 300), () => widget.moveNext());
                     } else {
@@ -287,21 +363,21 @@ class _ExamQuestionState extends State<ExamQuestion> {
                   },
                   child: AnimatedContainer(
                     duration: Duration(milliseconds: 200),
-                    curve: (_answer == widget.question.options[i].optCode) ? Curves.decelerate : Curves.fastOutSlowIn,
+                    curve: (_answer == widget.question.options[i].code) ? Curves.decelerate : Curves.fastOutSlowIn,
                     margin: EdgeInsets.only(top: 10),
                     padding: EdgeInsets.all(10),
                     width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
                         border: Border.all(color: AppColor.greyLight),
-                        color: (_answer == widget.question.options[i].optCode) ? boxColor : Colors.white
+                        color: (_answer == widget.question.options[i].code) ? boxColor : Colors.white
                     ),
-                    child: (widget.answer.status != 'completed') ?
-                    Text('${widget.question.options[i].option}', style: TextStyle(color: (_answer == widget.question.options[i].optCode) ? Colors.white : Colors.black),) :
+                    child: (widget.answer.status != null && widget.answer.status != 'completed') ?
+                    Text('${widget.question.options[i].option}', style: TextStyle(color: (_answer == widget.question.options[i].code) ? Colors.white : Colors.black),) :
                     Row(
                       children: <Widget>[
-                        Expanded(child: Text('${widget.question.options[i].option}', style: TextStyle(color: (_answer == widget.question.options[i].optCode) ? Colors.white : Colors.black),)),
-                        if(_answer != widget.question.options[i].optCode && widget.question.options[i].optCode == widget.question.answer)
+                        Expanded(child: Text('${widget.question.options[i].option}', style: TextStyle(color: (_answer == widget.question.options[i].code) ? Colors.white : Colors.black),)),
+                        if(_answer != widget.question.options[i].code && widget.question.options[i].code == widget.question.answer)
                           Icon(Icons.check_circle, color: Colors.green, size: 20,),
                       ],
                     ),
@@ -309,59 +385,9 @@ class _ExamQuestionState extends State<ExamQuestion> {
                 ),
             ],
           ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                if(widget.moveUp != null)
-                  RaisedButton(
-                    child: Icon(Icons.keyboard_arrow_up, color: Colors.white,),
-                    onPressed: () => widget.moveUp(),
-                    color: Theme.of(context).primaryColor,
-                  ),
-                CommonUI.widthPadding(width: 2),
-                if(widget.moveNext != null)
-                  RaisedButton(
-                    child: Icon(Icons.keyboard_arrow_down, color: Colors.white,),
-                    onPressed: () => widget.moveNext(),
-                    color: Theme.of(context).primaryColor,
-                  ),
-                if(widget.moveNext == null && widget.answer.status != 'completed')
-                  RaisedButton(
-                    child: Text('Submit', style: TextStyle(fontWeight: FontWeight.w600),),
-                    onPressed: () => widget.submitAnswer(),
-                    color: Colors.yellow,
-                  ),
-                if(widget.moveNext == null && widget.answer.status == 'completed')
-                  RaisedButton(
-                    child: Icon(Icons.check, color: Colors.white,),
-                    onPressed: () => null,
-                    color: Colors.green,
-                  ),
-              ],
-            ),
-          ),
         ],
       ),
     );
   }
-
-
-
-//  checkAnswer(String answer) async{
-//    log.d('checkAnswer');
-//    final HttpsCallable callable = CloudFunctions(region: 'asia-northeast1').getHttpsCallable(
-//      functionName: 'checkAnswer',
-//    );
-//    log.d('callable');
-//    HttpsCallableResult resp = await callable.call(<String, dynamic>{
-//      'qid': 'YOUR_PARAMETER_VALUE',
-//      'answer': 'answer'
-//    }).catchError((error) {
-//      log.w('call error $error');
-//    });
-//    log.d('resp $resp');
-//  }
 }
 

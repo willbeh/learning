@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:learning/models/watch.dart';
+import 'package:learning/utils/logger.dart';
 
 class WatchService {
   static const String _col = 'watch';
+  static final log = getLogger('WatchService');
 
   static Stream<List<Watch>> find() {
     return Firestore.instance.collection(_col).snapshots().map((list) {
@@ -48,6 +50,8 @@ class WatchService {
   }
 
   static Future<DocumentReference> insert(Map<String, dynamic> data){
+    data['created'] = DateTime.now();
+    data['date'] = DateTime.now();
     return Firestore.instance.collection(_col).add(data);
   }
 

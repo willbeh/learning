@@ -20,7 +20,7 @@ import 'package:learning/widgets/app_stream_builder.dart';
 class VideoPage extends StatelessWidget {
   final List<String> videoId = ['382521859', '382353755', '382117382', '382248454'];
   final log = getLogger('VideoPage');
-  DateTime now = DateTime.now();
+  final DateTime now = DateTime.now();
 
   final Map<String, String> headers = {
     'Accept': 'application/vnd.vimeo.*+json;version=3.4',
@@ -119,7 +119,6 @@ class VideoPage extends StatelessWidget {
               case ConnectionState.done:
                 if (snapshot.hasData) {
                   if (snapshot.data.statusCode == 200) {
-//                    Vimeo vimeo = Vimeo.fromJson(json.decode(snapshot.data.body));
                     video.data = json.decode(snapshot.data.body);
                     video.date = DateTime.now();
                     log.d('${snapshot.data.body}');
@@ -263,10 +262,6 @@ class VideoPage extends StatelessWidget {
     return contain;
   }
 
-  bool _checkWatchVideo(List<Watch> watchs, Video vid){
-
-  }
-
   _openVideo(BuildContext context, Video video, List<Watch> watchs){
     Provider.of<VideoState>(context, listen: false).selectedVideo = video;
     Provider.of<VideoState>(context, listen: false).selectedVideoId = video.vid;
@@ -295,45 +290,88 @@ class VideoPage extends StatelessWidget {
   _tempGenerateQuestions(){
     List<Map<String, dynamic>> datas = [
       {
-        'question': 'Question 5 ${UniqueKey()}',
+        'question': 'Question 1',
         'answer': '2',
         'status': 'Publish',
         'options': [
-          {'option': 'Option 1', 'optCode': '1'},
-          {'option': 'Option 2', 'optCode': '2'},
-          {'option': 'Option 3', 'optCode': '3'}
+          {'option': 'Option 1', 'code': '1'},
+          {'option': 'Option 2', 'code': '2'},
+          {'option': 'Option 3', 'code': '3'}
+        ],
+        'order': 1
+      },
+      {
+        'question': 'Question Two',
+        'answer': 'B',
+        'status': 'Publish',
+        'options': [
+          {'option': 'Option A', 'code': 'A'},
+          {'option': 'Option B', 'code': 'B'},
+          {'option': 'Option C', 'code': 'C'}
+        ],
+        'order': 2
+      },
+      {
+        'question': 'Question 3',
+        'answer': 'Z',
+        'status': 'Publish',
+        'options': [
+          {'option': 'Option X', 'code': 'X'},
+          {'option': 'Option Y', 'code': 'Y'},
+          {'option': 'Option Z', 'code': 'Z'}
+        ],
+        'order': 3
+      },
+      {
+        'question': 'Question Four',
+        'answer': 'a',
+        'status': 'Publish',
+        'options': [
+          {'option': 'Option a', 'code': 'a'},
+          {'option': 'Option b', 'code': 'b'}
         ],
         'order': 4
       },
       {
-        'question': 'Question Six ${UniqueKey()}',
+        'question': 'Question 5',
+        'answer': '2',
+        'status': 'Publish',
+        'options': [
+          {'option': 'Option 1', 'code': '1'},
+          {'option': 'Option 2', 'code': '2'},
+          {'option': 'Option 3', 'code': '3'}
+        ],
+        'order': 4
+      },
+      {
+        'question': 'Question Six',
         'answer': 'B',
         'status': 'Publish',
         'options': [
-          {'option': 'Option A', 'optCode': 'A'},
-          {'option': 'Option B', 'optCode': 'B'},
-          {'option': 'Option C', 'optCode': 'C'}
+          {'option': 'Option A', 'code': 'A'},
+          {'option': 'Option B', 'code': 'B'},
+          {'option': 'Option C', 'code': 'C'}
         ],
         'order': 5
       },
       {
-        'question': 'Question 7 ${UniqueKey()}',
+        'question': 'Question 7',
         'answer': 'Z',
         'status': 'Publish',
         'options': [
-          {'option': 'Option X', 'optCode': 'X'},
-          {'option': 'Option Y', 'optCode': 'Y'},
-          {'option': 'Option Z', 'optCode': 'Z'}
+          {'option': 'Option X', 'code': 'X'},
+          {'option': 'Option Y', 'code': 'Y'},
+          {'option': 'Option Z', 'code': 'Z'}
         ],
         'order': 6
       },
       {
-        'question': 'Question Eight ${UniqueKey()}',
+        'question': 'Question Eight',
         'answer': 'a',
         'status': 'Publish',
         'options': [
-          {'option': 'Option a', 'optCode': 'a'},
-          {'option': 'Option b', 'optCode': 'b'}
+          {'option': 'Option a', 'code': 'a'},
+          {'option': 'Option b', 'code': 'b'}
         ],
         'order': 7
       }

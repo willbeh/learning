@@ -7,5 +7,12 @@ class VideoState with ChangeNotifier {
   Video selectedVideo;
   String selectedVideoId;
   Watch selectedWatch;
-  Series selectedSeries;
+  Series _selectedSeries;
+
+  Series get selectedSeries => _selectedSeries;
+
+  set selectedSeries(Series value) {
+    _selectedSeries = value;
+    notifyListeners();
+  }
 }

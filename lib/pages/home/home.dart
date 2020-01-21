@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:learning/models/series.dart';
+import 'package:learning/models/video.dart';
 import 'package:learning/routes/router.gr.dart';
 import 'package:learning/states/video_state.dart';
 import 'package:learning/widgets/app_drawer.dart';
@@ -24,12 +25,18 @@ class HomePage extends StatelessWidget {
       'routeName': AppRouter.myVideosPage,
       'icon': Icons.playlist_add_check,
     },
+    {
+      'title': 'Temp',
+      'routeName': AppRouter.tempPage,
+      'icon': Icons.playlist_add_check,
+    },
   ];
 
   @override
   Widget build(BuildContext context) {
     ThemeState themeState = Provider.of(context);
     List<Series> series = Provider.of(context) ?? [];
+    VideoState videoState = Provider.of(context);
 
     return Scaffold(
       body: CustomScrollView(
@@ -67,10 +74,13 @@ class HomePage extends StatelessWidget {
             SliverGrid.extent(
               maxCrossAxisExtent: 100,
               children: series.map((item){
+
                 return InkWell(
                   onTap: () {
-                    Provider.of<VideoState>(context, listen: false).selectedSeries = item;
-                    AppRouter.navigator.pushNamed(AppRouter.videoPage);
+                    // notify series if not selected
+                    if(videoState.selectedSeries?.id != item.id)
+                      videoState.selectedSeries = item;
+                    AppRouter.navigator.pushNamed(AppRouter.videoSeriesPlayerPage);
                   },
                   child: Container(
                     height: double.infinity,

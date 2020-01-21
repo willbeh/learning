@@ -3,7 +3,7 @@ import 'package:learning/utils/datetime_util.dart';
 
 part 'watch.g.dart';
 
-@JsonSerializable(anyMap: true)
+@JsonSerializable()
 class Watch {
   Watch({this.id, this.vid, this.vname, this.vpicture, this.vduration, this.uid, this.position = 0, this.furthest = 0, this.status = '', this.test = false, this.date, this.created});
 

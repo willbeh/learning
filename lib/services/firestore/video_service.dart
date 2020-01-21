@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:learning/models/video.dart';
+import 'package:learning/utils/logger.dart';
 
 class VideoService {
   static const String _col = 'videos';
+  static final log = getLogger('VideoService');
 
   static Stream<List<Video>> find({String status = 'publish'}) {
-    print('VideoService find');
     return Firestore.instance.collection(_col).where('status', isEqualTo: status).orderBy('date', descending: true).snapshots().map((list) {
       return list.documents.map((doc) {
         Map data = doc.data;
@@ -17,6 +18,9 @@ class VideoService {
   }
 
   static Stream<List<Video>> findBySeries({@required String id, String status = 'publish'}) {
+    if(id == null) {
+      return Stream.value([]);
+    }
     return Firestore.instance.collection(_col).where('sid', isEqualTo: id).where('status', isEqualTo: status).orderBy('order').snapshots().map((list) {
       return list.documents.map((doc) {
         Map data = doc.data;

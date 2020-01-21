@@ -98,7 +98,8 @@ class Vimeo {
 
 @JsonSerializable(anyMap: true)
 class Video {
-  Video({this.sid, this.vid, this.status, this.data, this.date, this.hastest, this.order, this.depend, this.vlist, this.twatch, this.tcompleted, this.ttest});
+  Video({this.sid, this.vid, this.status, this.data, this.date, this.hastest = false, this.order, this.depend, this.vlist,
+    this.twatch = 0, this.tcompleted = 0, this.ttest = 0, this.tpass = 0, this.min});
 
   String sid;
   String vid;
@@ -114,6 +115,8 @@ class Video {
   int twatch;
   int tcompleted;
   int ttest;
+  int tpass;
+  int min;
 
   factory Video.fromJson(Map<String, dynamic> json) => _$VideoFromJson(json);
 
