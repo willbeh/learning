@@ -44,6 +44,11 @@
         <string>en</string>
         <string>zh</string>
     </array>
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+    </dict>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

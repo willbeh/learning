@@ -5,7 +5,6 @@ import 'package:learning/models/watch.dart';
 
 class VideoState with ChangeNotifier {
   Video selectedVideo;
-  String selectedVideoId;
   Watch selectedWatch;
   Series _selectedSeries;
 
@@ -13,6 +12,12 @@ class VideoState with ChangeNotifier {
 
   set selectedSeries(Series value) {
     _selectedSeries = value;
+    notifyListeners();
+  }
+
+  selectVideo(Video video, Watch watch){
+    selectedVideo = video;
+    selectedWatch = watch;
     notifyListeners();
   }
 }

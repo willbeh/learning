@@ -6,7 +6,6 @@ import 'package:learning/models/answer.dart';
 import 'package:learning/models/question.dart';
 import 'package:learning/services/firestore/answer_service.dart';
 import 'package:learning/services/firestore/question_service.dart';
-import 'package:learning/services/firestore/watch_service.dart';
 import 'package:learning/states/video_state.dart';
 import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/app_button.dart';
@@ -23,8 +22,8 @@ class ExamPage extends StatelessWidget {
     FirebaseUser user = Provider.of(context);
     VideoState videoState = Provider.of(context);
 
-    if(videoState != null && videoState.selectedVideoId != null){
-      vid = videoState.selectedVideoId;
+    if(videoState != null && videoState.selectedVideo.vid != null){
+      vid = videoState.selectedVideo.vid;
       title = videoState.selectedVideo.data.name;
     }
 

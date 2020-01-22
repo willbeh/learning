@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:learning/models/series.dart';
-import 'package:learning/models/video.dart';
 import 'package:learning/routes/router.gr.dart';
 import 'package:learning/states/video_state.dart';
 import 'package:learning/widgets/app_drawer.dart';
@@ -78,8 +77,9 @@ class HomePage extends StatelessWidget {
                 return InkWell(
                   onTap: () {
                     // notify series if not selected
-                    if(videoState.selectedSeries?.id != item.id)
+                    if(videoState.selectedSeries?.id != item.id) {
                       videoState.selectedSeries = item;
+                    }
                     AppRouter.navigator.pushNamed(AppRouter.videoSeriesPlayerPage);
                   },
                   child: Container(

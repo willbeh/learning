@@ -1,16 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:learning/models/video.dart';
-import 'package:learning/states/video_state.dart';
-import 'package:learning/utils/image_util.dart';
-import 'package:learning/widgets/common_ui.dart';
-import 'package:provider/provider.dart';
 
 class VideoDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 //    Vimeo vimeo = Provider.of<VideoState>(context).selectedVideo.data;
-    final items = List<String>.generate(100, (i) => "Item $i");
-    final items2 = List<String>.generate(100, (i) => "Item 2 $i");
 
     return Scaffold(
       body: DefaultTabController(

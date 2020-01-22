@@ -264,7 +264,6 @@ class VideoPage extends StatelessWidget {
 
   _openVideo(BuildContext context, Video video, List<Watch> watchs){
     Provider.of<VideoState>(context, listen: false).selectedVideo = video;
-    Provider.of<VideoState>(context, listen: false).selectedVideoId = video.vid;
 
     if(watchs == null || watchs.length == 0) {
       Provider.of<VideoState>(context, listen: false).selectedWatch = null;
@@ -279,7 +278,6 @@ class VideoPage extends StatelessWidget {
 
   _openTest(BuildContext context, Video video, List<Watch> watchs){
     Provider.of<VideoState>(context, listen: false).selectedVideo = video;
-    Provider.of<VideoState>(context, listen: false).selectedVideoId = video.vid;
     List<Watch> getWatch = watchs.where((w) => w.vid == video.vid).toList();
     if(getWatch != null && getWatch.length > 0) {
       Provider.of<VideoState>(context, listen: false).selectedWatch = getWatch.first;

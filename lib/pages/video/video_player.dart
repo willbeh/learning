@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:learning/models/video.dart';
 import 'package:learning/models/watch.dart';
-import 'package:learning/pages/video/video_detail.dart';
 import 'package:learning/pages/video/video_question.dart';
 import 'package:learning/routes/router.gr.dart';
 import 'package:learning/services/firestore/watch_service.dart';
@@ -149,7 +148,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                                 aspectRatio:
                                     ratio, //_controller.value.aspectRatio,
                                 child: Hero(
-                                  tag: videoState?.selectedVideoId,
+                                  tag: videoState?.selectedVideo.vid,
                                   child: GestureDetector(
                                     child: VideoPlayer(_controller),
                                     onTap: () {
@@ -250,9 +249,9 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
 
   _initWatch(BuildContext context) async {
     Watch wp; // preference watch
-    if (prefs.getString(videoState.selectedVideoId) != null) {
+    if (prefs.getString(videoState.selectedVideo.vid) != null) {
       wp = Watch.fromJson(
-          jsonDecode(prefs.getString(videoState.selectedVideoId)));
+          jsonDecode(prefs.getString(videoState.selectedVideo.vid)));
     }
 
     if (videoState.selectedWatch != null) {
@@ -267,7 +266,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
       FirebaseUser user = Provider.of(context);
 
       Map<String, dynamic> data = {
-        'vid': videoState.selectedVideoId,
+        'vid': videoState.selectedVideo.vid,
         'vname': videoState.selectedVideo.data.name,
         'vpicture': videoState.selectedVideo.data.pictures.sizes[0].link,
         'vduration': videoState.selectedVideo.data.duration,
