@@ -20,7 +20,7 @@ class UserAnswer {
 
 @JsonSerializable(anyMap: true)
 class Answer {
-  Answer({this.id, this.uid, this.vid, List<UserAnswer> answers, this.status, this.correct}) : answers = answers ?? <UserAnswer>[];
+  Answer({this.id, this.uid, this.vid, List<UserAnswer> answers, this.status, this.correct, this.min}) : answers = answers ?? <UserAnswer>[];
 
   String id;
   String uid;
@@ -29,6 +29,7 @@ class Answer {
   List<UserAnswer> answers;
   String status;
   int correct;
+  int min;
 
 
   factory Answer.fromJson(Map<String, dynamic> json) => _$AnswerFromJson(json);

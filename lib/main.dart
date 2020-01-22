@@ -1,3 +1,5 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -57,6 +59,7 @@ class MyAppLoad extends StatelessWidget {
     FirebaseUser user = Provider.of(context);
     Stream<List<Watch>> watchStream = WatchService.findByUId(uid: user?.uid);
     Stream<List<Video>> videoStream = VideoService.findBySeries(id: Provider.of<VideoState>(context).selectedSeries?.id);
+    FirebaseAnalytics analytics = FirebaseAnalytics();
 
     return MultiProvider(
       providers: [
@@ -85,6 +88,9 @@ class MyAppLoad extends StatelessWidget {
         )
       ],
       child: MaterialApp(
+        navigatorObservers: [
+          FirebaseAnalyticsObserver(analytics: analytics),
+        ],
         supportedLocales: [
           Locale('en'),
           Locale('zh'),

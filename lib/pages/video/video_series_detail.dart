@@ -59,7 +59,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     VideoState videoState = Provider.of(context);
 
-    double topHeight = (maxExtent - _tabBar.preferredSize.height) * (1- shrinkOffset/(maxExtent - _tabBar.preferredSize.height));
+    double topHeight = (maxExtent - _tabBar.preferredSize.height) * (1- shrinkOffset/maxExtent);
     return new Container(
       color: Colors.white,
       child: Column(
@@ -181,14 +181,25 @@ class VideoSeriesListTile extends StatelessWidget {
         if(video.hastest != null && video.hastest)
           Divider(height: 0,),
         if(video.hastest != null && video.hastest)
-          Row(
-            children: <Widget>[
-              Container(width: 50,
-                child: Icon(Icons.library_books, size: iconSize,),
-              ),
-              Expanded(child: Text('Test - ${video.data.name}', style: Theme.of(context).textTheme.display2,)),
-              Container(width: 50, child: _buildTextIcon(cWatch))
-            ],
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 10),
+            child: Row(
+              children: <Widget>[
+                Container(width: 50,
+                  child: Icon(Icons.library_books, size: iconSize,),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text('Test (${video.data.name})', style: Theme.of(context).textTheme.display2,),
+                      Text('${video.numQues} questions', style: Theme.of(context).textTheme.display3.copyWith(color: Colors.grey),)
+                    ],
+                  ),
+                ),
+                Container(width: 50, child: _buildTextIcon(cWatch))
+              ],
+            ),
           ),
       ],
     );
@@ -198,9 +209,9 @@ class VideoSeriesListTile extends StatelessWidget {
     if(watch.status == 'completed' && watch.test) {
       return Icon(Icons.done, size: iconSize,);
     } else if(watch.status == 'completed') {
-      return IconButton(
-        icon: Icon(Icons.edit, size: iconSize),
-        onPressed: () => AppRouter.navigator.pushNamed(AppRouter.examPage),
+      return InkWell(
+        child: Icon(Icons.edit, size: iconSize),
+        onTap: () => AppRouter.navigator.pushNamed(AppRouter.examPage),
       );
     } else {
       return Icon(Icons.lock, size: iconSize);

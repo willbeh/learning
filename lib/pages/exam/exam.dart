@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:learning/app_color.dart';
 import 'package:learning/models/answer.dart';
 import 'package:learning/models/question.dart';
+import 'package:learning/models/video.dart';
 import 'package:learning/services/firestore/answer_service.dart';
 import 'package:learning/services/firestore/question_service.dart';
+import 'package:learning/services/firestore/watch_service.dart';
 import 'package:learning/states/video_state.dart';
 import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/app_button.dart';
@@ -56,13 +58,16 @@ class ExamPage extends StatelessWidget {
             },
           ),
         ],
-        child: ExamDetail(),
+        child: ExamDetail(video: videoState.selectedVideo,),
       ),
     );
   }
 }
 
 class ExamDetail extends StatefulWidget {
+  final Video video;
+
+  ExamDetail({this.video});
   @override
   _ExamDetailState createState() => _ExamDetailState();
 }
@@ -238,13 +243,13 @@ class _ExamDetailState extends State<ExamDetail> {
               textStyle: Theme.of(context).textTheme.display4.copyWith(color: Colors.white),
               onPressed: () {
                 _checkAnswers();
-//                AnswerService.update(id: _answer.id, data: {'status': 'completed', 'correct': _checkAnswers()});
-//                if(Provider.of<VideoState>(context, listen: false).selectedWatch != null){
-//                  WatchService.update(
-//                    id: Provider.of<VideoState>(context, listen: false).selectedWatch.id,
-//                    data: {'test': true}
-//                  );
-//                }
+                AnswerService.update(id: _answer.id, data: {'status': 'completed', 'correct': _checkAnswers(), 'min': widget.video.min});
+                if(Provider.of<VideoState>(context, listen: false).selectedWatch != null){
+                  WatchService.update(
+                    id: Provider.of<VideoState>(context, listen: false).selectedWatch.id,
+                    data: {'test': true}
+                  );
+                }
                 Navigator.pop(context);
               },
             )
@@ -267,13 +272,13 @@ class _ExamDetailState extends State<ExamDetail> {
       functionName: 'updateResult',
     );
 
-    log.d('${{ 'vid': _answer.vid }}');
-    _questions.forEach((q) {
-      log.d('${q.toJson()}');
-    });
-    log.d('${{ 'answer': _answer.toJson() }}');
+//    log.d('${{ 'vid': _answer.vid }}');
+//    _questions.forEach((q) {
+//      log.d('${q.toJson()}');
+//    });
+//    log.d('${{ 'answer': _answer.toJson() }}');
 
-    callable.call(<String, dynamic>{ 'vid': _answer.vid, 'questions': _questions.map((q) => q.toJson()).toList(), 'answer': _answer.toJson() }
+    callable.call(<String, dynamic>{ 'vid': _answer.vid, 'min': widget.video.min, 'questions': _questions.map((q) => q.toJson()).toList(), 'answer': _answer.toJson() }
     ).then((res) {
       log.d('OK ${res.toString()}');
     }).catchError((error){

@@ -114,7 +114,9 @@ Video _$VideoFromJson(Map json) {
     tcompleted: json['tcompleted'] as int,
     ttest: json['ttest'] as int,
     tpass: json['tpass'] as int,
+    tfail: json['tfail'] as int,
     min: json['min'] as int,
+    numQues: json['numQues'] as int,
   );
 }
 
@@ -132,5 +134,7 @@ Map<String, dynamic> _$VideoToJson(Video instance) => <String, dynamic>{
       'tcompleted': instance.tcompleted,
       'ttest': instance.ttest,
       'tpass': instance.tpass,
+      'tfail': instance.tfail,
       'min': instance.min,
+      'numQues': instance.numQues,
     };

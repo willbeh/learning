@@ -33,6 +33,7 @@ Answer _$AnswerFromJson(Map json) {
         ?.toList(),
     status: json['status'] as String,
     correct: json['correct'] as int,
+    min: json['min'] as int,
   );
 }
 
@@ -43,4 +44,5 @@ Map<String, dynamic> _$AnswerToJson(Answer instance) => <String, dynamic>{
       'answers': UserAnswer.utilToJson(instance.answers),
       'status': instance.status,
       'correct': instance.correct,
+      'min': instance.min,
     };
