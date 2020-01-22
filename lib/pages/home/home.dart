@@ -15,11 +15,6 @@ class HomePage extends StatelessWidget {
       'icon': Icons.video_library,
     },
     {
-      'title': 'Exam',
-      'routeName': AppRouter.examPage,
-      'icon': Icons.border_color,
-    },
-    {
       'title': 'History',
       'routeName': AppRouter.myVideosPage,
       'icon': Icons.playlist_add_check,

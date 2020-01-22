@@ -1,11 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:learning/models/answer.dart';
 import 'package:learning/models/video.dart';
 import 'package:learning/models/watch.dart';
 import 'package:learning/routes/router.gr.dart';
+import 'package:learning/services/firestore/answer_service.dart';
 import 'package:learning/states/video_state.dart';
 import 'package:learning/utils/datetime_util.dart';
 import 'package:learning/utils/logger.dart';
+import 'package:learning/widgets/app_stream_builder.dart';
 import 'package:learning/widgets/common_ui.dart';
 import 'package:provider/provider.dart';
 
@@ -127,6 +131,7 @@ class VideoSeriesListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     VideoState videoState = Provider.of(context);
     List<Watch> watchs = Provider.of(context);
+    FirebaseUser user = Provider.of(context);
     bool depend = _checkDependancy(watchs);
 
     Watch cWatch;
@@ -157,6 +162,7 @@ class VideoSeriesListTile extends StatelessWidget {
                       value: 0,
                     ) : LinearProgressIndicator(
                       value: cWatch.position/video.data.duration,
+                      backgroundColor: Colors.grey.shade50,
                     )
                   ],
                 ),
@@ -180,7 +186,7 @@ class VideoSeriesListTile extends StatelessWidget {
         ),
         if(video.hastest != null && video.hastest)
           Divider(height: 0,),
-        if(video.hastest != null && video.hastest)
+        if(video.hastest != null && video.hastest && cWatch != null)
           Container(
             padding: EdgeInsets.symmetric(vertical: 10),
             child: Row(
@@ -193,7 +199,16 @@ class VideoSeriesListTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text('Test (${video.data.name})', style: Theme.of(context).textTheme.display2,),
-                      Text('${video.numQues} questions', style: Theme.of(context).textTheme.display3.copyWith(color: Colors.grey),)
+                      if(cWatch != null && cWatch.status != 'completed')
+                        Text('${video.numQues} questions', style: Theme.of(context).textTheme.display3.copyWith(color: Colors.grey),),
+                      if(cWatch != null && cWatch.status == 'completed')
+                        AppStreamBuilder(
+                          stream: AnswerService.findByUId(vid: video.vid, uid: user.uid),
+                          fn: _buildAnswer,
+                          fnLoading: _buildNoAnswer,
+                          fnNone: _buildNoAnswer,
+                          fnError: _buildNoAnswerError,
+                        ),
                     ],
                   ),
                 ),
@@ -205,9 +220,28 @@ class VideoSeriesListTile extends StatelessWidget {
     );
   }
 
+  Widget _buildAnswer(BuildContext context, Answer answer){
+    int count = 0;
+    if(answer != null){
+      count = answer.answers.length;
+    }
+    return Text('$count/${video.numQues}', style: Theme.of(context).textTheme.display3.copyWith(color: Colors.grey),);
+  }
+
+  Widget _buildNoAnswer(BuildContext context){
+    return Text('0/${video.numQues}', style: Theme.of(context).textTheme.display3.copyWith(color: Colors.grey),);
+  }
+
+  Widget _buildNoAnswerError(BuildContext context, error){
+    return Text('0/${video.numQues}', style: Theme.of(context).textTheme.display3.copyWith(color: Colors.grey),);
+  }
+
   Widget _buildTextIcon(Watch watch){
     if(watch.status == 'completed' && watch.test) {
-      return Icon(Icons.done, size: iconSize,);
+      return InkWell(
+        child: Icon(Icons.done, size: iconSize,),
+        onTap: () => AppRouter.navigator.pushNamed(AppRouter.examPage),
+      );
     } else if(watch.status == 'completed') {
       return InkWell(
         child: Icon(Icons.edit, size: iconSize),

@@ -66,6 +66,7 @@ class MyAppLoad extends StatelessWidget {
 
         StreamProvider<List<Watch>>.value(
           value: watchStream,
+          lazy: false,
           catchError: (context, error) {
             log.w('watchStream error $error');
             return;

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:learning/utils/datetime_util.dart';
 import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/app_video_progress_bar.dart';
-import 'package:learning/widgets/common_ui.dart';
 import 'package:video_player/video_player.dart';
 
 class AppVideoControl extends StatefulWidget {

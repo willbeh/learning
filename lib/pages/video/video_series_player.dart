@@ -40,8 +40,9 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if(videoState?.selectedVideo != null && _currentVideo != videoState.selectedVideo){
-      log.d('_currentVideo Load');
+    videos = Provider.of(context);
+    videoState = Provider.of<VideoState>(context);
+    if(videoState?.selectedVideo != null && _currentVideo?.vid != videoState.selectedVideo.vid){
       if(_controller != null){
         _currentVideo = videoState.selectedVideo;
         _controller.dispose();
@@ -49,9 +50,6 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
       }
     }
     if(!_isLoaded){
-      videos = Provider.of(context);
-      videoState = Provider.of<VideoState>(context);
-
       if(videos == null || videos.length == 0){
         return;
       }
@@ -59,8 +57,6 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
       if(videoState.selectedSeries.id != videos[0].sid){
         return;
       }
-
-      log.d('Loaded');
 
       prefs = Provider.of(context);
 
@@ -70,7 +66,6 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
       _setupController(context);
 
       _isLoaded = true;
-      log.d('is loaded');
     }
   }
 
@@ -123,6 +118,15 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     Wakelock.disable();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.blue, //or set color with: Color(0xFF0000FF)
+    ));
   }
 
   @override
@@ -245,10 +249,7 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
     List<Video> videos = Provider.of(context);
     videoState = Provider.of(context);
 
-    log.d('_setSelectedVideo process');
-
     if(watchs == null || watchs.length == 0){
-      log.d('watchs null');
       videoState.selectedWatch = null;
       videoState.selectedVideo = videos[0];
 //      setState(() {});
@@ -256,11 +257,8 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
     }
 
     for(int i=0; i<watchs.length; i++){
-      log.d('w ${watchs[i].toJson()}');
       for(int j=0; j<videos.length; j++) {
-        log.d('v ${watchs[i].toJson()}');
         if(videos[j].vid == watchs[i].vid){
-          log.d('video ${videos[j].toJson()}');
           videoState.selectedVideo = videos[j];
           videoState.selectedWatch = watchs[i];
 //          setState(() {});
@@ -279,6 +277,8 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
           jsonDecode(prefs.getString(videoState.selectedVideo.vid)));
     }
 
+    log.d('${videoState.selectedVideo.vid} & ${videoState.selectedWatch}');
+
     if (videoState.selectedWatch != null) {
       // preference watch is further than firestore
       if (wp != null && wp.furthest > videoState.selectedWatch.furthest) {
@@ -289,6 +289,8 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
     } else {
       // insert a new document if not exist
       FirebaseUser user = Provider.of(context);
+
+      log.d('user ${user.uid}');
 
       Map<String, dynamic> data = {
         'vid': videoState.selectedVideo.vid,
@@ -304,6 +306,8 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
         'created': DateTime.now(),
       };
 
+      log.d('${data}');
+
       WatchService.insert(data).then((w) {
         data['id'] = w.documentID;
         if (wp != null && wp.furthest > 0) {
@@ -312,6 +316,7 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
         } else {
           _watch = Watch.fromJson(data);
         }
+        videoState.selectedWatch = _watch;
         prefs.setString(w.documentID, jsonEncode(_watch.toJson()));
       }).catchError((error) {
         log.w('Insert watch error $error');
@@ -379,7 +384,6 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
   }
 
   _updateWatchDocument(Map<String, dynamic> data) {
-    log.d('_updateWatchDocument $data');
     if (_watch != null && _watch.id != '') {
       WatchService.update(id: _watch.id, data: data).catchError((error) {
         log.w('Update error $error');

@@ -1,36 +1,31 @@
 import 'package:flutter/material.dart';
 import '../utils/logger.dart';
 
-class AppStreamBuilder extends StatelessWidget {
-  final Stream stream;
+class AppFutureBuilder extends StatelessWidget {
+  final Future future;
   final Function fn;
   final Function fnLoading;
   final Function fnNone;
   final Function fnError;
   final bool showLoading;
 
-  final log = getLogger('AppStreamBuilder');
+  final log = getLogger('AppFutureBuilder');
 
-  AppStreamBuilder({@required this.stream, @required this.fn, this.fnLoading, this.fnNone, this.fnError, this.showLoading = true});
+  AppFutureBuilder({@required this.future, @required this.fn, this.fnLoading, this.fnNone, this.fnError, this.showLoading = true});
 
   @override
   Widget build(BuildContext context) {
 
-    return StreamBuilder(
-      stream: stream,
+    return FutureBuilder(
+      future: future,
       builder: (context, AsyncSnapshot snapshot) {
         if (snapshot.hasError) {
           log.w('snapshot error ${snapshot.error}');
-          if(fnError != null)
-            return fnError(context, snapshot.error);
-          return AppStreamError(error: 'Error: ${snapshot.error}',);
+          return (fnError == null) ? AppStreamError(error: 'Error: ${snapshot.error}',) : fnError(context, snapshot.error);
         }
-
         switch (snapshot.connectionState) {
           case ConnectionState.none:
 //            log.d('Connection None');
-            if(fnNone != null)
-              return fnNone(context);
             return AppStreamNone();
             break;
 
@@ -43,7 +38,11 @@ class AppStreamBuilder extends StatelessWidget {
             break;
 
           case ConnectionState.done:
-            return Text('\$${snapshot.data} (closed)');
+            if(!snapshot.hasData) {
+              return (fnNone == null) ? AppStreamNone() : fnNone(context);
+            }
+
+            return fn(context, snapshot.data);
             break;
 
           case ConnectionState.active:

@@ -17,9 +17,9 @@ class Watch {
   int furthest;
   bool test;
   String status;
-  @JsonKey(fromJson: DateTimeUtil.fromTimestamp)
+  @JsonKey(fromJson: DateTimeUtil.fromTimestamp, toJson: DateTimeUtil.toTimestamp)
   DateTime date;
-  @JsonKey(fromJson: DateTimeUtil.fromTimestamp)
+  @JsonKey(fromJson: DateTimeUtil.fromTimestamp, toJson: DateTimeUtil.toTimestamp)
   DateTime created;
 
 

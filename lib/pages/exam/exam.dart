@@ -248,7 +248,7 @@ class _ExamDetailState extends State<ExamDetail> {
                   WatchService.update(
                     id: Provider.of<VideoState>(context, listen: false).selectedWatch.id,
                     data: {'test': true}
-                  );
+                  ).catchError((error) => log.d('error WatchService update $error'));
                 }
                 Navigator.pop(context);
               },
@@ -333,6 +333,10 @@ class _ExamQuestionState extends State<ExamQuestion> {
 
   @override
   Widget build(BuildContext context) {
+    if(widget.answer == null){
+      return Container();
+    }
+
     Color boxColor = Theme.of(context).primaryColor;
     if (widget.answer?.status == 'completed') {
       if(_answer == widget.question.answer){
