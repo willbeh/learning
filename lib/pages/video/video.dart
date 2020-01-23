@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:learning/models/video.service.dart';
 import 'package:learning/services/firestore/question_service.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:provider/provider.dart';
@@ -61,9 +62,11 @@ class VideoPage extends StatelessWidget {
         ],
       ),
       body: AppStreamBuilder(
-        stream: (videoState.selectedSeries != null)
-            ? VideoService.findBySeries(id: videoState.selectedSeries.id)
-            : VideoService.find(),
+//        stream: (videoState.selectedSeries != null)
+//            ? VideoService.findBySeries(id: videoState.selectedSeries.id)
+//            : VideoService.find(),
+        stream: VideoFirebaseService.find(orderField: 'date', descending: true,
+        ),
         fn: _buildPage,
       ),
     );

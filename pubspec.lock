@@ -253,6 +253,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.1+1"
+  firebase_service_generator:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: "0.0.4"
+      resolved-ref: "605cc1d842ce1782485014da2ba8439a9062e576"
+      url: "https://bitbucket.org/william_recursivex/firebase_service_generator.git"
+    source: git
+    version: "0.0.4"
   fixnum:
     dependency: transitive
     description:
@@ -599,7 +608,7 @@ packages:
       name: source_gen
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.9.4+6"
+    version: "0.9.4+7"
   source_span:
     dependency: transitive
     description:

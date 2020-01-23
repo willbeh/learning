@@ -47,7 +47,7 @@ class ExamPage extends StatelessWidget {
           StreamProvider<Answer>.value(value: answerStream, lazy: false,
             catchError: (_, error) {
               if(error.toString().contains('No element'))
-                AnswerService.insert({
+                AnswerService.insert(data: {
                   'uid': user.uid,
                   'vid': vid,
                   'status': 'draft',

@@ -1,3 +1,4 @@
+import 'package:firebase_service_generator/firebase_service.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:learning/utils/datetime_util.dart';
 
@@ -96,6 +97,7 @@ class Vimeo {
   }
 }
 
+@FirebaseService(name: 'video', col: 'videos')
 @JsonSerializable(anyMap: true)
 class Video {
   Video({this.sid, this.vid, this.status, this.data, this.date, this.hastest = false, this.order, this.depend, this.vlist,
