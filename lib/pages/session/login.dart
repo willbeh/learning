@@ -32,116 +32,127 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return LoadingStackScreen(
       isLoading: _isLoading,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('${AppTranslate.text(context, 'login_title')}'),
-          centerTitle: true,
-        ),
-        backgroundColor: AppColor.greyLightBg,
-        body: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            if(_initHeight == 0)
-              _initHeight = constraints.constrainHeight();
+      child: Stack(
+        children: <Widget>[
+          Scaffold(
+            backgroundColor: Theme.of(context).accentColor,
+          ),
+          Align(
+            alignment: Alignment.topLeft,
+            child: Image.asset('assets/images/brand/yellow_flower.png', ),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Image.asset('assets/images/brand/green_leave.png'),
+          ),
+          Scaffold(
+            appBar: AppBar(
+              title: Text('${AppTranslate.text(context, 'login_title')}'),
+              centerTitle: true,
+            ),
+            backgroundColor: Colors.transparent,
+            body: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                if(_initHeight == 0)
+                  _initHeight = constraints.constrainHeight();
 
-            return SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    height: ((_initHeight == 0) ? constraints.constrainHeight() : _initHeight) - 44,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                        _buildEmailSignIn(context),
-                        FlatButton(
-                          child: Text('${AppTranslate.text(context, 'login_forget')}', style: Theme.of(context).textTheme.display2.copyWith(color: Theme.of(context).primaryColor),),
-                          onPressed: () => AppRouter.navigator.pushNamed(AppRouter.forgetPage),
+                return SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        height: ((_initHeight == 0) ? constraints.constrainHeight() : _initHeight) - 44,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            _buildEmailSignIn(context),
+                            InkWell(
+                              child: Text('${AppTranslate.text(context, 'login_forget')}', style: Theme.of(context).textTheme.display2.copyWith(color: Colors.white),),
+                              onTap: () => AppRouter.navigator.pushNamed(AppRouter.forgetPage),
+                            ),
+                            _buildSocialSignIn(context)
+                          ],
                         ),
-                        _buildSocialSignIn(context)
-                      ],
-                    ),
+                      ),
+                      Container(
+                        color: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text('${AppTranslate.text(context, 'login_donot')}', style: Theme.of(context).textTheme.display2,),
+                            Text('${AppTranslate.text(context, 'login_signup')}', style: Theme.of(context).textTheme.display2.copyWith(fontWeight: FontWeight.bold ,color: Theme.of(context).primaryColor),),
+                          ],
+                        ),
+                      )
+                    ],
                   ),
-                  Container(
-                    color: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text('${AppTranslate.text(context, 'login_donot')}', style: Theme.of(context).textTheme.display2,),
-                        Text('${AppTranslate.text(context, 'login_signup')}', style: Theme.of(context).textTheme.display2.copyWith(fontWeight: FontWeight.w500 ,color: Theme.of(context).primaryColor),),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            );
-          },
-        ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
   
   Widget _buildEmailSignIn(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-//      width: MediaQuery.of(context).size.width - 40,
-      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 30),
-      decoration: BoxDecoration(
-//        border: Border.all(color: Theme.of(context).primaryColor),
-        borderRadius: BorderRadius.circular(5),
-        color: Colors.white,
-      ),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          children: <Widget>[
-            AppTextField(
-              controller: emailCtrl,
-              label: '${AppTranslate.text(context, 'login_email')}',
-              keyboardType: TextInputType.emailAddress,
-              borderColor: AppColor.greyLight,
-              validatorFn: (String value) {
-                if(value.trim() == '')
-                  return '${AppTranslate.text(context, 'login_email_err')}';
+    return Card(
+      margin: EdgeInsets.fromLTRB(25, 20, 25, 20),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 30),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: <Widget>[
+              AppTextField(
+                controller: emailCtrl,
+                label: '${AppTranslate.text(context, 'login_email')}',
+                keyboardType: TextInputType.emailAddress,
+                borderColor: AppColor.greyLight,
+                validatorFn: (String value) {
+                  if(value.trim() == '')
+                    return '${AppTranslate.text(context, 'login_email_err')}';
 
-                if(!AppText.validateEmail(value))
-                  return '${AppTranslate.text(context, 'login_email_err_valid')}';
+                  if(!AppText.validateEmail(value))
+                    return '${AppTranslate.text(context, 'login_email_err_valid')}';
 
-                return null;
-              },
-              onFieldSubmittedFn: (_) {
-                FocusScope.of(context).requestFocus(_passwordFocus);
-              },
-            ),
-            CommonUI.heightPadding(),
-            AppTextField(
-              controller: passwordCtrl,
-              label: '${AppTranslate.text(context, 'login_password')}',
-              errorMsg: '${AppTranslate.text(context, 'login_password_err')}',
-              obscureText: _obscurePassword,
-              borderColor: AppColor.greyLight,
-              textInputAction: TextInputAction.done,
-              focusNode: _passwordFocus,
-              onFieldSubmittedFn: (_) {
-                _signInEmail();
-              },
-              suffixIcon: InkWell(
-                onTap: () {
-                  setState(() {
-                    _obscurePassword = !_obscurePassword;
-                  });
+                  return null;
                 },
-                child: Icon((_obscurePassword) ? Icons.visibility_off : Icons.visibility),
+                onFieldSubmittedFn: (_) {
+                  FocusScope.of(context).requestFocus(_passwordFocus);
+                },
               ),
-            ),
-            CommonUI.heightPadding(),
-            AppButton.roundedButton(
-              context,
-              text: 'Login',
-              onPressed: () => _signInEmail(), // Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.routeHomePage, (route) => false),
-              color: Theme.of(context).primaryColor,
-              width: MediaQuery.of(context).size.width,
-            ),
-          ],
+              CommonUI.heightPadding(height: 15),
+              AppTextField(
+                controller: passwordCtrl,
+                label: '${AppTranslate.text(context, 'login_password')}',
+                errorMsg: '${AppTranslate.text(context, 'login_password_err')}',
+                obscureText: _obscurePassword,
+                borderColor: AppColor.greyLight,
+                textInputAction: TextInputAction.done,
+                focusNode: _passwordFocus,
+                onFieldSubmittedFn: (_) {
+                  _signInEmail();
+                },
+                suffixIcon: InkWell(
+                  onTap: () {
+                    setState(() {
+                      _obscurePassword = !_obscurePassword;
+                    });
+                  },
+                  child: Icon((_obscurePassword) ? Icons.visibility_off : Icons.visibility),
+                ),
+              ),
+              CommonUI.heightPadding(height: 30),
+              AppButton.roundedButton(
+                context,
+                text: 'Login',
+                onPressed: () => _signInEmail(), // Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.routeHomePage, (route) => false),
+                color: Theme.of(context).primaryColor,
+                width: MediaQuery.of(context).size.width,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -156,7 +167,7 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Container(width: MediaQuery.of(context).size.width/2 - 85, child: AppDottedSeparator(color: AppColor.greyDottedLine,)),
-              Text('or continue with', style: Theme.of(context).textTheme.display2,),
+              Text('or continue with', style: Theme.of(context).textTheme.display2.copyWith(fontWeight: FontWeight.bold),),
               Container(width: MediaQuery.of(context).size.width/2 - 85, child: AppDottedSeparator(color: AppColor.greyDottedLine,)),
             ],
           ),
@@ -167,7 +178,7 @@ class _LoginPageState extends State<LoginPage> {
               _buildSocialButton( context,
                 text: 'Facebook',
                 color: AppColor.facebook,
-                icon: Image.asset('assets/images/icons/facebook.png', height: 30,)
+                icon: Image.asset('assets/images/icons/facebook_512.png', height: 30,)
               ),
               _buildSocialButton( context,
                 text: 'Google',

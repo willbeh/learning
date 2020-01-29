@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:learning/routes/router.gr.dart';
+import 'package:learning/widgets/app_button.dart';
+import 'package:learning/widgets/common_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:flare_flutter/flare_actor.dart';
 
@@ -11,19 +15,13 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+  Timer _timer;
 
   @override
   void initState() {
     super.initState();
 
-    Future.delayed(Duration(seconds: 3), () {
-      FirebaseUser user = Provider.of<FirebaseUser>(context, listen: false);
-      if(user == null){
-        AppRouter.navigator.pushNamedAndRemoveUntil(AppRouter.loginPage, (route)=>false);
-      } else {
-        AppRouter.navigator.pushNamedAndRemoveUntil(AppRouter.homePage, (route)=>false);
-      }
-    });
+    _setTimer();
   }
 
   @override
@@ -34,26 +32,57 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          // Box decoration takes a gradient
-          gradient: LinearGradient(
-            // Where the linear gradient begins and ends
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-            // Add one stop for each color. Stops should increase from 0 to 1
-            stops: [0.1, 0.9],
-            colors: [
-              Colors.white,
-              Theme.of(context).primaryColorLight,
-            ],
+      body: GestureDetector(
+        onLongPress: () {
+          _timer.cancel();
+          CommonUI.alertBox(context, title: 'We are the best',
+            msg: 'Look us up at RecursiveX',
+            actions: [
+              AppButton.roundedButton(context,
+                  text: 'Okay',
+                  paddingVertical: 5,
+                  textStyle: Theme.of(context).textTheme.display4.copyWith(color: Colors.white),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    _setTimer(seconds: 1);
+                  }
+              )
+            ]
+          );
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).accentColor,
+            // Box decoration takes a gradient
+//            gradient: LinearGradient(
+//              // Where the linear gradient begins and ends
+//              begin: Alignment.topLeft,
+//              end: Alignment.bottomRight,
+//              // Add one stop for each color. Stops should increase from 0 to 1
+//              stops: [0.7, 0.9],
+//              colors: [
+//                Theme.of(context).accentColor,
+//                Theme.of(context).primaryColor,
+//              ],
+//            ),
           ),
-        ),
-        child: Center(
-          child: FlareActor("assets/flare/lion.flr", alignment:Alignment.center, fit:BoxFit.contain, animation:"animation"),
+          child: Center(
+            child: FlareActor("assets/flare/lion.flr", alignment:Alignment.center, fit:BoxFit.contain, animation:"animation"),
+          ),
         ),
       ),
     );
+  }
+
+  _setTimer({int seconds = 4}) {
+    _timer = Timer(Duration(seconds: seconds), () {
+      FirebaseUser user = Provider.of<FirebaseUser>(context, listen: false);
+      if(user == null){
+        AppRouter.navigator.pushNamedAndRemoveUntil(AppRouter.loginPage, (route)=>false);
+      } else {
+        AppRouter.navigator.pushNamedAndRemoveUntil(AppRouter.homePage, (route)=>false);
+      }
+    });
   }
 
 
