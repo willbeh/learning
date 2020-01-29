@@ -34,6 +34,6 @@ Map<String, dynamic> _$WatchToJson(Watch instance) => <String, dynamic>{
       'furthest': instance.furthest,
       'test': instance.test,
       'status': instance.status,
-      'date': DateTimeUtil.toTimestamp(instance.date),
-      'created': DateTimeUtil.toTimestamp(instance.created),
+      'date': instance.date?.toIso8601String(),
+      'created': instance.created?.toIso8601String(),
     };

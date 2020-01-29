@@ -8,7 +8,7 @@ import 'package:learning/models/video.dart';
 import 'package:learning/models/watch.dart';
 import 'package:learning/pages/video/video_question.dart';
 import 'package:learning/routes/router.gr.dart';
-import 'package:learning/services/firestore/watch_service.dart';
+import 'package:learning/models/watch.service.dart';
 import 'package:learning/states/video_state.dart';
 import 'package:learning/utils/datetime_util.dart';
 import 'package:learning/utils/image_util.dart';
@@ -279,7 +279,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
         'created': DateTime.now(),
       };
 
-      WatchService.insert(data).then((w) {
+      WatchFirebaseService.insert(data: data).then((w) {
         data['id'] = w.documentID;
         if (wp != null && wp.furthest > 0) {
           _watch.id = w.documentID;
@@ -377,7 +377,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
   _updateWatchDocument(Map<String, dynamic> data) {
     log.d('_updateWatchDocument $data');
     if (_watch != null && _watch.id != '') {
-      WatchService.update(id: _watch.id, data: data).catchError((error) {
+      WatchFirebaseService.update(id: _watch.id, data: data).catchError((error) {
         log.w('Update error $error');
       });
     }

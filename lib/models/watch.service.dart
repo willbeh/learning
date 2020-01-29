@@ -6,13 +6,12 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'category.dart';
+import 'watch.dart';
 
-class CategoryFirebaseService {
-  static CollectionReference colRef =
-      Firestore.instance.collection('categories');
+class WatchFirebaseService {
+  static CollectionReference colRef = Firestore.instance.collection('watch');
 
-  static Stream<List<Category>> find(
+  static Stream<List<Watch>> find(
       {Query query, dynamic orderField, bool descending = false}) {
     Query inColRef = colRef;
     if (query != null) {
@@ -25,12 +24,12 @@ class CategoryFirebaseService {
       return list.documents.map((doc) {
         Map data = doc.data;
         data['id'] = doc.documentID;
-        return Category.fromJson(data);
+        return Watch.fromJson(data);
       }).toList();
     });
   }
 
-  static Stream<List<Category>> findById(
+  static Stream<List<Watch>> findById(
       {@required String id, dynamic orderField, bool descending = false}) {
     Query inColRef = colRef;
     inColRef.where('id', isEqualTo: id);
@@ -41,7 +40,7 @@ class CategoryFirebaseService {
       return list.documents.map((doc) {
         Map data = doc.data;
         data['id'] = doc.documentID;
-        return Category.fromJson(data);
+        return Watch.fromJson(data);
       }).toList();
     });
   }

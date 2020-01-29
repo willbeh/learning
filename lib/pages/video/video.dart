@@ -32,7 +32,7 @@ class VideoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    VideoState videoState = Provider.of(context);
+//    VideoState videoState = Provider.of(context);
     
     return Scaffold(
       appBar: AppBar(

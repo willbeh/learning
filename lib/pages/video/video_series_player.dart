@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:learning/models/video.dart';
 import 'package:learning/models/watch.dart';
 import 'package:learning/pages/video/video_series_detail.dart';
-import 'package:learning/services/firestore/watch_service.dart';
 import 'package:learning/states/video_state.dart';
 import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/app_loading_container.dart';
@@ -17,6 +16,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wakelock/wakelock.dart';
+import 'package:learning/models/watch.service.dart';
 
 class VideoSeriesPlayerPage extends StatefulWidget {
   @override
@@ -187,7 +187,7 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
         _buildPlayer(context, orientation),
         if(haveSelectedVideo && orientation == Orientation.portrait)
           Container(
-            height: MediaQuery.of(context).size.height - height - 24,
+            height: MediaQuery.of(context).size.height - height - 35,
             child: VideoSeriesDetail(),
           )
       ],
@@ -290,32 +290,58 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
       // insert a new document if not exist
       FirebaseUser user = Provider.of(context);
 
-      log.d('user ${user.uid}');
+//      log.d('user ${user.uid}');
+//
+//      Map<String, dynamic> data = {
+//        'vid': videoState.selectedVideo.vid,
+//        'vname': videoState.selectedVideo.data.name,
+//        'vpicture': videoState.selectedVideo.data.pictures.sizes[0].link,
+//        'vduration': videoState.selectedVideo.data.duration,
+//        'uid': user.uid,
+//        'position': 0,
+//        'furthest': 0,
+//        'test': false,
+//        'status': '',
+//        'date': DateTime.now(),
+//        'created': DateTime.now(),
+//      };
 
-      Map<String, dynamic> data = {
-        'vid': videoState.selectedVideo.vid,
-        'vname': videoState.selectedVideo.data.name,
-        'vpicture': videoState.selectedVideo.data.pictures.sizes[0].link,
-        'vduration': videoState.selectedVideo.data.duration,
-        'uid': user.uid,
-        'position': 0,
-        'furthest': 0,
-        'test': false,
-        'status': '',
-        'date': DateTime.now(),
-        'created': DateTime.now(),
-      };
+      Watch newWatch = Watch(
+        vid: videoState.selectedVideo.vid,
+        vname: videoState.selectedVideo.data.name,
+        vpicture: videoState.selectedVideo.data.pictures.sizes[0].link,
+        vduration: videoState.selectedVideo.data.duration,
+        uid: user.uid,
+        position: 0,
+        furthest: 0,
+        test: false,
+        status: '',
+        date: DateTime.now(),
+        created: DateTime.now(),
+      );
 
-      log.d('${data}');
+//      log.d('${newWatch.toJson()}');
 
-      WatchService.insert(data).then((w) {
-        data['id'] = w.documentID;
-        if (wp != null && wp.furthest > 0) {
-          _watch.id = w.documentID;
-          _watch = wp;
-        } else {
-          _watch = Watch.fromJson(data);
-        }
+//      WatchService.insert(newWatch.toJson()).then((w) {
+////        data['id'] = w.documentID;
+////        if (wp != null && wp.furthest > 0) {
+////          _watch.id = w.documentID;
+////          _watch = wp;
+////        } else {
+////          _watch = Watch.fromJson(data);
+////        }
+//
+//        newWatch.id = w.documentID;
+//        _watch = newWatch;
+//        videoState.selectedWatch = _watch;
+//        prefs.setString(w.documentID, jsonEncode(_watch.toJson()));
+//      }).catchError((error) {
+//        log.w('Insert watch error $error');
+//      });
+
+      WatchFirebaseService.insert(data: newWatch.toJson()).then((w) {
+        newWatch.id = w.documentID;
+        _watch = newWatch;
         videoState.selectedWatch = _watch;
         prefs.setString(w.documentID, jsonEncode(_watch.toJson()));
       }).catchError((error) {
@@ -385,7 +411,7 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
 
   _updateWatchDocument(Map<String, dynamic> data) {
     if (_watch != null && _watch.id != '') {
-      WatchService.update(id: _watch.id, data: data).catchError((error) {
+      WatchFirebaseService.update(id: _watch.id, data: data).catchError((error) {
         log.w('Update error $error');
       });
     }

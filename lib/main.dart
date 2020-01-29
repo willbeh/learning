@@ -13,7 +13,7 @@ import 'package:learning/pages/splash.dart';
 import 'package:learning/routes/router.gr.dart';
 import 'package:learning/services/firestore/series_service.dart';
 import 'package:learning/services/firestore/video_service.dart';
-import 'package:learning/services/firestore/watch_service.dart';
+import 'package:learning/models/watch.service.dart';
 import 'package:learning/services/user_repository.dart';
 import 'package:learning/states/theme_state.dart';
 import 'package:learning/states/video_state.dart';
@@ -57,7 +57,7 @@ class MyAppLoad extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     FirebaseUser user = Provider.of(context);
-    Stream<List<Watch>> watchStream = WatchService.findByUId(uid: user?.uid);
+    Stream<List<Watch>> watchStream = WatchFirebaseService.find(query: WatchFirebaseService.colRef.where('uid', isEqualTo: user?.uid));
     Stream<List<Video>> videoStream = VideoService.findBySeries(id: Provider.of<VideoState>(context).selectedSeries?.id);
     FirebaseAnalytics analytics = FirebaseAnalytics();
 

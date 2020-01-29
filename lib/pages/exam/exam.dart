@@ -7,7 +7,7 @@ import 'package:learning/models/question.dart';
 import 'package:learning/models/video.dart';
 import 'package:learning/services/firestore/answer_service.dart';
 import 'package:learning/services/firestore/question_service.dart';
-import 'package:learning/services/firestore/watch_service.dart';
+import 'package:learning/models/watch.service.dart';
 import 'package:learning/states/video_state.dart';
 import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/app_button.dart';
@@ -245,7 +245,7 @@ class _ExamDetailState extends State<ExamDetail> {
                 _checkAnswers();
                 AnswerService.update(id: _answer.id, data: {'status': 'completed', 'correct': _checkAnswers(), 'min': widget.video.min});
                 if(Provider.of<VideoState>(context, listen: false).selectedWatch != null){
-                  WatchService.update(
+                  WatchFirebaseService.update(
                     id: Provider.of<VideoState>(context, listen: false).selectedWatch.id,
                     data: {'test': true}
                   ).catchError((error) => log.d('error WatchService update $error'));
