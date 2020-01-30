@@ -12,7 +12,6 @@ import 'package:learning/models/video.dart';
 import 'package:learning/models/watch.dart';
 import 'package:learning/pages/splash.dart';
 import 'package:learning/routes/router.gr.dart';
-import 'package:learning/services/firestore/series_service.dart';
 import 'package:learning/models/video.service.dart';
 import 'package:learning/models/watch.service.dart';
 import 'package:learning/services/user_repository.dart';

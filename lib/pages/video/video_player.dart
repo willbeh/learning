@@ -148,7 +148,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                                 aspectRatio:
                                     ratio, //_controller.value.aspectRatio,
                                 child: Hero(
-                                  tag: videoState?.selectedVideo.vid,
+                                  tag: videoState.selectedVideo.vid,
                                   child: GestureDetector(
                                     child: VideoPlayer(_controller),
                                     onTap: () {
