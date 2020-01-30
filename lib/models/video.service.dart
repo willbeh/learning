@@ -29,6 +29,24 @@ class VideoFirebaseService {
     });
   }
 
+  static Stream<Video> findOne(
+      {Query query, dynamic orderField, bool descending = false}) {
+    Query inColRef = colRef;
+    if (query != null) {
+      inColRef = query;
+    }
+    if (orderField != null) {
+      inColRef = inColRef.orderBy(orderField, descending: descending);
+    }
+    return inColRef.snapshots().map((list) {
+      return list.documents.map((doc) {
+        Map data = doc.data;
+        data['id'] = doc.documentID;
+        return Video.fromJson(data);
+      }).first;
+    });
+  }
+
   static Stream<List<Video>> findById(
       {@required String id, dynamic orderField, bool descending = false}) {
     Query inColRef = colRef;

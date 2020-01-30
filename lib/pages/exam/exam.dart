@@ -3,10 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:learning/app_color.dart';
 import 'package:learning/models/answer.dart';
+import 'package:learning/models/answer.service.dart';
 import 'package:learning/models/question.dart';
+import 'package:learning/models/question.service.dart';
 import 'package:learning/models/video.dart';
-import 'package:learning/services/firestore/answer_service.dart';
-import 'package:learning/services/firestore/question_service.dart';
 import 'package:learning/models/watch.service.dart';
 import 'package:learning/states/video_state.dart';
 import 'package:learning/utils/logger.dart';
@@ -29,8 +29,10 @@ class ExamPage extends StatelessWidget {
       title = videoState.selectedVideo.data.name;
     }
 
-    var answerStream = AnswerService.findByUId(uid: user.uid, vid: vid);
-    var questionStream = QuestionService.findByVId(id: vid);
+    var answerStream = AnswerFirebaseService.findOne(
+      query: AnswerFirebaseService.colRef.where('uid', isEqualTo: user.uid).where('vid', isEqualTo: vid),
+    );
+    var questionStream = QuestionFirebaseService.find(query: QuestionFirebaseService.colRef.where('vid', isEqualTo: vid));
     return Scaffold(
       appBar: AppBar(
         title: Text('$title'),
@@ -46,13 +48,16 @@ class ExamPage extends StatelessWidget {
           ),
           StreamProvider<Answer>.value(value: answerStream, lazy: false,
             catchError: (_, error) {
-              if(error.toString().contains('No element'))
-                AnswerService.insert(data: {
-                  'uid': user.uid,
-                  'vid': vid,
-                  'status': 'draft',
-                  'answers': [],
-                });
+              if(error.toString().contains('No element')) {
+                Answer tempAnswer = Answer(
+                    uid: user.uid,
+                    vid: vid,
+                    status: 'draft',
+                    answers: []
+                );
+
+                AnswerFirebaseService.insert(data: tempAnswer.toJson());
+              }
               log.d('answerStream error $error');
               return;
             },
@@ -197,7 +202,7 @@ class _ExamDetailState extends State<ExamDetail> {
     }
 
     if(_answer.id != null && _answer.id != '') {
-      AnswerService.update(id: _answer.id, data: _answer.toJson());
+      AnswerFirebaseService.update(id: _answer.id, data: _answer.toJson());
     }
 //    log.d('answer - ${_answer.answers.length} - ${_answer.toJson()}');
   }
@@ -243,7 +248,10 @@ class _ExamDetailState extends State<ExamDetail> {
               textStyle: Theme.of(context).textTheme.display4.copyWith(color: Colors.white),
               onPressed: () {
                 _checkAnswers();
-                AnswerService.update(id: _answer.id, data: {'status': 'completed', 'correct': _checkAnswers(), 'min': widget.video.min});
+                _answer.status = 'completed';
+                _answer.correct = _checkAnswers();
+                _answer.min = widget.video.min;
+                AnswerFirebaseService.update(id: _answer.id, data: _answer.toJson());
                 if(Provider.of<VideoState>(context, listen: false).selectedWatch != null){
                   WatchFirebaseService.update(
                     id: Provider.of<VideoState>(context, listen: false).selectedWatch.id,

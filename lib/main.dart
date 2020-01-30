@@ -7,6 +7,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:learning/dark_theme.dart';
 import 'package:learning/light_theme.dart';
 import 'package:learning/models/series.dart';
+import 'package:learning/models/series.service.dart';
 import 'package:learning/models/video.dart';
 import 'package:learning/models/watch.dart';
 import 'package:learning/pages/splash.dart';
@@ -77,7 +78,10 @@ class MyAppLoad extends StatelessWidget {
           } ,
         ),
         StreamProvider<List<Series>>(
-          create: (_) => SeriesService.find(),
+          create: (_) => SeriesFirebaseService.find(
+            query: SeriesFirebaseService.colRef.where('status', isEqualTo: 'publish'),
+            orderField: 'order'
+          ),
           lazy: false,
           catchError: (context, error) {
             log.w('SeriesService error $error');

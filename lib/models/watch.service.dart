@@ -29,6 +29,24 @@ class WatchFirebaseService {
     });
   }
 
+  static Stream<Watch> findOne(
+      {Query query, dynamic orderField, bool descending = false}) {
+    Query inColRef = colRef;
+    if (query != null) {
+      inColRef = query;
+    }
+    if (orderField != null) {
+      inColRef = inColRef.orderBy(orderField, descending: descending);
+    }
+    return inColRef.snapshots().map((list) {
+      return list.documents.map((doc) {
+        Map data = doc.data;
+        data['id'] = doc.documentID;
+        return Watch.fromJson(data);
+      }).first;
+    });
+  }
+
   static Stream<List<Watch>> findById(
       {@required String id, dynamic orderField, bool descending = false}) {
     Query inColRef = colRef;

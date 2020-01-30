@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:learning/models/question.service.dart';
 import 'package:learning/models/video.service.dart';
 import 'package:learning/services/firestore/question_service.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -378,7 +379,7 @@ class VideoPage extends StatelessWidget {
     videoId.forEach((id) {
       datas.forEach((data) {
         data['vid'] = id;
-        QuestionService.insert(data);
+        QuestionFirebaseService.insert(data: data);
       });
     });
   }

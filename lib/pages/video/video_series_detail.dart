@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:learning/models/answer.dart';
+import 'package:learning/models/answer.service.dart';
 import 'package:learning/models/video.dart';
 import 'package:learning/models/watch.dart';
 import 'package:learning/routes/router.gr.dart';
@@ -203,7 +204,9 @@ class VideoSeriesListTile extends StatelessWidget {
                         Text('${video.numQues} questions', style: Theme.of(context).textTheme.display3.copyWith(color: Colors.grey),),
                       if(cWatch != null && cWatch.status == 'completed')
                         AppStreamBuilder(
-                          stream: AnswerService.findByUId(vid: video.vid, uid: user.uid),
+                          stream: AnswerFirebaseService.find(
+                            query: AnswerFirebaseService.colRef.where('vid', isEqualTo: video.vid).where('uid', isEqualTo: user.uid),
+                          ),
                           fn: _buildAnswer,
                           fnLoading: _buildNoAnswer,
                           fnNone: _buildNoAnswer,

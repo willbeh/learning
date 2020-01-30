@@ -29,6 +29,24 @@ class SeriesFirebaseService {
     });
   }
 
+  static Stream<Series> findOne(
+      {Query query, dynamic orderField, bool descending = false}) {
+    Query inColRef = colRef;
+    if (query != null) {
+      inColRef = query;
+    }
+    if (orderField != null) {
+      inColRef = inColRef.orderBy(orderField, descending: descending);
+    }
+    return inColRef.snapshots().map((list) {
+      return list.documents.map((doc) {
+        Map data = doc.data;
+        data['id'] = doc.documentID;
+        return Series.fromJson(data);
+      }).first;
+    });
+  }
+
   static Stream<List<Series>> findById(
       {@required String id, dynamic orderField, bool descending = false}) {
     Query inColRef = colRef;
