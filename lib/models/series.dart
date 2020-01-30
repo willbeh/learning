@@ -6,7 +6,9 @@ part 'series.g.dart';
 @FirebaseService(name: 'series', col: 'series')
 @JsonSerializable()
 class Series {
-  Series({this.id, this.name, this.desc, this.image, this.status, this.authors, this.hasTest, this.depend, this.list});
+  Series({this.id, this.name, this.desc, this.image, this.status, this.authors, this.hasTest, this.depend, this.list,
+    this.order, this.watched, this.completed,
+  });
 
   String id;
   String name;
@@ -17,6 +19,9 @@ class Series {
   bool hasTest;
   String depend;
   List<String> list;
+  int order;
+  int watched;
+  int completed;
 
 
   factory Series.fromJson(Map<String, dynamic> json) => _$SeriesFromJson(json);

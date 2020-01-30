@@ -47,7 +47,7 @@ class _SplashPageState extends State<SplashPage> {
     });
     _firebaseMessaging.getToken().then((String token) {
       assert(token != null);
-      log.d('Push Messaging token: $token');
+//      log.d('Push Messaging token: $token');
     });
   }
 

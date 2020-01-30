@@ -17,6 +17,9 @@ Series _$SeriesFromJson(Map<String, dynamic> json) {
     hasTest: json['hasTest'] as bool,
     depend: json['depend'] as String,
     list: (json['list'] as List)?.map((e) => e as String)?.toList(),
+    order: json['order'] as int,
+    watched: json['watched'] as int,
+    completed: json['completed'] as int,
   );
 }
 
@@ -30,4 +33,7 @@ Map<String, dynamic> _$SeriesToJson(Series instance) => <String, dynamic>{
       'hasTest': instance.hasTest,
       'depend': instance.depend,
       'list': instance.list,
+      'order': instance.order,
+      'watched': instance.watched,
+      'completed': instance.completed,
     };
