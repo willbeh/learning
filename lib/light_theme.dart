@@ -75,7 +75,7 @@ final ThemeData lightTheme = ThemeData(
       iconTheme: IconThemeData(
         color: Colors.black
       ),
-      textTheme: GoogleFonts.robotoTextTheme(
+      textTheme: GoogleFonts.montserratTextTheme(
           TextTheme(
               title: TextStyle(
                 color: Color(0xdd000000),
@@ -86,7 +86,7 @@ final ThemeData lightTheme = ThemeData(
           )
       )
   ),
-  textTheme: GoogleFonts.robotoTextTheme(
+  textTheme: GoogleFonts.openSansTextTheme(
       TextTheme(
         display4: TextStyle(
           color: Colors.black,
@@ -114,8 +114,8 @@ final ThemeData lightTheme = ThemeData(
         ),
         headline: TextStyle(
           color: Colors.black,
-          fontSize: 18,
-          fontWeight: FontWeight.w400,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
           fontStyle: FontStyle.normal,
         ),
         title: TextStyle(

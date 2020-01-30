@@ -64,7 +64,7 @@ class VideoPage extends StatelessWidget {
 //        stream: (videoState.selectedSeries != null)
 //            ? VideoService.findBySeries(id: videoState.selectedSeries.id)
 //            : VideoService.find(),
-        stream: VideoFirebaseService.find(orderField: 'date', descending: true,
+        stream: videoFirebaseService.find(orderField: 'date', descending: true,
         ),
         fn: _buildPage,
       ),
@@ -125,7 +125,7 @@ class VideoPage extends StatelessWidget {
                     video.date = DateTime.now();
 
                     log.d('${snapshot.data.body}');
-                    VideoFirebaseService.update(
+                    videoFirebaseService.update(
                       id: video.vid,
                       data: video.toJson(),
                     ).catchError((error) {
@@ -378,7 +378,7 @@ class VideoPage extends StatelessWidget {
     videoId.forEach((id) {
       datas.forEach((data) {
         data['vid'] = id;
-        QuestionFirebaseService.insert(data: data);
+        questionFirebaseService.insert(data: data);
       });
     });
   }

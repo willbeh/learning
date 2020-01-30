@@ -120,6 +120,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  carousel_slider:
+    dependency: "direct main"
+    description:
+      name: carousel_slider
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.4.1"
   charcode:
     dependency: transitive
     description:
@@ -264,11 +271,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "0.0.5"
-      resolved-ref: "706f82af09f311c4f8d884312b1714a9999c3d82"
+      ref: "0.0.6"
+      resolved-ref: "8dc417157e6ff94fd0b5ba9d8289b97f8aa354ae"
       url: "https://bitbucket.org/william_recursivex/firebase_service_generator.git"
     source: git
-    version: "0.0.5"
+    version: "0.0.6"
   fixnum:
     dependency: transitive
     description:

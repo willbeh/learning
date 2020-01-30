@@ -21,6 +21,7 @@ Map<String, dynamic> _$QOptionToJson(QOption instance) => <String, dynamic>{
 Question _$QuestionFromJson(Map json) {
   return Question(
     question: json['question'] as String,
+    code: json['code'] as String,
     image: json['image'] as String,
     options: (json['options'] as List)
         ?.map((e) => e == null ? null : QOption.fromJson(e as Map))
@@ -32,6 +33,7 @@ Question _$QuestionFromJson(Map json) {
 
 Map<String, dynamic> _$QuestionToJson(Question instance) => <String, dynamic>{
       'question': instance.question,
+      'code': instance.code,
       'image': instance.image,
       'options': QOption.utilToJson(instance.options),
       'answer': instance.answer,

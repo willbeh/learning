@@ -9,9 +9,16 @@ import 'package:flutter/material.dart';
 import 'exam.dart';
 
 class ExamFirebaseService {
-  static CollectionReference colRef = Firestore.instance.collection('exams');
+  CollectionReference colRef = Firestore.instance.collection('exams');
 
-  static Stream<List<Exam>> find(
+  static final ExamFirebaseService _singleton = ExamFirebaseService._internal();
+
+  factory ExamFirebaseService() {
+    return _singleton;
+  }
+
+  ExamFirebaseService._internal();
+  Stream<List<Exam>> find(
       {Query query, dynamic orderField, bool descending = false}) {
     Query inColRef = colRef;
     if (query != null) {
@@ -29,7 +36,7 @@ class ExamFirebaseService {
     });
   }
 
-  static Stream<Exam> findOne(
+  Stream<Exam> findOne(
       {Query query, dynamic orderField, bool descending = false}) {
     Query inColRef = colRef;
     if (query != null) {
@@ -47,7 +54,7 @@ class ExamFirebaseService {
     });
   }
 
-  static Stream<List<Exam>> findById(
+  Stream<List<Exam>> findById(
       {@required String id, dynamic orderField, bool descending = false}) {
     Query inColRef = colRef;
     inColRef.where('id', isEqualTo: id);
@@ -63,13 +70,14 @@ class ExamFirebaseService {
     });
   }
 
-  static Future<DocumentReference> insert(
-      {@required Map<String, dynamic> data}) {
+  Future<DocumentReference> insert({@required Map<String, dynamic> data}) {
     return colRef.add(data);
   }
 
-  static Future<void> update(
+  Future<void> update(
       {@required String id, @required Map<String, dynamic> data}) {
     return colRef.document(id).updateData(data);
   }
 }
+
+ExamFirebaseService examFirebaseService = ExamFirebaseService();

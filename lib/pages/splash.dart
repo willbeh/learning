@@ -29,13 +29,19 @@ class _SplashPageState extends State<SplashPage> {
 
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
-        log.d("onMessage: $message");
+        log.d("onMessage 😊: $message");
+        final snackBar = SnackBar(content: Text('onMessage: $message'));
+        Scaffold.of(context).showSnackBar(snackBar);
       },
       onLaunch: (Map<String, dynamic> message) async {
         log.d("onLaunch: $message");
+        final snackBar = SnackBar(content: Text('onLaunch: $message'));
+        Scaffold.of(context).showSnackBar(snackBar);
       },
       onResume: (Map<String, dynamic> message) async {
         log.d("onResume: $message");
+        final snackBar = SnackBar(content: Text('onResume: $message'));
+        Scaffold.of(context).showSnackBar(snackBar);
       },
     );
     _firebaseMessaging.requestNotificationPermissions(

@@ -20,6 +20,9 @@ Series _$SeriesFromJson(Map<String, dynamic> json) {
     order: json['order'] as int,
     watched: json['watched'] as int,
     completed: json['completed'] as int,
+    header: json['header'] as String,
+    subHeader: json['subHeader'] as String,
+    about: json['about'] as String,
   );
 }
 
@@ -36,4 +39,7 @@ Map<String, dynamic> _$SeriesToJson(Series instance) => <String, dynamic>{
       'order': instance.order,
       'watched': instance.watched,
       'completed': instance.completed,
+      'header': instance.header,
+      'subHeader': instance.subHeader,
+      'about': instance.about,
     };

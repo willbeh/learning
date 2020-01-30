@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:learning/models/series.dart';
 import 'package:learning/routes/router.gr.dart';
 import 'package:learning/states/video_state.dart';
+import 'package:learning/widgets/app_carousel.dart';
 import 'package:learning/widgets/app_drawer.dart';
 import 'package:learning/states/theme_state.dart';
 import 'package:learning/widgets/common_ui.dart';
@@ -33,121 +34,93 @@ class HomePage extends StatelessWidget {
     VideoState videoState = Provider.of(context);
 
     return Scaffold(
-      body: CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-//            pinned: true,
-              floating: true,
-              brightness: Brightness.dark,
-              backgroundColor: Theme.of(context).primaryColor,
-              iconTheme: IconThemeData(
-                  color: Colors.white
-              ),
-              expandedHeight: 250.0,
-              flexibleSpace: FlexibleSpaceBar(
-                centerTitle: true,
-                title: Text("Learning",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16.0,
-                  ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              AppCarousel(),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text('TWENTY7 Academy', style: Theme.of(context).textTheme.headline,),
+                    Text('These are the courses you\'ve taken so far', style: Theme.of(context).textTheme.display4.copyWith(color: Colors.grey),)
+                  ],
                 ),
-//              background: Image.asset('assets/images/bg1.jpeg', fit: BoxFit.cover,),
               ),
-              snap: true,
-            ),
-            // Series
-            SliverList(
-              delegate: SliverChildListDelegate([
-                Container(
-                  padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
-                  child: Text('Series', style: Theme.of(context).textTheme.headline.copyWith(color: Theme.of(context).primaryColor)),
-                ),
-              ]),
-            ),
-            SliverGrid.extent(
-              maxCrossAxisExtent: 100,
-              children: series.map((item){
-
-                return InkWell(
-                  onTap: () {
-                    // notify series if not selected
-                    if(videoState.selectedSeries?.id != item.id) {
-                      videoState.selectedSeries = item;
-                    }
-                    AppRouter.navigator.pushNamed(AppRouter.videoSeriesPlayerPage);
-                  },
-                  child: Container(
-                    height: double.infinity,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        _buildCircleIcon(context,
-                          icon: Icon(Icons.video_library, size: 40, color: (themeState.isLightTheme) ? Theme.of(context).primaryColor : Colors.white,),
-                        ),
-                        CommonUI.heightPadding(height: 3),
-                        Text('${item.name}', textAlign: TextAlign.center, style: Theme.of(context).textTheme.display3.copyWith(fontWeight: FontWeight.w500),),
-                      ],
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-            SliverList(
-              delegate: SliverChildListDelegate([
-                Divider(height: 1,),
-                Container(
-                  padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
-                  child: Text('Items', style: Theme.of(context).textTheme.headline.copyWith(color: Theme.of(context).primaryColor)),
-                ),
-              ]),
-            ),
-            SliverGrid.extent(
-              maxCrossAxisExtent: 100,
-              children: gridItems.map((item){
-                return InkWell(
-                  onTap: () {
-                    Provider.of<VideoState>(context, listen: false).selectedSeries = null;
-                    AppRouter.navigator.pushNamed(item['routeName']);
-                  },
-                  child: Container(
-                    height: double.infinity,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        _buildCircleIcon(context,
-                          icon: Icon(item['icon'], size: 40, color: (themeState.isLightTheme) ? Theme.of(context).primaryColor : Colors.white,),
-                        ),
-                        CommonUI.heightPadding(height: 3),
-                        Text(item['title'], textAlign: TextAlign.center, style: Theme.of(context).textTheme.display3.copyWith(fontWeight: FontWeight.w500),),
-                      ],
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-            SliverList(
-              delegate: SliverChildListDelegate(
-                [
-                  Container(),
-                ],
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 5),
+                height: 270,
+                child: MyWatchList(),
               ),
-            )
-          ]
+            ],
+          ),
+        ),
       ),
       drawer: AppDrawer(),
     );
   }
+}
 
-  Widget _buildCircleIcon(BuildContext context, {Icon icon}) {
+class MyWatchList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      shrinkWrap: true,
+      scrollDirection: Axis.horizontal,
+      children: <Widget>[
+        _buildVideoCard(context),
+        _buildVideoCard(context),
+        _buildVideoCard(context),
+      ],
+    );
+  }
+
+  Widget _buildVideoCard(BuildContext context){
     return Container(
-      height: 40,
-      width: 40,
+      margin: EdgeInsets.only(left: 20, top: 5, bottom: 5),
       decoration: BoxDecoration(
-        color: Theme.of(context).accentColor,
-        shape: BoxShape.circle,
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(5),
+//        border: Border.all(color: Colors.grey.shade200),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            blurRadius: 2.0
+          )
+        ]
       ),
-      child: icon,
+      child: Column(
+        children: <Widget>[
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.blue,
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(5),
+                topLeft: Radius.circular(5)
+              )
+            ),
+            height: 127,
+            width: 226,
+          ),
+          Container(
+            height: 123,
+            width: 226,
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Expanded(child: Text('Marketing 101', style: Theme.of(context).textTheme.display1.copyWith(fontWeight: FontWeight.w500),)),
+                Text('someone', style: Theme.of(context).textTheme.display3.copyWith(color: Colors.grey),)
+              ],
+            ),
+          )
+
+        ],
+      ),
     );
   }
 }
+

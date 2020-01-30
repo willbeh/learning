@@ -57,9 +57,9 @@ class MyAppLoad extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     FirebaseUser user = Provider.of(context);
-    Stream<List<Watch>> watchStream = WatchFirebaseService.find(query: WatchFirebaseService.colRef.where('uid', isEqualTo: user?.uid));
-    Stream<List<Video>> videoStream = VideoFirebaseService.find(
-      query: VideoFirebaseService.colRef.where('sid', isEqualTo: Provider.of<VideoState>(context).selectedSeries?.id),
+    Stream<List<Watch>> watchStream = watchFirebaseService.find(query: watchFirebaseService.colRef.where('uid', isEqualTo: user?.uid));
+    Stream<List<Video>> videoStream = videoFirebaseService.find(
+      query: videoFirebaseService.colRef.where('sid', isEqualTo: Provider.of<VideoState>(context).selectedSeries?.id),
       orderField: 'order'
     ); //
     // VideoService.findBySeries(id: Provider.of<VideoState>(context).selectedSeries?.id);
@@ -77,8 +77,8 @@ class MyAppLoad extends StatelessWidget {
           } ,
         ),
         StreamProvider<List<Series>>(
-          create: (_) => SeriesFirebaseService.find(
-            query: SeriesFirebaseService.colRef.where('status', isEqualTo: 'publish'),
+          create: (_) => seriesFirebaseService.find(
+            query: seriesFirebaseService.colRef.where('status', isEqualTo: 'publish'),
             orderField: 'order'
           ),
           lazy: false,

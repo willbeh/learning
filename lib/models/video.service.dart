@@ -9,9 +9,17 @@ import 'package:flutter/material.dart';
 import 'video.dart';
 
 class VideoFirebaseService {
-  static CollectionReference colRef = Firestore.instance.collection('videos');
+  CollectionReference colRef = Firestore.instance.collection('videos');
 
-  static Stream<List<Video>> find(
+  static final VideoFirebaseService _singleton =
+      VideoFirebaseService._internal();
+
+  factory VideoFirebaseService() {
+    return _singleton;
+  }
+
+  VideoFirebaseService._internal();
+  Stream<List<Video>> find(
       {Query query, dynamic orderField, bool descending = false}) {
     Query inColRef = colRef;
     if (query != null) {
@@ -29,7 +37,7 @@ class VideoFirebaseService {
     });
   }
 
-  static Stream<Video> findOne(
+  Stream<Video> findOne(
       {Query query, dynamic orderField, bool descending = false}) {
     Query inColRef = colRef;
     if (query != null) {
@@ -47,7 +55,7 @@ class VideoFirebaseService {
     });
   }
 
-  static Stream<List<Video>> findById(
+  Stream<List<Video>> findById(
       {@required String id, dynamic orderField, bool descending = false}) {
     Query inColRef = colRef;
     inColRef.where('id', isEqualTo: id);
@@ -63,13 +71,14 @@ class VideoFirebaseService {
     });
   }
 
-  static Future<DocumentReference> insert(
-      {@required Map<String, dynamic> data}) {
+  Future<DocumentReference> insert({@required Map<String, dynamic> data}) {
     return colRef.add(data);
   }
 
-  static Future<void> update(
+  Future<void> update(
       {@required String id, @required Map<String, dynamic> data}) {
     return colRef.document(id).updateData(data);
   }
 }
+
+VideoFirebaseService videoFirebaseService = VideoFirebaseService();

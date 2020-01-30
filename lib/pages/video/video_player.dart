@@ -279,7 +279,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
         'created': DateTime.now(),
       };
 
-      WatchFirebaseService.insert(data: data).then((w) {
+      watchFirebaseService.insert(data: data).then((w) {
         data['id'] = w.documentID;
         if (wp != null && wp.furthest > 0) {
           _watch.id = w.documentID;
@@ -377,7 +377,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
   _updateWatchDocument(Map<String, dynamic> data) {
     log.d('_updateWatchDocument $data');
     if (_watch != null && _watch.id != '') {
-      WatchFirebaseService.update(id: _watch.id, data: data).catchError((error) {
+      watchFirebaseService.update(id: _watch.id, data: data).catchError((error) {
         log.w('Update error $error');
       });
     }

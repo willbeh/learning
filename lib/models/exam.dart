@@ -21,9 +21,10 @@ class QOption {
 
 @JsonSerializable(anyMap: true)
 class Question {
-  Question({this.question, this.image, this.options, this.answer, this.type});
+  Question({this.question, this.code, this.image, this.options, this.answer, this.type});
 
   String question;
+  String code;
   String image;
   @JsonKey( toJson: QOption.utilToJson)
   List<QOption> options;

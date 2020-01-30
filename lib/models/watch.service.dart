@@ -9,9 +9,17 @@ import 'package:flutter/material.dart';
 import 'watch.dart';
 
 class WatchFirebaseService {
-  static CollectionReference colRef = Firestore.instance.collection('watch');
+  CollectionReference colRef = Firestore.instance.collection('watch');
 
-  static Stream<List<Watch>> find(
+  static final WatchFirebaseService _singleton =
+      WatchFirebaseService._internal();
+
+  factory WatchFirebaseService() {
+    return _singleton;
+  }
+
+  WatchFirebaseService._internal();
+  Stream<List<Watch>> find(
       {Query query, dynamic orderField, bool descending = false}) {
     Query inColRef = colRef;
     if (query != null) {
@@ -29,7 +37,7 @@ class WatchFirebaseService {
     });
   }
 
-  static Stream<Watch> findOne(
+  Stream<Watch> findOne(
       {Query query, dynamic orderField, bool descending = false}) {
     Query inColRef = colRef;
     if (query != null) {
@@ -47,7 +55,7 @@ class WatchFirebaseService {
     });
   }
 
-  static Stream<List<Watch>> findById(
+  Stream<List<Watch>> findById(
       {@required String id, dynamic orderField, bool descending = false}) {
     Query inColRef = colRef;
     inColRef.where('id', isEqualTo: id);
@@ -63,13 +71,14 @@ class WatchFirebaseService {
     });
   }
 
-  static Future<DocumentReference> insert(
-      {@required Map<String, dynamic> data}) {
+  Future<DocumentReference> insert({@required Map<String, dynamic> data}) {
     return colRef.add(data);
   }
 
-  static Future<void> update(
+  Future<void> update(
       {@required String id, @required Map<String, dynamic> data}) {
     return colRef.document(id).updateData(data);
   }
 }
+
+WatchFirebaseService watchFirebaseService = WatchFirebaseService();

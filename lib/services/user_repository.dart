@@ -12,11 +12,21 @@ class UserRepository {
     return _firebaseAuth.onAuthStateChanged.map((user) => user);
   }
 
-  FirebaseUser user;
+//  FirebaseUser user;
 
-  UserRepository({FirebaseAuth firebaseAuth, GoogleSignIn googleSignin})
-      : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
-        _googleSignIn = googleSignin ?? GoogleSignIn();
+  static final UserRepository _singleton = UserRepository._internal();
+
+  factory UserRepository() {
+    return _singleton;
+  }
+
+  UserRepository._internal()
+      : _firebaseAuth = FirebaseAuth.instance,
+        _googleSignIn = GoogleSignIn();
+
+//  UserRepository({FirebaseAuth firebaseAuth, GoogleSignIn googleSignin})
+//      : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
+//        _googleSignIn = googleSignin ?? GoogleSignIn();
 
 //  UserRepository({FirebaseAuth firebaseAuth, GoogleSignIn googleSignin, FacebookLogin facebookLogin})
 //      : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,

@@ -52,12 +52,13 @@ dependencies:
   flare_flutter: ^1.8.3
   auto_route: ^0.2.1
   timeago: ^2.0.24
+  carousel_slider: ^1.4.1
 
   #own
   firebase_service_generator:
     git:
       url: https://bitbucket.org/william_recursivex/firebase_service_generator.git
-      ref: 0.0.5
+      ref: 0.0.6
 
 dev_dependencies:
   flutter_test:

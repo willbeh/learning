@@ -29,10 +29,10 @@ class ExamPage extends StatelessWidget {
       title = videoState.selectedVideo.data.name;
     }
 
-    var answerStream = AnswerFirebaseService.findOne(
-      query: AnswerFirebaseService.colRef.where('uid', isEqualTo: user.uid).where('vid', isEqualTo: vid),
+    var answerStream = answerFirebaseService.findOne(
+      query: answerFirebaseService.colRef.where('uid', isEqualTo: user.uid).where('vid', isEqualTo: vid),
     );
-    var questionStream = QuestionFirebaseService.find(query: QuestionFirebaseService.colRef.where('vid', isEqualTo: vid));
+    var questionStream = questionFirebaseService.find(query: questionFirebaseService.colRef.where('vid', isEqualTo: vid));
     return Scaffold(
       appBar: AppBar(
         title: Text('$title'),
@@ -56,7 +56,7 @@ class ExamPage extends StatelessWidget {
                     answers: []
                 );
 
-                AnswerFirebaseService.insert(data: tempAnswer.toJson());
+                answerFirebaseService.insert(data: tempAnswer.toJson());
               }
               log.d('answerStream error $error');
               return;
@@ -202,7 +202,7 @@ class _ExamDetailState extends State<ExamDetail> {
     }
 
     if(_answer.id != null && _answer.id != '') {
-      AnswerFirebaseService.update(id: _answer.id, data: _answer.toJson());
+      answerFirebaseService.update(id: _answer.id, data: _answer.toJson());
     }
 //    log.d('answer - ${_answer.answers.length} - ${_answer.toJson()}');
   }
@@ -251,9 +251,9 @@ class _ExamDetailState extends State<ExamDetail> {
                 _answer.status = 'completed';
                 _answer.correct = _checkAnswers();
                 _answer.min = widget.video.min;
-                AnswerFirebaseService.update(id: _answer.id, data: _answer.toJson());
+                answerFirebaseService.update(id: _answer.id, data: _answer.toJson());
                 if(Provider.of<VideoState>(context, listen: false).selectedWatch != null){
-                  WatchFirebaseService.update(
+                  watchFirebaseService.update(
                     id: Provider.of<VideoState>(context, listen: false).selectedWatch.id,
                     data: {'test': true}
                   ).catchError((error) => log.d('error WatchService update $error'));

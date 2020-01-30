@@ -7,7 +7,7 @@ part 'series.g.dart';
 @JsonSerializable()
 class Series {
   Series({this.id, this.name, this.desc, this.image, this.status, this.authors, this.hasTest, this.depend, this.list,
-    this.order, this.watched, this.completed,
+    this.order, this.watched, this.completed, this.header, this.subHeader, this.about,
   });
 
   String id;
@@ -22,6 +22,9 @@ class Series {
   int order;
   int watched;
   int completed;
+  String header;
+  String subHeader;
+  String about;
 
 
   factory Series.fromJson(Map<String, dynamic> json) => _$SeriesFromJson(json);

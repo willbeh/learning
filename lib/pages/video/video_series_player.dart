@@ -4,6 +4,11 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:video_player/video_player.dart';
+import 'package:wakelock/wakelock.dart';
+
 import 'package:learning/models/video.dart';
 import 'package:learning/models/watch.dart';
 import 'package:learning/pages/video/video_series_detail.dart';
@@ -12,10 +17,6 @@ import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/app_loading_container.dart';
 import 'package:learning/widgets/app_video_controller.dart';
 import 'package:learning/widgets/common_ui.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:video_player/video_player.dart';
-import 'package:wakelock/wakelock.dart';
 import 'package:learning/models/watch.service.dart';
 
 class VideoSeriesPlayerPage extends StatefulWidget {
@@ -182,12 +183,14 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
       haveSelectedVideo = true;
     }
 
+    log.d('height ${MediaQuery.of(context).size.height} - ${MediaQuery.of(context).size.height - height - 24}');
+
     return Column(
       children: <Widget>[
         _buildPlayer(context, orientation),
         if(haveSelectedVideo && orientation == Orientation.portrait)
           Container(
-            height: MediaQuery.of(context).size.height - height - 35,
+            height: MediaQuery.of(context).size.height - height - 24,
             child: VideoSeriesDetail(),
           )
       ],
@@ -277,7 +280,7 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
           jsonDecode(prefs.getString(videoState.selectedVideo.vid)));
     }
 
-    log.d('${videoState.selectedVideo.vid} & ${videoState.selectedWatch}');
+//    log.d('${videoState.selectedVideo.vid} & ${videoState.selectedWatch}');
 
     if (videoState.selectedWatch != null) {
       // preference watch is further than firestore
@@ -339,7 +342,7 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
 //        log.w('Insert watch error $error');
 //      });
 
-      WatchFirebaseService.insert(data: newWatch.toJson()).then((w) {
+      watchFirebaseService.insert(data: newWatch.toJson()).then((w) {
         newWatch.id = w.documentID;
         _watch = newWatch;
         videoState.selectedWatch = _watch;
@@ -411,7 +414,7 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
 
   _updateWatchDocument(Map<String, dynamic> data) {
     if (_watch != null && _watch.id != '') {
-      WatchFirebaseService.update(id: _watch.id, data: data).catchError((error) {
+      watchFirebaseService.update(id: _watch.id, data: data).catchError((error) {
         log.w('Update error $error');
       });
     }
