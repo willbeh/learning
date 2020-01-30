@@ -10,7 +10,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:learning/models/video.dart';
 import 'package:learning/models/watch.dart';
 import 'package:learning/routes/router.gr.dart';
-import 'package:learning/services/firestore/video_service.dart';
 import 'package:learning/states/video_state.dart';
 import 'package:learning/utils/datetime_util.dart';
 import 'package:learning/utils/image_util.dart';
@@ -124,13 +123,11 @@ class VideoPage extends StatelessWidget {
                   if (snapshot.data.statusCode == 200) {
                     video.data = json.decode(snapshot.data.body);
                     video.date = DateTime.now();
+
                     log.d('${snapshot.data.body}');
-                    VideoService.update(
+                    VideoFirebaseService.update(
                       id: video.vid,
-                      data: {
-                        'data': json.decode(snapshot.data.body),
-                        'date': DateTime.now(),
-                      },
+                      data: video.toJson(),
                     ).catchError((error) {
                       log.d('updateError $error');
                     });

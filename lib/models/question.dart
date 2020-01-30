@@ -1,3 +1,4 @@
+import 'package:firebase_service_generator/firebase_service.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'question.g.dart';
@@ -20,6 +21,7 @@ class QOption {
   }
 }
 
+@FirebaseService(name: 'question', col: 'questions')
 @JsonSerializable(anyMap: true)
 class Question {
   Question({this.id, this.vid, this.question, this.options, this.status = '', this.order, this.correct, this.wrong});

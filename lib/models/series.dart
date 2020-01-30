@@ -1,7 +1,9 @@
+import 'package:firebase_service_generator/firebase_service.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'series.g.dart';
 
+@FirebaseService(name: 'series', col: 'series')
 @JsonSerializable()
 class Series {
   Series({this.id, this.name, this.desc, this.image, this.status, this.authors, this.hasTest, this.depend, this.list});

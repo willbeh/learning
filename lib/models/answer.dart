@@ -1,3 +1,4 @@
+import 'package:firebase_service_generator/firebase_service.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'answer.g.dart';
@@ -18,6 +19,7 @@ class UserAnswer {
   }
 }
 
+@FirebaseService(name: 'answer', col: 'answers')
 @JsonSerializable(anyMap: true)
 class Answer {
   Answer({this.id, this.uid, this.vid, List<UserAnswer> answers, this.status, this.correct, this.min}) : answers = answers ?? <UserAnswer>[];
