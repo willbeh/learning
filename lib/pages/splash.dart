@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:learning/routes/router.gr.dart';
+import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/app_button.dart';
 import 'package:learning/widgets/common_ui.dart';
 import 'package:provider/provider.dart';
@@ -16,12 +18,37 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   Timer _timer;
+  final log = getLogger('_SplashPageState');
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   @override
   void initState() {
     super.initState();
 
     _setTimer();
+
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        log.d("onMessage: $message");
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        log.d("onLaunch: $message");
+      },
+      onResume: (Map<String, dynamic> message) async {
+        log.d("onResume: $message");
+      },
+    );
+    _firebaseMessaging.requestNotificationPermissions(
+        const IosNotificationSettings(
+            sound: true, badge: true, alert: true, provisional: true));
+    _firebaseMessaging.onIosSettingsRegistered
+        .listen((IosNotificationSettings settings) {
+      log.d("Settings registered: $settings");
+    });
+    _firebaseMessaging.getToken().then((String token) {
+      assert(token != null);
+      log.d('Push Messaging token: $token');
+    });
   }
 
   @override
