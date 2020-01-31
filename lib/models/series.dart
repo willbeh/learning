@@ -1,21 +1,25 @@
 import 'package:firebase_service_generator/firebase_service.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:learning/models/author.dart';
 
 part 'series.g.dart';
 
 @FirebaseService(name: 'series', col: 'series')
-@JsonSerializable()
+@JsonSerializable(anyMap: true)
 class Series {
-  Series({this.id, this.name, this.desc, this.image, this.status, this.authors, this.hasTest, this.depend, this.list,
+  Series({this.id, this.cid, this.cname, this.name, this.desc, this.image, this.thumb, this.status, this.authors, this.hasTest, this.depend, this.list,
     this.order, this.watched, this.completed, this.header, this.subHeader, this.about,
   });
 
   String id;
+  String cid;
+  String cname;
   String name;
   String desc;
   String image;
+  String thumb;
   String status;
-  List<String> authors;
+  List<Author> authors;
   bool hasTest;
   String depend;
   List<String> list;
@@ -27,7 +31,7 @@ class Series {
   String about;
 
 
-  factory Series.fromJson(Map<String, dynamic> json) => _$SeriesFromJson(json);
+  factory Series.fromJson(Map<dynamic, dynamic> json) => _$SeriesFromJson(json);
 
   Map<String, dynamic> toJson() => _$SeriesToJson(this);
 }

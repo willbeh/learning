@@ -6,21 +6,21 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'watch.dart';
+import 'profile.dart';
 
-class WatchFirebaseService {
-  CollectionReference colRef = Firestore.instance.collection('watch');
+class ProfileFirebaseService {
+  CollectionReference colRef = Firestore.instance.collection('profiles');
 
-  static final WatchFirebaseService _singleton =
-      WatchFirebaseService._internal();
+  static final ProfileFirebaseService _singleton =
+      ProfileFirebaseService._internal();
 
-  factory WatchFirebaseService() {
+  factory ProfileFirebaseService() {
     return _singleton;
   }
 
-  WatchFirebaseService._internal();
+  ProfileFirebaseService._internal();
 
-  Stream<List<Watch>> find(
+  Stream<List<Profile>> find(
       {Query query, dynamic orderField, bool descending = false}) {
     Query inColRef = colRef;
     if (query != null) {
@@ -33,12 +33,12 @@ class WatchFirebaseService {
       return list.documents.map((doc) {
         Map data = doc.data;
         data['id'] = doc.documentID;
-        return Watch.fromJson(data);
+        return Profile.fromJson(data);
       }).toList();
     });
   }
 
-  Stream<Watch> findOne(
+  Stream<Profile> findOne(
       {Query query, dynamic orderField, bool descending = false}) {
     Query inColRef = colRef;
     if (query != null) {
@@ -51,16 +51,18 @@ class WatchFirebaseService {
       return list.documents.map((doc) {
         Map data = doc.data;
         data['id'] = doc.documentID;
-        return Watch.fromJson(data);
+        return Profile.fromJson(data);
       }).first;
     });
   }
 
-  Stream<Watch> findById({@required String id}) {
+  Stream<Profile> findById({String id = ''}) {
     return colRef.document(id).snapshots().map((doc) {
       Map data = doc.data;
       data['id'] = doc.documentID;
-      return Watch.fromJson(data);
+      return Profile.fromJson(data);
+    })..handleError((error) {
+      print('ProfileFirebaseService findById error $error');
     });
   }
 
@@ -74,4 +76,4 @@ class WatchFirebaseService {
   }
 }
 
-WatchFirebaseService watchFirebaseService = WatchFirebaseService();
+ProfileFirebaseService profileFirebaseService = ProfileFirebaseService();

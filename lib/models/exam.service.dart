@@ -18,6 +18,7 @@ class ExamFirebaseService {
   }
 
   ExamFirebaseService._internal();
+
   Stream<List<Exam>> find(
       {Query query, dynamic orderField, bool descending = false}) {
     Query inColRef = colRef;
@@ -54,19 +55,11 @@ class ExamFirebaseService {
     });
   }
 
-  Stream<List<Exam>> findById(
-      {@required String id, dynamic orderField, bool descending = false}) {
-    Query inColRef = colRef;
-    inColRef.where('id', isEqualTo: id);
-    if (orderField != null) {
-      inColRef = inColRef.orderBy(orderField, descending: descending);
-    }
-    return inColRef.snapshots().map((list) {
-      return list.documents.map((doc) {
-        Map data = doc.data;
-        data['id'] = doc.documentID;
-        return Exam.fromJson(data);
-      }).toList();
+  Stream<Exam> findById({@required String id}) {
+    return colRef.document(id).snapshots().map((doc) {
+      Map data = doc.data;
+      data['id'] = doc.documentID;
+      return Exam.fromJson(data);
     });
   }
 

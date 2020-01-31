@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:learning/models/profile.dart';
 import 'package:learning/routes/router.gr.dart';
 import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/app_button.dart';
@@ -86,18 +87,6 @@ class _SplashPageState extends State<SplashPage> {
         child: Container(
           decoration: BoxDecoration(
             color: Theme.of(context).accentColor,
-            // Box decoration takes a gradient
-//            gradient: LinearGradient(
-//              // Where the linear gradient begins and ends
-//              begin: Alignment.topLeft,
-//              end: Alignment.bottomRight,
-//              // Add one stop for each color. Stops should increase from 0 to 1
-//              stops: [0.7, 0.9],
-//              colors: [
-//                Theme.of(context).accentColor,
-//                Theme.of(context).primaryColor,
-//              ],
-//            ),
           ),
           child: Center(
             child: FlareActor("assets/flare/lion.flr", alignment:Alignment.center, fit:BoxFit.contain, animation:"animation"),
@@ -110,9 +99,11 @@ class _SplashPageState extends State<SplashPage> {
   _setTimer({int seconds = 4}) {
     _timer = Timer(Duration(seconds: seconds), () {
       FirebaseUser user = Provider.of<FirebaseUser>(context, listen: false);
+
       if(user == null){
         AppRouter.navigator.pushNamedAndRemoveUntil(AppRouter.loginPage, (route)=>false);
       } else {
+        log.d('uid - ${user.uid}');
         AppRouter.navigator.pushNamedAndRemoveUntil(AppRouter.homePage, (route)=>false);
       }
     });

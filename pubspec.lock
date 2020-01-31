@@ -271,11 +271,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "0.0.6"
-      resolved-ref: "8dc417157e6ff94fd0b5ba9d8289b97f8aa354ae"
+      ref: "0.0.7"
+      resolved-ref: "750ac8007e8292f0be1b0247c87db5d4095013cf"
       url: "https://bitbucket.org/william_recursivex/firebase_service_generator.git"
     source: git
-    version: "0.0.6"
+    version: "0.0.7"
   fixnum:
     dependency: transitive
     description:
@@ -351,7 +351,21 @@ packages:
       name: google_sign_in
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.6"
+    version: "4.1.1"
+  google_sign_in_platform_interface:
+    dependency: transitive
+    description:
+      name: google_sign_in_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.3"
+  google_sign_in_web:
+    dependency: transitive
+    description:
+      name: google_sign_in_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.8.3"
   graphs:
     dependency: transitive
     description:
@@ -547,7 +561,7 @@ packages:
       name: provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.1"
+    version: "4.0.2"
   pub_semver:
     dependency: transitive
     description:

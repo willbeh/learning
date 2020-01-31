@@ -6,21 +6,21 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'watch.dart';
+import 'banner.dart';
 
-class WatchFirebaseService {
-  CollectionReference colRef = Firestore.instance.collection('watch');
+class AppBannerFirebaseService {
+  CollectionReference colRef = Firestore.instance.collection('banners');
 
-  static final WatchFirebaseService _singleton =
-      WatchFirebaseService._internal();
+  static final AppBannerFirebaseService _singleton =
+      AppBannerFirebaseService._internal();
 
-  factory WatchFirebaseService() {
+  factory AppBannerFirebaseService() {
     return _singleton;
   }
 
-  WatchFirebaseService._internal();
+  AppBannerFirebaseService._internal();
 
-  Stream<List<Watch>> find(
+  Stream<List<AppBanner>> find(
       {Query query, dynamic orderField, bool descending = false}) {
     Query inColRef = colRef;
     if (query != null) {
@@ -33,12 +33,12 @@ class WatchFirebaseService {
       return list.documents.map((doc) {
         Map data = doc.data;
         data['id'] = doc.documentID;
-        return Watch.fromJson(data);
+        return AppBanner.fromJson(data);
       }).toList();
     });
   }
 
-  Stream<Watch> findOne(
+  Stream<AppBanner> findOne(
       {Query query, dynamic orderField, bool descending = false}) {
     Query inColRef = colRef;
     if (query != null) {
@@ -51,16 +51,16 @@ class WatchFirebaseService {
       return list.documents.map((doc) {
         Map data = doc.data;
         data['id'] = doc.documentID;
-        return Watch.fromJson(data);
+        return AppBanner.fromJson(data);
       }).first;
     });
   }
 
-  Stream<Watch> findById({@required String id}) {
+  Stream<AppBanner> findById({@required String id}) {
     return colRef.document(id).snapshots().map((doc) {
       Map data = doc.data;
       data['id'] = doc.documentID;
-      return Watch.fromJson(data);
+      return AppBanner.fromJson(data);
     });
   }
 
@@ -74,4 +74,4 @@ class WatchFirebaseService {
   }
 }
 
-WatchFirebaseService watchFirebaseService = WatchFirebaseService();
+AppBannerFirebaseService bannerFirebaseService = AppBannerFirebaseService();

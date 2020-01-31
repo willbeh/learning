@@ -32,7 +32,7 @@ dependencies:
   firebase_core: ^0.4.3+1
   firebase_auth: ^0.15.3+1
   cloud_firestore: ^0.13.0+1
-  google_sign_in: 4.0.6
+  google_sign_in: ^4.1.1
   cloud_functions: ^0.4.1+6
   firebase_analytics: ^5.0.9
   firebase_messaging: ^6.0.9
@@ -40,7 +40,7 @@ dependencies:
   # googles, dart
   google_fonts: ^0.3.2
   shared_preferences: ^0.5.6
-  provider: ^4.0.1
+  provider: ^4.0.2
   intl: ^0.16.0
   json_annotation: ^3.0.1
   video_player: ^0.10.5+2
@@ -58,7 +58,7 @@ dependencies:
   firebase_service_generator:
     git:
       url: https://bitbucket.org/william_recursivex/firebase_service_generator.git
-      ref: 0.0.6
+      ref: 0.0.7
 
 dev_dependencies:
   flutter_test:

@@ -19,6 +19,7 @@ class AnswerFirebaseService {
   }
 
   AnswerFirebaseService._internal();
+
   Stream<List<Answer>> find(
       {Query query, dynamic orderField, bool descending = false}) {
     Query inColRef = colRef;
@@ -55,19 +56,11 @@ class AnswerFirebaseService {
     });
   }
 
-  Stream<List<Answer>> findById(
-      {@required String id, dynamic orderField, bool descending = false}) {
-    Query inColRef = colRef;
-    inColRef.where('id', isEqualTo: id);
-    if (orderField != null) {
-      inColRef = inColRef.orderBy(orderField, descending: descending);
-    }
-    return inColRef.snapshots().map((list) {
-      return list.documents.map((doc) {
-        Map data = doc.data;
-        data['id'] = doc.documentID;
-        return Answer.fromJson(data);
-      }).toList();
+  Stream<Answer> findById({@required String id}) {
+    return colRef.document(id).snapshots().map((doc) {
+      Map data = doc.data;
+      data['id'] = doc.documentID;
+      return Answer.fromJson(data);
     });
   }
 

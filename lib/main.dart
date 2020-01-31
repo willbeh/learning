@@ -6,14 +6,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:learning/dark_theme.dart';
 import 'package:learning/light_theme.dart';
+import 'package:learning/models/profile.dart';
 import 'package:learning/models/series.dart';
 import 'package:learning/models/series.service.dart';
+import 'package:learning/models/series_watch.dart';
+import 'package:learning/models/series_watch.service.dart';
 import 'package:learning/models/video.dart';
 import 'package:learning/models/watch.dart';
 import 'package:learning/pages/splash.dart';
 import 'package:learning/routes/router.gr.dart';
 import 'package:learning/models/video.service.dart';
 import 'package:learning/models/watch.service.dart';
+import 'package:learning/models/profile.service.dart';
 import 'package:learning/services/user_repository.dart';
 import 'package:learning/states/theme_state.dart';
 import 'package:learning/states/video_state.dart';
@@ -57,38 +61,51 @@ class MyAppLoad extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     FirebaseUser user = Provider.of(context);
-    Stream<List<Watch>> watchStream = watchFirebaseService.find(query: watchFirebaseService.colRef.where('uid', isEqualTo: user?.uid));
-    Stream<List<Video>> videoStream = videoFirebaseService.find(
-      query: videoFirebaseService.colRef.where('sid', isEqualTo: Provider.of<VideoState>(context).selectedSeries?.id),
-      orderField: 'order'
-    ); //
-    // VideoService.findBySeries(id: Provider.of<VideoState>(context).selectedSeries?.id);
     FirebaseAnalytics analytics = FirebaseAnalytics();
 
     return MultiProvider(
       providers: [
 
         StreamProvider<List<Watch>>.value(
-          value: watchStream,
+          value: watchFirebaseService.find(query: watchFirebaseService.colRef.where('uid', isEqualTo: user?.uid)),
           lazy: false,
           catchError: (context, error) {
             log.w('watchStream error $error');
             return;
           } ,
         ),
-        StreamProvider<List<Series>>(
-          create: (_) => seriesFirebaseService.find(
-            query: seriesFirebaseService.colRef.where('status', isEqualTo: 'publish'),
-            orderField: 'order'
-          ),
+        StreamProvider<List<SeriesWatch>>.value(
+          value: series_watchFirebaseService.find(query: series_watchFirebaseService.colRef.where('uid', isEqualTo: user?.uid), orderField: 'date', descending: true),
           lazy: false,
           catchError: (context, error) {
-            log.w('SeriesService error $error');
+            log.w('seriesWatchStream error $error');
+            return;
+          } ,
+        ),
+//        StreamProvider<List<Series>>(
+//          create: (_) => seriesFirebaseService.find(
+//              query: seriesFirebaseService.colRef.where('status', isEqualTo: 'publish'),
+//              orderField: 'order'
+//          ),
+//          lazy: false,
+//          catchError: (context, error) {
+//            log.w('SeriesService error $error');
+//            return;
+//          } ,
+//        ),
+        StreamProvider<Profile>.value(
+          value: profileFirebaseService.findById(id: user?.uid),
+          lazy: false,
+          catchError: (context, error) {
+            log.w('profileFirebaseService error $error');
             return;
           } ,
         ),
         StreamProvider<List<Video>>.value(
-          value: videoStream,
+          value: videoFirebaseService.find(
+              query: videoFirebaseService.colRef.where('sid', isEqualTo: Provider.of<VideoState>(context).selectedSeries?.id),
+              orderField: 'order'
+          ),
           catchError: (context, error) {
             log.w('VideoService error $error');
             return;

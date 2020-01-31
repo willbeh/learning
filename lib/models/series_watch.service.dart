@@ -6,21 +6,21 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'watch.dart';
+import 'series_watch.dart';
 
-class WatchFirebaseService {
-  CollectionReference colRef = Firestore.instance.collection('watch');
+class SeriesWatchFirebaseService {
+  CollectionReference colRef = Firestore.instance.collection('seriesWatch');
 
-  static final WatchFirebaseService _singleton =
-      WatchFirebaseService._internal();
+  static final SeriesWatchFirebaseService _singleton =
+      SeriesWatchFirebaseService._internal();
 
-  factory WatchFirebaseService() {
+  factory SeriesWatchFirebaseService() {
     return _singleton;
   }
 
-  WatchFirebaseService._internal();
+  SeriesWatchFirebaseService._internal();
 
-  Stream<List<Watch>> find(
+  Stream<List<SeriesWatch>> find(
       {Query query, dynamic orderField, bool descending = false}) {
     Query inColRef = colRef;
     if (query != null) {
@@ -33,12 +33,12 @@ class WatchFirebaseService {
       return list.documents.map((doc) {
         Map data = doc.data;
         data['id'] = doc.documentID;
-        return Watch.fromJson(data);
+        return SeriesWatch.fromJson(data);
       }).toList();
     });
   }
 
-  Stream<Watch> findOne(
+  Stream<SeriesWatch> findOne(
       {Query query, dynamic orderField, bool descending = false}) {
     Query inColRef = colRef;
     if (query != null) {
@@ -51,16 +51,16 @@ class WatchFirebaseService {
       return list.documents.map((doc) {
         Map data = doc.data;
         data['id'] = doc.documentID;
-        return Watch.fromJson(data);
+        return SeriesWatch.fromJson(data);
       }).first;
     });
   }
 
-  Stream<Watch> findById({@required String id}) {
+  Stream<SeriesWatch> findById({@required String id}) {
     return colRef.document(id).snapshots().map((doc) {
       Map data = doc.data;
       data['id'] = doc.documentID;
-      return Watch.fromJson(data);
+      return SeriesWatch.fromJson(data);
     });
   }
 
@@ -74,4 +74,5 @@ class WatchFirebaseService {
   }
 }
 
-WatchFirebaseService watchFirebaseService = WatchFirebaseService();
+SeriesWatchFirebaseService series_watchFirebaseService =
+    SeriesWatchFirebaseService();

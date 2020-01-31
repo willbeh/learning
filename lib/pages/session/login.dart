@@ -241,11 +241,12 @@ class _LoginPageState extends State<LoginPage> {
       _isLoading = true;
     });
     FirebaseUser user = await userRepository.signInWithGoogle();
+    if(user != null){
+      AppRouter.navigator.pushNamedAndRemoveUntil(AppRouter.homePage, (route)=>false);
+      return;
+    }
     setState(() {
       _isLoading = false;
     });
-    if(user != null){
-      AppRouter.navigator.pushNamedAndRemoveUntil(AppRouter.homePage, (route)=>false);
-    }
   }
 }
