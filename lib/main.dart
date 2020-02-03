@@ -1,6 +1,7 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -18,6 +19,7 @@ import 'package:learning/routes/router.gr.dart';
 import 'package:learning/models/video.service.dart';
 import 'package:learning/models/watch.service.dart';
 import 'package:learning/models/profile.service.dart';
+import 'package:learning/services/app_remote_config.dart';
 import 'package:learning/services/user_repository.dart';
 import 'package:learning/states/theme_state.dart';
 import 'package:learning/states/video_state.dart';
@@ -42,6 +44,7 @@ class MyApp extends StatelessWidget {
       providers: [
         StreamProvider<FirebaseUser>(create: (_) => userRepository.onAuthStateChange, lazy: false,),
         FutureProvider<SharedPreferences>(create: (_) => SharedPreferences.getInstance(), lazy: false,),
+        FutureProvider<RemoteConfig>(create: (_) => getRemoteConfig(), lazy: false,),
         ChangeNotifierProvider(
           create: (_) => ThemeState(isLightTheme: true),
           lazy: false,

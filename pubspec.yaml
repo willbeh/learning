@@ -36,6 +36,7 @@ dependencies:
   cloud_functions: ^0.4.1+6
   firebase_analytics: ^5.0.9
   firebase_messaging: ^6.0.9
+  firebase_remote_config: ^0.3.0+1
 
   # googles, dart
   google_fonts: ^0.3.2
