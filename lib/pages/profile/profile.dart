@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:learning/models/profile.dart';
 import 'package:learning/routes/router.gr.dart';
 import 'package:learning/services/user_repository.dart';
+import 'package:learning/states/app_state.dart';
 import 'package:learning/utils/app_traslation_util.dart';
 import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/app_avatar.dart';
@@ -73,6 +74,7 @@ class ProfilePage extends StatelessWidget {
   }
 
   Widget _buildListOption(BuildContext context) {
+
     return Container(
       color: Colors.white,
       child: ListView(
@@ -90,6 +92,28 @@ class ProfilePage extends StatelessWidget {
           ListTile(
             title: Text('${AppTranslate.text(context, 'account_language')}'),
             trailing: Icon(Icons.navigate_next),
+            onTap: () {
+              CommonUI.alertBox(context,
+                title: '${AppTranslate.text(context, 'account_select_language')}',
+                child: Column(
+                  children: AppState.supportedLanguages.map((lang) {
+                    AppState appState = Provider.of(context, listen: false);
+                    return RadioListTile(
+                      value: lang,
+                      title: Text('${AppTranslate.text(context, 'account_select_$lang')}'),
+                      groupValue: appState.lang,
+                      onChanged: (val) {
+                        if(appState.lang != val) {
+                          appState.setLang(val);
+                          Navigator.pop(context);
+                        }
+                      },
+                    );
+                  }).toList(),
+                ),
+                closeText: 'OK',
+              );
+            },
           ),
         ],
       ),

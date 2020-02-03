@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,8 +10,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:learning/dark_theme.dart';
 import 'package:learning/light_theme.dart';
 import 'package:learning/models/profile.dart';
-import 'package:learning/models/series.dart';
-import 'package:learning/models/series.service.dart';
 import 'package:learning/models/series_watch.dart';
 import 'package:learning/models/series_watch.service.dart';
 import 'package:learning/models/video.dart';
@@ -21,6 +21,7 @@ import 'package:learning/models/watch.service.dart';
 import 'package:learning/models/profile.service.dart';
 import 'package:learning/services/app_remote_config.dart';
 import 'package:learning/services/user_repository.dart';
+import 'package:learning/states/app_state.dart';
 import 'package:learning/states/theme_state.dart';
 import 'package:learning/states/video_state.dart';
 import 'package:learning/utils/app_localization.dart';
@@ -49,6 +50,10 @@ class MyApp extends StatelessWidget {
           create: (_) => ThemeState(isLightTheme: true),
           lazy: false,
         ),
+        ChangeNotifierProvider(
+          create: (_) => AppState(lang: 'en'),
+          lazy: false,
+        ),
         ChangeNotifierProvider<VideoState>(
           create: (_) => VideoState(),
         ),
@@ -58,8 +63,45 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyAppLoad extends StatelessWidget {
+class MyAppLoad extends StatefulWidget {
+  @override
+  _MyAppLoadState createState() => _MyAppLoadState();
+}
+
+class _MyAppLoadState extends State<MyAppLoad> {
   final log = getLogger('MyAppLoad');
+  SharedPreferences prefs;
+  SpecificLocalizationDelegate _localeOverrideDelegate;
+  AppState appState;
+  String _currentLang;
+
+  onLocaleChange(Locale locale){
+    setState((){
+      _currentLang = locale.languageCode;
+      _localeOverrideDelegate = new SpecificLocalizationDelegate(locale);
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if(appState == null) {
+//      appState = Provider.of(context);
+    } else {
+      log.d('didChangeDependencies ${appState.lang}');
+      if(appState.lang != _currentLang){
+        log.d('change language ${appState.lang}');
+        onLocaleChange(Locale('${appState.lang}'));
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _localeOverrideDelegate = new SpecificLocalizationDelegate(null);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,38 +161,43 @@ class MyAppLoad extends StatelessWidget {
         navigatorObservers: [
           FirebaseAnalyticsObserver(analytics: analytics),
         ],
-        supportedLocales: [
-          Locale('en'),
-          Locale('zh'),
-        ],
+        supportedLocales: AppState.supportedLocales(),
         // These delegates make sure that the localization data for the proper language is loaded
         localizationsDelegates: [
           // THIS CLASS WILL BE ADDED LATER
           // A class which loads the translations from JSON files
-          AppLocalizations.delegate,
+//          AppLocalizations.delegate,
+          _localeOverrideDelegate,
+          const TranslationsDelegate(),
           // Built-in localization of basic text for Material widgets
           GlobalMaterialLocalizations.delegate,
           // Built-in localization for text direction LTR/RTL
           GlobalWidgetsLocalizations.delegate,
         ],
-        // Returns a locale which will be used by the app
         localeResolutionCallback: (locale, supportedLocales) {
-          if (locale == null) {
-            return supportedLocales.first;
+          if(appState == null) {
+            appState = Provider.of(context);
           }
-
-          // Check if the current device locale is supported
+//           Check if the current device locale is supported
           for (var supportedLocale in supportedLocales) {
-            if (supportedLocale.languageCode == locale.languageCode &&
-                supportedLocale.countryCode == locale.countryCode) {
+
+//            if (supportedLocale.languageCode == locale.languageCode &&
+//                supportedLocale.countryCode == locale.countryCode) {
+            if (supportedLocale.languageCode == locale.languageCode) {
+              _currentLang = locale.languageCode;
+              log.d('set current $_currentLang');
+              appState.initLang(_currentLang);
               return supportedLocale;
             }
           }
           // If the locale of the device is not supported, use the first one
           // from the list (English, in this case).
+          _currentLang = 'en';
+          log.d('set default $_currentLang');
+          appState.initLang('en');
           return supportedLocales.first;
         },
-        onGenerateTitle: (BuildContext context) => AppLocalizations.of(context).translate('title'),
+        onGenerateTitle: (BuildContext context) => Translations.of(context).text('title'),
         debugShowCheckedModeBanner: false,
         theme: (Provider.of<ThemeState>(context).isLightTheme) ? lightTheme : darkTheme, // AppTheme.themeData(),
 //      darkTheme: darkTheme,

@@ -18,5 +18,8 @@
   "account_edit_profile": "Edit Profile",
   "account_settings": "Account Settings",
   "account_language": "Language",
-  "account_about": "About"
+  "account_about": "About",
+  "account_select_language": "Select a language",
+  "account_select_en": "English",
+  "account_select_zh": "中文"
 }

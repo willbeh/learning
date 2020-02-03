@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:learning/models/profile.dart';
 import 'package:learning/routes/router.gr.dart';
 import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/app_button.dart';
@@ -103,7 +102,6 @@ class _SplashPageState extends State<SplashPage> {
       if(user == null){
         AppRouter.navigator.pushNamedAndRemoveUntil(AppRouter.loginPage, (route)=>false);
       } else {
-        log.d('uid - ${user.uid}');
         AppRouter.navigator.pushNamedAndRemoveUntil(AppRouter.homePage, (route)=>false);
       }
     });

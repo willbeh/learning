@@ -14,5 +14,12 @@
   "forget_title": "Forget Password",
   "forget_msg": "Enter the email address you used when you joined and we'll send you the instructions to reset your password.",
   "forget_btn": "Reset Password",
-  "account_title": "My Account"
+  "account_title": "我的帐户",
+  "account_edit_profile": "编辑个人资料",
+  "account_settings": "帐号设定",
+  "account_language": "语言",
+  "account_about": "About",
+  "account_select_language": "选择一种语言",
+  "account_select_en": "English",
+  "account_select_zh": "中文"
 }
