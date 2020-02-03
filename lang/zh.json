@@ -1,9 +1,18 @@
 {
-  "title": "学习",
+  "title": "Learning",
+  "okay": "Okay",
+  "logout": "Sign Out",
   "login_title": "Login",
   "login_email": "Email",
   "login_email_err": "Please enter your email",
+  "login_email_err_valid": "Please enter a valid email",
   "login_password": "Password",
   "login_password_err": "Please enter your password",
-  "login_forget": "Forget Password?"
+  "login_forget": "Forget Password?",
+  "login_donot": "Do not have an account? ",
+  "login_signup": "Sign up",
+  "forget_title": "Forget Password",
+  "forget_msg": "Enter the email address you used when you joined and we'll send you the instructions to reset your password.",
+  "forget_btn": "Reset Password",
+  "account_title": "My Account"
 }

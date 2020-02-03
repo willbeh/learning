@@ -41,6 +41,7 @@ dependencies:
   # googles, dart
   google_fonts: ^0.3.2
   shared_preferences: ^0.5.6
+  package_info: ^0.4.0+13
   provider: ^4.0.2
   intl: ^0.16.0
   json_annotation: ^3.0.1
