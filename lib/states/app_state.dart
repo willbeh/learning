@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:learning/models/banner.dart';
 
 class AppState with ChangeNotifier {
   String lang;
+  List<AppBanner> banners;
 
   static List supportedLanguages = ['en','zh'];
   // Returns the list of supported Locales

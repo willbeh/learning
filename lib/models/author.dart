@@ -1,4 +1,3 @@
-import 'package:firebase_service_generator/firebase_service.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'author.g.dart';

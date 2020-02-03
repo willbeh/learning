@@ -31,6 +31,7 @@ final ThemeData lightTheme = ThemeData(
   indicatorColor: Color(0xff2196f3),
   hintColor: Color(0x8a000000),
   errorColor: Color(0xffd32f2f),
+  fontFamily: 'SFPro',
   buttonTheme: ButtonThemeData(
     textTheme: ButtonTextTheme.normal,
     minWidth: 88,
@@ -74,96 +75,92 @@ final ThemeData lightTheme = ThemeData(
       iconTheme: IconThemeData(
         color: Colors.black
       ),
-      textTheme: GoogleFonts.montserratTextTheme(
-          TextTheme(
-              title: TextStyle(
-                color: Color(0xdd000000),
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-                fontStyle: FontStyle.normal,
-              )
+      textTheme: TextTheme(
+          title: TextStyle(
+            color: Color(0xdd000000),
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+            fontStyle: FontStyle.normal,
           )
       )
   ),
-  textTheme: GoogleFonts.openSansTextTheme(
-      TextTheme(
-        display4: TextStyle(
-          color: Colors.black,
-          fontSize: 12,
-          fontWeight: FontWeight.w400,
-          fontStyle: FontStyle.normal,
-        ),
-        display3: TextStyle(
-          color: Colors.black,
-          fontSize: 13,
-          fontWeight: FontWeight.w400,
-          fontStyle: FontStyle.normal,
-        ),
-        display2: TextStyle(
-          color: Colors.black,
-          fontSize: 14,
-          fontWeight: FontWeight.w400,
-          fontStyle: FontStyle.normal,
-        ),
-        display1: TextStyle(
-          color: Colors.black,
-          fontSize: 16,
-          fontWeight: FontWeight.w400,
-          fontStyle: FontStyle.normal,
-        ),
-        headline: TextStyle(
-          color: Colors.black,
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-          fontStyle: FontStyle.normal,
-        ),
-        title: TextStyle(
-          color: Colors.black,
-          fontSize: 18,
-          fontWeight: FontWeight.w400,
-          fontStyle: FontStyle.normal,
-        ),
-        subhead: TextStyle(
-          color: Colors.black,
-          fontSize: 16,
-          fontWeight: FontWeight.w400,
-          fontStyle: FontStyle.normal,
-        ),
-        body2: TextStyle(
-          color: Colors.black,
-          fontSize: 14,
-          fontWeight: FontWeight.w400,
-          fontStyle: FontStyle.normal,
-        ),
-        body1: TextStyle(
-          color: Colors.black,
-          fontSize: 16,
-          fontWeight: FontWeight.w400,
-          fontStyle: FontStyle.normal,
-        ),
-        caption: TextStyle(
-          color: Color(0x8a000000),
-          fontSize: 14,
-          fontWeight: FontWeight.w400,
-          fontStyle: FontStyle.normal,
-        ),
-        button: TextStyle(
-          color: Colors.black,
-          fontSize: 14,
-          fontWeight: FontWeight.w400,
-          fontStyle: FontStyle.normal,
-        ),
-        subtitle: TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.w400,
-          fontStyle: FontStyle.normal,
-        ),
-        overline: TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.w400,
-          fontStyle: FontStyle.normal,
-        ),
-      )
+  textTheme: TextTheme(
+    display4: TextStyle(
+      color: Colors.black,
+      fontSize: 12,
+      fontWeight: FontWeight.w400,
+      fontStyle: FontStyle.normal,
+    ),
+    display3: TextStyle(
+      color: Colors.black,
+      fontSize: 13,
+      fontWeight: FontWeight.w400,
+      fontStyle: FontStyle.normal,
+    ),
+    display2: TextStyle(
+      color: Colors.black,
+      fontSize: 14,
+      fontWeight: FontWeight.w400,
+      fontStyle: FontStyle.normal,
+    ),
+    display1: TextStyle(
+      color: Colors.black,
+      fontSize: 16,
+      fontWeight: FontWeight.w400,
+      fontStyle: FontStyle.normal,
+    ),
+    headline: TextStyle(
+      color: Colors.black,
+      fontSize: 20,
+      fontWeight: FontWeight.bold,
+      fontStyle: FontStyle.normal,
+    ),
+    title: TextStyle(
+      color: Colors.black,
+      fontSize: 18,
+      fontWeight: FontWeight.w400,
+      fontStyle: FontStyle.normal,
+    ),
+    subhead: TextStyle(
+      color: Colors.black,
+      fontSize: 16,
+      fontWeight: FontWeight.w400,
+      fontStyle: FontStyle.normal,
+    ),
+    body2: TextStyle(
+      color: Colors.black,
+      fontSize: 14,
+      fontWeight: FontWeight.w400,
+      fontStyle: FontStyle.normal,
+    ),
+    body1: TextStyle(
+      color: Colors.black,
+      fontSize: 16,
+      fontWeight: FontWeight.w400,
+      fontStyle: FontStyle.normal,
+    ),
+    caption: TextStyle(
+      color: Color(0x8a000000),
+      fontSize: 14,
+      fontWeight: FontWeight.w400,
+      fontStyle: FontStyle.normal,
+    ),
+    button: TextStyle(
+      color: Colors.black,
+      fontSize: 14,
+      fontWeight: FontWeight.w400,
+      fontStyle: FontStyle.normal,
+    ),
+    subtitle: TextStyle(
+      color: Colors.black,
+      fontWeight: FontWeight.w400,
+      fontStyle: FontStyle.normal,
+    ),
+    overline: TextStyle(
+      color: Colors.black,
+      fontWeight: FontWeight.w400,
+      fontStyle: FontStyle.normal,
+    ),
   ),
   iconTheme: IconThemeData(
     color: Color(0xdd000000),

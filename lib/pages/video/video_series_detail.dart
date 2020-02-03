@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:learning/models/series.dart';
 import 'package:learning/pages/video/video_series_list.dart';
 import 'package:learning/states/video_state.dart';
-import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/common_ui.dart';
 import 'package:provider/provider.dart';
 

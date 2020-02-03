@@ -3,28 +3,42 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:learning/models/banner.dart';
 import 'package:learning/models/banner.service.dart';
-import 'package:learning/widgets/app_loading_container.dart';
+import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/app_stream_builder.dart';
+import 'package:provider/provider.dart';
+import 'package:learning/states/app_state.dart';
 
 class AppCarousel extends StatelessWidget {
+  final log = getLogger('AppCarousel');
+
   @override
   Widget build(BuildContext context) {
-    return AppStreamBuilder(
-      stream: bannerFirebaseService.find(
-        query: bannerFirebaseService.colRef.where('status', isEqualTo: 'published'),
-        orderField: 'order'
-      ),
-      fn: _buildCarousel,
-      fnLoading: _buildLoading,
-    );
+    List<AppBanner> banners = Provider.of<AppState>(context).banners;
+    if(banners == null || banners.length == 0) {
+      return AppStreamBuilder(
+        stream: bannerFirebaseService.find(
+            query: bannerFirebaseService.colRef.where(
+                'status', isEqualTo: 'published'),
+            orderField: 'order'
+        ),
+        fn: _buildCarousel,
+        fnLoading: _buildLoading,
+      );
+    } else {
+      return AppCarouselBanner(banners);
+    }
   }
 
   Widget _buildCarousel(BuildContext context, List<AppBanner> banners) {
+    if(Provider.of<AppState>(context, listen: false).banners != banners){
+      Provider.of<AppState>(context, listen: false).banners = banners;
+    }
     return AppCarouselBanner(banners);
   }
 
   Widget _buildLoading(BuildContext context) {
-    return AppLoadingContainer(
+    log.d('_buildLoading');
+    return Container(
       height: 200,
       width: MediaQuery.of(context).size.width,
     );
@@ -58,7 +72,7 @@ class _AppCarouselBannerState extends State<AppCarouselBanner> {
                       image: DecorationImage(
                           fit: BoxFit.cover,
                           image: CachedNetworkImageProvider(
-                            banner.image
+                            banner.image,
                           )
                       )
                   ),
@@ -98,20 +112,3 @@ class _AppCarouselBannerState extends State<AppCarouselBanner> {
     );
   }
 }
-
-
-class AppCarouselImage extends StatelessWidget {
-  final String image;
-
-  AppCarouselImage({@required this.image});
-
-  @override
-  Widget build(BuildContext context) {
-    return Image.network(
-      image,
-      height: 200,
-      fit: BoxFit.cover,
-    );
-  }
-}
-
