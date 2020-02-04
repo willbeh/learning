@@ -4,6 +4,7 @@ import 'package:learning/models/series.dart';
 import 'package:learning/models/series.service.dart';
 import 'package:learning/models/series_watch.dart';
 import 'package:learning/pages/home/bottom_nav_video.dart';
+import 'package:learning/pages/profile/my_courses.dart';
 import 'package:learning/pages/profile/profile.dart';
 import 'package:learning/routes/router.gr.dart';
 import 'package:learning/states/video_state.dart';
@@ -25,10 +26,7 @@ class _HomePageState extends State<HomePage> {
   static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static List<Widget> _widgetOptions = <Widget>[
     HomeInfo(),
-    Text(
-      'My Course',
-      style: optionStyle,
-    ),
+    MyCoursesPage(),
     ProfilePage(),
   ];
 

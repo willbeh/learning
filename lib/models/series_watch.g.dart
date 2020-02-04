@@ -13,6 +13,9 @@ SeriesWatch _$SeriesWatchFromJson(Map json) {
     sdata: json['sdata'] == null ? null : Series.fromJson(json['sdata'] as Map),
     uid: json['uid'] as String,
     date: DateTimeUtil.fromTimestamp(json['date']),
+    created: DateTimeUtil.fromTimestamp(json['created']),
+    completed: DateTimeUtil.fromTimestamp(json['completed']),
+    status: json['status'] as String,
   );
 }
 
@@ -23,4 +26,7 @@ Map<String, dynamic> _$SeriesWatchToJson(SeriesWatch instance) =>
       'sdata': instance.sdata,
       'uid': instance.uid,
       'date': instance.date?.toIso8601String(),
+      'created': instance.created?.toIso8601String(),
+      'completed': instance.completed?.toIso8601String(),
+      'status': instance.status,
     };

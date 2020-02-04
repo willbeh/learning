@@ -46,8 +46,6 @@ class VideoSeriesListTile extends StatelessWidget {
     List<Watch> watchs = Provider.of(context);
     bool depend = _checkDependancy(watchs);
 
-    log.d('${video.data.name} depend $depend');
-
     Watch cWatch;
     if(watchs != null)
       cWatch = watchs.firstWhere((w) => w.vid == video.vid, orElse: () => null);

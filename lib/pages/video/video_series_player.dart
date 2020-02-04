@@ -44,9 +44,6 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
     videoState = Provider.of<VideoState>(context);
     videos = Provider.of(context);
 
-    log.d('${videoState.selectedSeries.toJson()}');
-    log.d('videoState?.selectedVideo ${videoState?.selectedVideo}');
-
     // if change video reset _controller
     if(videoState?.selectedVideo != null && _currentVideo?.vid != videoState.selectedVideo.vid){
       log.d('setup video');

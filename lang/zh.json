@@ -28,5 +28,8 @@
   "account_about": "About",
   "account_select_language": "选择一种语言",
   "account_select_en": "English",
-  "account_select_zh": "中文"
+  "account_select_zh": "中文",
+  "my_courses_title": "My Courses",
+  "my_courses_achievement": "Achievements",
+  "my_courses_taken": "These are all the courses you’ve taken so far"
 }

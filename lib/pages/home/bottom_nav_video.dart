@@ -127,7 +127,7 @@ class _AnimatedScrollTextState extends State<AnimatedScrollText> {
         });
       }
     });
-    Future.delayed(Duration(seconds: 1), () {
+    Future.delayed(Duration(seconds: 2), () {
       _toggleScrolling();
     });
   }

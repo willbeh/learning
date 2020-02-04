@@ -18,7 +18,7 @@
   "bottom_course": "My Courses",
   "bottom_account": "Account",
   "home_title": "TWENTY7 Academy",
-  "home_taken": "These are the courses you've taken so far",
+  "home_taken": "These are all the courses you’ve taken so far",
   "home_next": "Up Next",
   "home_new": "New courses are unlocking each week",
   "account_title": "My Account",
@@ -28,5 +28,8 @@
   "account_about": "About",
   "account_select_language": "Select a language",
   "account_select_en": "English",
-  "account_select_zh": "中文"
+  "account_select_zh": "中文",
+  "my_courses_title": "My Courses",
+  "my_courses_achievement": "Achievements",
+  "my_courses_taken": "These are all the courses you’ve taken so far"
 }

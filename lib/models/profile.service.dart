@@ -56,13 +56,11 @@ class ProfileFirebaseService {
     });
   }
 
-  Stream<Profile> findById({String id = ''}) {
+  Stream<Profile> findById({@required String id}) {
     return colRef.document(id).snapshots().map((doc) {
       Map data = doc.data;
       data['id'] = doc.documentID;
       return Profile.fromJson(data);
-    })..handleError((error) {
-      print('ProfileFirebaseService findById error $error');
     });
   }
 

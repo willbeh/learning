@@ -8,7 +8,7 @@ part 'series_watch.g.dart';
 @FirebaseService(name: 'series_watch', col: 'seriesWatch')
 @JsonSerializable(anyMap: true)
 class SeriesWatch {
-  SeriesWatch({this.id, this.sid, this.sdata, this.uid, this.date});
+  SeriesWatch({this.id, this.sid, this.sdata, this.uid, this.date, this.created, this.completed, this.status});
 
   String id;
   String sid;
@@ -16,6 +16,11 @@ class SeriesWatch {
   String uid;
   @JsonKey(fromJson: DateTimeUtil.fromTimestamp) //, toJson: DateTimeUtil.toTimestamp)
   DateTime date;
+  @JsonKey(fromJson: DateTimeUtil.fromTimestamp) //, toJson: DateTimeUtil.toTimestamp)
+  DateTime created;
+  @JsonKey(fromJson: DateTimeUtil.fromTimestamp) //, toJson: DateTimeUtil.toTimestamp)
+  DateTime completed;
+  String status;
 
 
   factory SeriesWatch.fromJson(Map<String, dynamic> json) => _$SeriesWatchFromJson(json);
@@ -25,4 +30,4 @@ class SeriesWatch {
 
 
 
-/// run - flutter pub run build_runner build
+/// run - flutter pub run build_runner build --delete-conflicting-outputs
