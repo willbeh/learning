@@ -37,7 +37,6 @@ class AppCarousel extends StatelessWidget {
   }
 
   Widget _buildLoading(BuildContext context) {
-    log.d('_buildLoading');
     return Container(
       height: 200,
       width: MediaQuery.of(context).size.width,

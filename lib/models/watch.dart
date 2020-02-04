@@ -7,7 +7,9 @@ part 'watch.g.dart';
 @FirebaseService(name: 'watch', col: 'watch')
 @JsonSerializable()
 class Watch {
-  Watch({this.id, this.vid, this.vname, this.vpicture, this.vduration, this.uid, this.position = 0, this.furthest = 0, this.status = '', this.test = false, this.date, this.created});
+  Watch({this.id, this.vid, this.vname, this.vpicture, this.vduration, this.uid, this.position = 0, this.furthest = 0, this.status = '', this.test = false, this.date, this.created,
+    this.sid, this.sname,
+  });
 
   String id;
   String vid;
@@ -23,6 +25,8 @@ class Watch {
   DateTime date;
   @JsonKey(fromJson: DateTimeUtil.fromTimestamp) //, toJson: DateTimeUtil.toTimestamp)
   DateTime created;
+  String sid;
+  String sname;
 
 
   factory Watch.fromJson(Map<String, dynamic> json) => _$WatchFromJson(json);

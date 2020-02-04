@@ -4,13 +4,12 @@ import 'package:learning/routes/router.gr.dart';
 import 'package:learning/services/user_repository.dart';
 import 'package:learning/widgets/app_avatar.dart';
 import 'package:provider/provider.dart';
-import '../states/theme_state.dart';
+import 'package:learning/states/app_state.dart';
 import '../widgets/common_ui.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    ThemeState themeState = Provider.of(context);
     FirebaseUser user = Provider.of(context);
 
     return Drawer(
@@ -37,8 +36,8 @@ class AppDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Text('Change to ${(themeState.isLightTheme) ? 'Dark' : 'Light'} theme'),
-            onTap: () => themeState.invertTheme(),
+            title: Text('Change to ${(Provider.of<AppState>(context, listen: false).isLightTheme) ? 'Dark' : 'Light'} theme'),
+            onTap: () => Provider.of<AppState>(context, listen: false).invertTheme(),
           ),
           ListTile(
             title: Text('Profile'),

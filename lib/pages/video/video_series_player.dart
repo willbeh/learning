@@ -41,8 +41,9 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    videos = Provider.of(context);
     videoState = Provider.of<VideoState>(context);
+    videos = Provider.of(context);
+
     if(videoState?.selectedVideo != null && _currentVideo?.vid != videoState.selectedVideo.vid){
       if(_controller != null){
         _currentVideo = videoState.selectedVideo;

@@ -22,7 +22,6 @@ import 'package:learning/models/profile.service.dart';
 import 'package:learning/services/app_remote_config.dart';
 import 'package:learning/services/user_repository.dart';
 import 'package:learning/states/app_state.dart';
-import 'package:learning/states/theme_state.dart';
 import 'package:learning/states/video_state.dart';
 import 'package:learning/utils/app_localization.dart';
 import 'package:learning/utils/logger.dart';
@@ -46,12 +45,8 @@ class MyApp extends StatelessWidget {
         StreamProvider<FirebaseUser>(create: (_) => userRepository.onAuthStateChange, lazy: false,),
         FutureProvider<SharedPreferences>(create: (_) => SharedPreferences.getInstance(), lazy: false,),
         FutureProvider<RemoteConfig>(create: (_) => getRemoteConfig(), lazy: false,),
-        ChangeNotifierProvider(
-          create: (_) => ThemeState(isLightTheme: true),
-          lazy: false,
-        ),
-        ChangeNotifierProvider(
-          create: (_) => AppState(lang: 'en'),
+        ChangeNotifierProvider<AppState>(
+          create: (_) => AppState(lang: 'en', isLightTheme: true),
           lazy: false,
         ),
         ChangeNotifierProvider<VideoState>(
@@ -89,9 +84,7 @@ class _MyAppLoadState extends State<MyAppLoad> {
     if(appState == null) {
 //      appState = Provider.of(context);
     } else {
-      log.d('didChangeDependencies ${appState.lang}');
       if(appState.lang != _currentLang){
-        log.d('change language ${appState.lang}');
         onLocaleChange(Locale('${appState.lang}'));
       }
     }
@@ -112,7 +105,7 @@ class _MyAppLoadState extends State<MyAppLoad> {
       providers: [
 
         StreamProvider<List<Watch>>.value(
-          value: watchFirebaseService.find(query: watchFirebaseService.colRef.where('uid', isEqualTo: user?.uid)),
+          value: watchFirebaseService.find(query: watchFirebaseService.colRef.where('uid', isEqualTo: user?.uid), orderField: 'date', descending: true),
           lazy: false,
           catchError: (context, error) {
             log.w('watchStream error $error');
@@ -127,17 +120,6 @@ class _MyAppLoadState extends State<MyAppLoad> {
             return;
           } ,
         ),
-//        StreamProvider<List<Series>>(
-//          create: (_) => seriesFirebaseService.find(
-//              query: seriesFirebaseService.colRef.where('status', isEqualTo: 'publish'),
-//              orderField: 'order'
-//          ),
-//          lazy: false,
-//          catchError: (context, error) {
-//            log.w('SeriesService error $error');
-//            return;
-//          } ,
-//        ),
         StreamProvider<Profile>.value(
           value: profileFirebaseService.findById(id: user?.uid),
           lazy: false,
@@ -185,7 +167,6 @@ class _MyAppLoadState extends State<MyAppLoad> {
 //                supportedLocale.countryCode == locale.countryCode) {
             if (supportedLocale.languageCode == locale.languageCode) {
               _currentLang = locale.languageCode;
-              log.d('set current $_currentLang');
               appState.initLang(_currentLang);
               return supportedLocale;
             }
@@ -193,13 +174,12 @@ class _MyAppLoadState extends State<MyAppLoad> {
           // If the locale of the device is not supported, use the first one
           // from the list (English, in this case).
           _currentLang = 'en';
-          log.d('set default $_currentLang');
           appState.initLang('en');
           return supportedLocales.first;
         },
         onGenerateTitle: (BuildContext context) => Translations.of(context).text('title'),
         debugShowCheckedModeBanner: false,
-        theme: (Provider.of<ThemeState>(context).isLightTheme) ? lightTheme : darkTheme, // AppTheme.themeData(),
+        theme: (Provider.of<AppState>(context, listen: false).isLightTheme) ? lightTheme : darkTheme, // AppTheme.themeData(),
 //      darkTheme: darkTheme,
         home: SplashPage(),
         initialRoute: AppRouter.splashPage,
