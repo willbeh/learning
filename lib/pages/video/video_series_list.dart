@@ -59,7 +59,7 @@ class VideoSeriesListTile extends StatelessWidget {
           Container(
             width: 50,
             padding: EdgeInsets.only(left: 20),
-            child: Text('$i'),
+            child: Text('${i+1}'),
           ),
 
           Expanded(

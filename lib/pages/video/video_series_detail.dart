@@ -15,24 +15,30 @@ class VideoSeriesDetail extends StatelessWidget {
       child: NestedScrollView(
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
-              SliverPersistentHeader(
-                delegate: _SliverAppBarDelegate(
-                  TabBar(
-                    labelColor: Colors.black87,
-                    unselectedLabelColor: Colors.grey,
-                    tabs: [
-                      Tab(text: 'LESSONS ❤️'),
-                      Tab(text: 'MATERIALS'),
-                      Tab(child: Row(
-                        children: <Widget>[
-                          Icon(Icons.lock, size: 12, color: Theme.of(context).primaryColor,),
-                          Text('TEST')
+              SliverOverlapAbsorber(
+                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                child: SliverSafeArea(
+                  top: false,
+                  sliver: SliverPersistentHeader(
+                    delegate: _SliverAppBarDelegate(
+                      TabBar(
+                        labelColor: Colors.black87,
+                        unselectedLabelColor: Colors.grey,
+                        tabs: [
+                          Tab(text: 'LESSONS ❤️'),
+                          Tab(text: 'MATERIALS'),
+                          Tab(child: Row(
+                            children: <Widget>[
+                              Icon(Icons.lock, size: 12, color: Theme.of(context).primaryColor,),
+                              Text('TEST')
+                            ],
+                          ),)
                         ],
-                      ),)
-                    ],
+                      ),
+                    ),
+                    pinned: true,
                   ),
                 ),
-                pinned: true,
               ),
             ];
           },
@@ -75,6 +81,7 @@ class VideoSeriesDetail extends StatelessWidget {
           CommonUI.heightPadding(height: 10),
           if(series.about != null && series.about != '')
             Text('${series.about}', style: GoogleFonts.roboto(textStyle: Theme.of(context).textTheme.display2)),
+          CommonUI.heightPadding(),
         ],
       ),
     );
