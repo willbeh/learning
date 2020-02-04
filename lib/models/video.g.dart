@@ -101,6 +101,7 @@ Map<String, dynamic> _$VimeoToJson(Vimeo instance) => <String, dynamic>{
 
 Video _$VideoFromJson(Map json) {
   return Video(
+    id: json['id'] as String,
     sid: json['sid'] as String,
     vid: json['vid'] as String,
     status: json['status'] as String,
@@ -121,11 +122,12 @@ Video _$VideoFromJson(Map json) {
 }
 
 Map<String, dynamic> _$VideoToJson(Video instance) => <String, dynamic>{
+      'id': instance.id,
       'sid': instance.sid,
       'vid': instance.vid,
       'status': instance.status,
       'data': Vimeo.utilToJson(instance.data),
-      'date': instance.date?.toIso8601String(),
+      'date': DateTimeUtil.toTimestamp(instance.date),
       'hastest': instance.hastest,
       'order': instance.order,
       'depend': instance.depend,

@@ -94,6 +94,7 @@ class HomeInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      physics: ClampingScrollPhysics(),
       child: Column(
         children: <Widget>[
           AppCarousel(),
@@ -160,6 +161,16 @@ class MyWatchList extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      );
+    }
+
+    if(seriesWatchs.length == 0) {
+      return Container(
+        width: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.only(left: 20),
+        child: Center(
+          child: Text('No series'),
         ),
       );
     }
@@ -250,10 +261,19 @@ class MyWatchList extends StatelessWidget {
 class UpcomingSeries extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return AppStreamBuilder(
-      stream: seriesFirebaseService.find(),
-      fn: _buildPage,
-    );
+    List<SeriesWatch> seriesWatchs = Provider.of(context);
+
+    if(seriesWatchs != null && seriesWatchs.length > 0){
+      return AppStreamBuilder(
+        stream: seriesFirebaseService.find(
+          limit: 5,
+          query: seriesFirebaseService.colRef.where('order', isGreaterThan: seriesWatchs[0].sdata.order),
+        ),
+        fn: _buildPage,
+      );
+    } else {
+      return Container();
+    }
   }
 
   Widget _buildPage(BuildContext context, List<Series> series){
@@ -269,11 +289,26 @@ class UpcomingSeries extends StatelessWidget {
           height: 120,
           child: Row(
             children: <Widget>[
-              CachedNetworkImage(
-                imageUrl: s.thumb,
-                width: 120,
-                height: 120,
-                fit: BoxFit.cover,
+              Stack(
+                children: <Widget>[
+                  CachedNetworkImage(
+                    imageUrl: s.thumb,
+                    width: 120,
+                    height: 120,
+                    fit: BoxFit.cover,
+                  ),
+                  Container(
+                    alignment: Alignment.topLeft,
+                    height: 30,
+                    width: 30,
+                    margin: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white
+                    ),
+                    child: Center(child: Icon(Icons.lock, size: 18,)),
+                  )
+                ],
               ),
               Expanded(
                 child: Container(

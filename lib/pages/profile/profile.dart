@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:learning/models/profile.dart';
+import 'package:learning/models/video.dart';
+import 'package:learning/models/video.service.dart';
 import 'package:learning/routes/router.gr.dart';
 import 'package:learning/services/user_repository.dart';
 import 'package:learning/states/app_state.dart';
@@ -10,6 +14,8 @@ import 'package:learning/widgets/app_avatar.dart';
 import 'package:learning/widgets/common_ui.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
+
+import 'package:http/http.dart' as http;
 
 class ProfilePage extends StatelessWidget {
   final log = getLogger('ProfilePage');
@@ -63,7 +69,10 @@ class ProfilePage extends StatelessWidget {
                   log.d('package info error ${snap.error.toString()}');
                 }
 
-                return Text('${snap.data}', style: Theme.of(context).textTheme.display4,);
+                return InkWell(
+                  onTap: () => _addVideo(),
+                    child: Text('${snap.data}', style: Theme.of(context).textTheme.display4,)
+                );
               },
             ),
             CommonUI.heightPadding(height: 15),
@@ -125,5 +134,29 @@ class ProfilePage extends StatelessWidget {
     String version = packageInfo.version;
 
     return '$version';
+  }
+
+  _addVideo(){
+    List<String> videos = ['389187332'];
+    const Map<String, String> headers = {
+      'Accept': 'application/vnd.vimeo.*+json;version=3.4',
+      'Authorization': 'Bearer 1e75ca442f1666bf534893e2cd923f83',
+    };
+
+    videos.forEach((video) {
+      log.d('video $video');
+      http.get('https://api.vimeo.com/videos/${video}',headers: headers).then((res) {
+        log.d('${json.decode(res.body)}');
+        videoFirebaseService.insert(data: {
+          'id': video,
+          'vid': video,
+          'data': json.decode(res.body),
+          'date': DateTime.now()
+        }).then((_) => log.d('added'))
+        .catchError((error) => log.w('Error insert $error'));
+      }).catchError((error) {
+        log.w('get $video error - $error');
+      });
+    });
   }
 }

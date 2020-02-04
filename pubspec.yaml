@@ -60,7 +60,7 @@ dependencies:
   firebase_service_generator:
     git:
       url: https://bitbucket.org/william_recursivex/firebase_service_generator.git
-      ref: 0.0.7
+      ref: 0.0.8
 
 dev_dependencies:
   flutter_test:

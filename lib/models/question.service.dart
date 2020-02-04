@@ -21,13 +21,16 @@ class QuestionFirebaseService {
   QuestionFirebaseService._internal();
 
   Stream<List<Question>> find(
-      {Query query, dynamic orderField, bool descending = false}) {
+      {Query query, dynamic orderField, bool descending = false, int limit}) {
     Query inColRef = colRef;
     if (query != null) {
       inColRef = query;
     }
     if (orderField != null) {
       inColRef = inColRef.orderBy(orderField, descending: descending);
+    }
+    if (limit != null) {
+      inColRef = inColRef.limit(limit);
     }
     return inColRef.snapshots().map((list) {
       return list.documents.map((doc) {

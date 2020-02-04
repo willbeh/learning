@@ -100,15 +100,16 @@ class Vimeo {
 @FirebaseService(name: 'video', col: 'videos')
 @JsonSerializable(anyMap: true)
 class Video {
-  Video({this.sid, this.vid, this.status, this.data, this.date, this.hastest = false, this.order, this.depend, this.vlist,
+  Video({this.id, this.sid, this.vid, this.status, this.data, this.date, this.hastest = false, this.order, this.depend, this.vlist,
     this.twatch = 0, this.tcompleted = 0, this.ttest = 0, this.tpass = 0, this.tfail = 0, this.min, this.numQues});
 
+  String id;
   String sid;
   String vid;
   String status;
   @JsonKey( toJson: Vimeo.utilToJson)
   Vimeo data;
-  @JsonKey(fromJson: DateTimeUtil.fromTimestamp)
+  @JsonKey(fromJson: DateTimeUtil.fromTimestamp, toJson: DateTimeUtil.toTimestamp)
   DateTime date;
   bool hastest;
   int order;

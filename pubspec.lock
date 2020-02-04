@@ -278,11 +278,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "0.0.7"
-      resolved-ref: "750ac8007e8292f0be1b0247c87db5d4095013cf"
+      ref: "0.0.8"
+      resolved-ref: "4e3d75fa675bb46779bab606a3d351a8f6e88ec7"
       url: "https://bitbucket.org/william_recursivex/firebase_service_generator.git"
     source: git
-    version: "0.0.7"
+    version: "0.0.8"
   fixnum:
     dependency: transitive
     description:

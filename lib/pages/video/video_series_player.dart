@@ -46,7 +46,6 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
 
     // if change video reset _controller
     if(videoState?.selectedVideo != null && _currentVideo?.vid != videoState.selectedVideo.vid){
-      log.d('setup video');
       if(_controller != null){
         _currentVideo = videoState.selectedVideo;
         _controller.dispose();
@@ -56,16 +55,12 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
 
     if(!_isLoaded){
       if(videos == null || videos.length == 0){
-        log.d('no video');
         return;
       }
 
       if(videoState.selectedSeries.id != videos[0].sid){
-        log.d('different sid');
         return;
       }
-
-      log.d('have video');
 
       prefs = Provider.of(context);
 
