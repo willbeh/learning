@@ -21,7 +21,6 @@ Watch _$WatchFromJson(Map<String, dynamic> json) {
     date: DateTimeUtil.fromTimestamp(json['date']),
     created: DateTimeUtil.fromTimestamp(json['created']),
     sid: json['sid'] as String,
-    sname: json['sname'] as String,
   );
 }
 
@@ -39,5 +38,4 @@ Map<String, dynamic> _$WatchToJson(Watch instance) => <String, dynamic>{
       'date': instance.date?.toIso8601String(),
       'created': instance.created?.toIso8601String(),
       'sid': instance.sid,
-      'sname': instance.sname,
     };

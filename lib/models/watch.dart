@@ -8,7 +8,7 @@ part 'watch.g.dart';
 @JsonSerializable()
 class Watch {
   Watch({this.id, this.vid, this.vname, this.vpicture, this.vduration, this.uid, this.position = 0, this.furthest = 0, this.status = '', this.test = false, this.date, this.created,
-    this.sid, this.sname,
+    this.sid,
   });
 
   String id;
@@ -26,7 +26,6 @@ class Watch {
   @JsonKey(fromJson: DateTimeUtil.fromTimestamp) //, toJson: DateTimeUtil.toTimestamp)
   DateTime created;
   String sid;
-  String sname;
 
 
   factory Watch.fromJson(Map<String, dynamic> json) => _$WatchFromJson(json);

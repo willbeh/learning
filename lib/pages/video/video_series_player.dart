@@ -71,44 +71,6 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
     }
   }
 
-  _setupController(BuildContext context){
-    _isCompleted = false;
-    _initWatch(context);
-
-    int fileIndex = 0;
-    // if file with height 360 exist select it
-    for (int i = 0; i < videoState.selectedVideo.data.files.length; i++) {
-      if (videoState.selectedVideo.data.files[i].height == 360) {
-        fileIndex = i;
-        break;
-      }
-    }
-
-    _controller = VideoPlayerController.network(
-        videoState.selectedVideo.data.files[fileIndex].link)
-      ..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-        if (_watch != null) {
-          if (_watch.position > 0 &&
-              _watch.furthest != videoState.selectedVideo.data.duration) {
-            _controller.seekTo(Duration(seconds: _watch.position)).then((_) {
-              setState(() {});
-            });
-          }
-          // set is completed if true
-          if (_watch.furthest == videoState.selectedVideo.data.duration ||
-              _watch.status == 'completed') {
-            _isCompleted = true;
-          }
-        }
-        setState(() {});
-      }).catchError((error) {
-        log.w('load video error $error');
-        CommonUI.alertBox(context, title: 'Error', msg: 'Load video error $error', closeText: 'Close');
-      })
-      ..addListener(_logInfo);
-  }
-
   @override
   void dispose() {
     if (_controller.value.isPlaying) _updateWatchDocument(_watch.toJson());
@@ -155,9 +117,48 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
     );
   }
 
+  // if full screen landscape when click back will go back to portrait
   Future<bool> _onWillPop(Orientation orientation) async {
     _setOrientation(orientation);
     return false;
+  }
+
+  _setupController(BuildContext context){
+    _isCompleted = false;
+    _initWatch(context);
+
+    int fileIndex = 0;
+    // if file with height 360 exist select it
+    for (int i = 0; i < videoState.selectedVideo.data.files.length; i++) {
+      if (videoState.selectedVideo.data.files[i].height == 360) {
+        fileIndex = i;
+        break;
+      }
+    }
+
+    _controller = VideoPlayerController.network(
+        videoState.selectedVideo.data.files[fileIndex].link)
+      ..initialize().then((_) {
+        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+        if (_watch != null) {
+          if (_watch.position > 0 &&
+              _watch.furthest != videoState.selectedVideo.data.duration) {
+            _controller.seekTo(Duration(seconds: _watch.position)).then((_) {
+              setState(() {});
+            });
+          }
+          // set is completed if true
+          if (_watch.furthest == videoState.selectedVideo.data.duration ||
+              _watch.status == 'completed') {
+            _isCompleted = true;
+          }
+        }
+        setState(() {});
+      }).catchError((error) {
+        log.w('load video error $error');
+        CommonUI.alertBox(context, title: 'Error', msg: 'Load video error $error', closeText: 'Close');
+      })
+      ..addListener(_logInfo);
   }
 
   _setOrientation(Orientation orientation) {
@@ -184,7 +185,7 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
       haveSelectedVideo = true;
     }
 
-    log.d('height ${MediaQuery.of(context).size.height} - ${MediaQuery.of(context).size.height - height - 24}');
+//    log.d('height ${MediaQuery.of(context).size.height} - ${MediaQuery.of(context).size.height - height - 24}');
 
     return Column(
       children: <Widget>[
@@ -275,15 +276,11 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
   }
 
   _initWatch(BuildContext context) async {
-    Watch wp; // preference watch
-    if (prefs.getString(videoState.selectedVideo.vid) != null) {
-      wp = Watch.fromJson(
-          jsonDecode(prefs.getString(videoState.selectedVideo.vid)));
-    }
-
-//    log.d('${videoState.selectedVideo.vid} & ${videoState.selectedWatch}');
-
     if (videoState.selectedWatch != null) {
+      Watch wp; // preference watch
+      if (prefs.getString(videoState.selectedVideo.vid) != null) {
+        wp = Watch.fromJson(jsonDecode(prefs.getString(videoState.selectedVideo.vid)));
+      }
       // preference watch is further than firestore
       if (wp != null && wp.furthest > videoState.selectedWatch.furthest) {
         _watch = wp;
@@ -293,22 +290,6 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
     } else {
       // insert a new document if not exist
       FirebaseUser user = Provider.of(context);
-
-//      log.d('user ${user.uid}');
-//
-//      Map<String, dynamic> data = {
-//        'vid': videoState.selectedVideo.vid,
-//        'vname': videoState.selectedVideo.data.name,
-//        'vpicture': videoState.selectedVideo.data.pictures.sizes[0].link,
-//        'vduration': videoState.selectedVideo.data.duration,
-//        'uid': user.uid,
-//        'position': 0,
-//        'furthest': 0,
-//        'test': false,
-//        'status': '',
-//        'date': DateTime.now(),
-//        'created': DateTime.now(),
-//      };
 
       Watch newWatch = Watch(
         vid: videoState.selectedVideo.vid,
@@ -322,26 +303,8 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
         status: '',
         date: DateTime.now(),
         created: DateTime.now(),
+        sid: videoState.selectedSeries.id
       );
-
-//      log.d('${newWatch.toJson()}');
-
-//      WatchService.insert(newWatch.toJson()).then((w) {
-////        data['id'] = w.documentID;
-////        if (wp != null && wp.furthest > 0) {
-////          _watch.id = w.documentID;
-////          _watch = wp;
-////        } else {
-////          _watch = Watch.fromJson(data);
-////        }
-//
-//        newWatch.id = w.documentID;
-//        _watch = newWatch;
-//        videoState.selectedWatch = _watch;
-//        prefs.setString(w.documentID, jsonEncode(_watch.toJson()));
-//      }).catchError((error) {
-//        log.w('Insert watch error $error');
-//      });
 
       watchFirebaseService.insert(data: newWatch.toJson()).then((w) {
         newWatch.id = w.documentID;
@@ -414,6 +377,7 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
   }
 
   _updateWatchDocument(Map<String, dynamic> data) {
+    data['date'] = DateTime.now();
     if (_watch != null && _watch.id != '') {
       watchFirebaseService.update(id: _watch.id, data: data).catchError((error) {
         log.w('Update error $error');

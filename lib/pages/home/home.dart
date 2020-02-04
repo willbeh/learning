@@ -6,7 +6,6 @@ import 'package:learning/models/series_watch.dart';
 import 'package:learning/pages/home/bottom_nav_video.dart';
 import 'package:learning/pages/profile/profile.dart';
 import 'package:learning/routes/router.gr.dart';
-import 'package:learning/states/app_state.dart';
 import 'package:learning/states/video_state.dart';
 import 'package:learning/utils/app_traslation_util.dart';
 import 'package:learning/widgets/app_carousel.dart';
@@ -173,9 +172,7 @@ class MyWatchList extends StatelessWidget {
   Widget _buildVideoCard(BuildContext context, SeriesWatch seriesWatch){
     return InkWell(
       onTap: () {
-        Series series = seriesWatch.sdata;
-        series.id = seriesWatch.sid;
-        Provider.of<VideoState>(context, listen: false).selectedSeries = series;
+        Provider.of<VideoState>(context, listen: false).selectedSeries = seriesWatch.sdata;
         AppRouter.navigator.pushNamed(AppRouter.videoSeriesPlayerPage);
       },
       child: AppContainerCard(
