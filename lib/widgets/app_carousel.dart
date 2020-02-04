@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:learning/models/banner.dart';
 import 'package:learning/models/banner.service.dart';
 import 'package:learning/utils/logger.dart';
+import 'package:learning/widgets/app_loading_container.dart';
 import 'package:learning/widgets/app_stream_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:learning/states/app_state.dart';
@@ -37,7 +38,7 @@ class AppCarousel extends StatelessWidget {
   }
 
   Widget _buildLoading(BuildContext context) {
-    return Container(
+    return AppLoadingContainer(
       height: 200,
       width: MediaQuery.of(context).size.width,
     );

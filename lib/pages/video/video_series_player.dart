@@ -44,21 +44,31 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
     videoState = Provider.of<VideoState>(context);
     videos = Provider.of(context);
 
+    log.d('${videoState.selectedSeries.toJson()}');
+    log.d('videoState?.selectedVideo ${videoState?.selectedVideo}');
+
+    // if change video reset _controller
     if(videoState?.selectedVideo != null && _currentVideo?.vid != videoState.selectedVideo.vid){
+      log.d('setup video');
       if(_controller != null){
         _currentVideo = videoState.selectedVideo;
         _controller.dispose();
         _setupController(context);
       }
     }
+
     if(!_isLoaded){
       if(videos == null || videos.length == 0){
+        log.d('no video');
         return;
       }
 
       if(videoState.selectedSeries.id != videos[0].sid){
+        log.d('different sid');
         return;
       }
+
+      log.d('have video');
 
       prefs = Provider.of(context);
 
@@ -277,6 +287,7 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
 
   _initWatch(BuildContext context) async {
     if (videoState.selectedWatch != null) {
+      log.d('have watch');
       Watch wp; // preference watch
       if (prefs.getString(videoState.selectedVideo.vid) != null) {
         wp = Watch.fromJson(jsonDecode(prefs.getString(videoState.selectedVideo.vid)));
@@ -288,6 +299,7 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
         _watch = videoState.selectedWatch;
       }
     } else {
+      log.d('create watch');
       // insert a new document if not exist
       FirebaseUser user = Provider.of(context);
 
@@ -412,6 +424,8 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
 
       if (_controller.value.duration == _controller.value.position) {
         _watch.status = 'completed';
+        _watch.position = _watch.vduration;
+        _watch.furthest = _watch.vduration;
         _updateWatchDocument(_watch.toJson());
 
         Wakelock.disable();

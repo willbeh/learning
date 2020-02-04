@@ -22,6 +22,7 @@ class VideoFirebaseService {
 
   Stream<List<Video>> find(
       {Query query, dynamic orderField, bool descending = false}) {
+
     Query inColRef = colRef;
     if (query != null) {
       inColRef = query;
@@ -29,6 +30,7 @@ class VideoFirebaseService {
     if (orderField != null) {
       inColRef = inColRef.orderBy(orderField, descending: descending);
     }
+
     return inColRef.snapshots().map((list) {
       return list.documents.map((doc) {
         Map data = doc.data;

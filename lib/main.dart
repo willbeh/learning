@@ -7,7 +7,6 @@ import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:learning/dark_theme.dart';
 import 'package:learning/light_theme.dart';
 import 'package:learning/models/profile.dart';
 import 'package:learning/models/series_watch.dart';
@@ -130,7 +129,8 @@ class _MyAppLoadState extends State<MyAppLoad> {
         ),
         StreamProvider<List<Video>>.value(
           value: videoFirebaseService.find(
-              query: videoFirebaseService.colRef.where('sid', isEqualTo: Provider.of<VideoState>(context).selectedSeries?.id),
+              query: videoFirebaseService.colRef.where('sid', isEqualTo: Provider.of<VideoState>(context).selectedSeries?.id)
+                .where('status', isEqualTo: 'publish'),
               orderField: 'order'
           ),
           catchError: (context, error) {
@@ -179,7 +179,7 @@ class _MyAppLoadState extends State<MyAppLoad> {
         },
         onGenerateTitle: (BuildContext context) => Translations.of(context).text('title'),
         debugShowCheckedModeBanner: false,
-        theme: (Provider.of<AppState>(context, listen: false).isLightTheme) ? lightTheme : darkTheme, // AppTheme.themeData(),
+        theme: lightTheme, // AppTheme.themeData(),
 //      darkTheme: darkTheme,
         home: SplashPage(),
         initialRoute: AppRouter.splashPage,

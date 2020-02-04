@@ -143,11 +143,25 @@ class MyWatchList extends StatelessWidget {
 
     if(seriesWatchs == null) {
       return Container(
-        height: 150,
         width: MediaQuery.of(context).size.width,
-        child: AppLoadingContainer(
-          height: 120,
-          width: 120,
+        padding: EdgeInsets.only(left: 20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            AppContainerCard(
+              shadowColor: Theme.of(context).primaryColor,
+              margin: EdgeInsets.only(top: 5, bottom: 5),
+              width: 226,
+              height: 250,
+              child: Column(
+                children: <Widget>[
+                  AppLoadingContainer(
+                    height: 127,
+                  )
+                ],
+              ),
+            ),
+          ],
         ),
       );
     }

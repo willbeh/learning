@@ -32,7 +32,7 @@ class ProfilePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             CommonUI.heightPadding(),
-            AppAvatar(image: user.photoUrl, radius: 50,),
+            AppAvatar(image: user?.photoUrl, radius: 50,),
             CommonUI.heightPadding(),
             Text('${profile?.name}', style: Theme.of(context).textTheme.headline.copyWith(fontWeight: FontWeight.w500),),
             CommonUI.heightPadding(height: 15),
