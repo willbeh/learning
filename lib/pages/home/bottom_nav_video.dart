@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:learning/models/series_watch.dart';
 import 'package:learning/models/watch.dart';
+import 'package:learning/routes/router.gr.dart';
+import 'package:learning/states/video_state.dart';
 import 'package:learning/utils/logger.dart';
 import 'package:provider/provider.dart';
 
@@ -51,7 +53,12 @@ class BottomNavVideo extends StatelessWidget {
           ),
           IconButton(
             icon: Icon(Icons.play_circle_filled, color: Colors.white, size: 27,),
-            onPressed: null,
+            onPressed: () {
+              VideoState videoState = Provider.of(context, listen: false);
+              videoState.selectedWatch = watch;
+              videoState.selectedSeries = seriesWatch.sdata;
+              AppRouter.navigator.pushNamed(AppRouter.videoSeriesPlayerPage);
+            },
           )
         ],
       ),
