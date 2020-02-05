@@ -8,6 +8,7 @@ import 'package:learning/pages/home/bottom_nav_video.dart';
 import 'package:learning/pages/profile/my_courses.dart';
 import 'package:learning/pages/profile/profile.dart';
 import 'package:learning/routes/router.gr.dart';
+import 'package:learning/states/home_page_state.dart';
 import 'package:learning/states/video_state.dart';
 import 'package:learning/utils/app_traslation_util.dart';
 import 'package:learning/widgets/app_carousel.dart';
@@ -17,76 +18,63 @@ import 'package:learning/widgets/app_stream_builder.dart';
 import 'package:learning/widgets/common_ui.dart';
 import 'package:provider/provider.dart';
 
-class HomePage extends StatefulWidget {
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 0;
+class HomePage extends StatelessWidget {
   static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-
-
-  void navigateTo(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  List<Widget> _widgetOptions;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _widgetOptions = <Widget>[
-      HomeInfo(navigateTo),
-      MyCoursesPage(),
-      ProfilePage(),
-    ];
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: <Widget>[
-            _widgetOptions.elementAt(_selectedIndex),
-            if(_selectedIndex != 2)
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: BottomNavVideo(),
-              )
-          ],
-        ),
+    List<Widget> _widgetOptions = <Widget>[
+      HomeInfo(),
+      MyCoursesPage(),
+      ProfilePage(),
+    ];
+
+    return ChangeNotifierProvider(
+      create: (_) => HomePageState(),
+      child: Consumer<HomePageState>(
+        builder: (context, homePageState, _) {
+          return Scaffold(
+            body: SafeArea(
+              child: Stack(
+                children: <Widget>[
+                  _widgetOptions.elementAt(homePageState.selectedIndex),
+                  if(homePageState.selectedIndex != 2)
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: BottomNavVideo(),
+                    )
+                ],
+              ),
+            ),
+            bottomNavigationBar: BottomNavigationBar(
+              items: <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  title: Text('${AppTranslate.text(context, 'bottom_home')}', style: Theme.of(context).textTheme.display3,),
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.book),
+                  title: Text('${AppTranslate.text(context, 'bottom_course')}', style: Theme.of(context).textTheme.display3,),
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.person),
+                  title: Text('${AppTranslate.text(context, 'bottom_account')}', style: Theme.of(context).textTheme.display3,),
+                ),
+              ],
+              currentIndex: homePageState.selectedIndex,
+              onTap: (i) {
+                homePageState.selectedIndex = i;
+              },
+            ),
+          );
+        },
       ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              title: Text('${AppTranslate.text(context, 'bottom_home')}', style: Theme.of(context).textTheme.display3,),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.book),
-              title: Text('${AppTranslate.text(context, 'bottom_course')}', style: Theme.of(context).textTheme.display3,),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              title: Text('${AppTranslate.text(context, 'bottom_account')}', style: Theme.of(context).textTheme.display3,),
-            ),
-          ],
-          currentIndex: _selectedIndex,
-          onTap: navigateTo,
-        ),
     );
   }
 }
 
 class HomeInfo extends StatelessWidget {
-  final Function navigateTo;
-
-  HomeInfo(this.navigateTo);
+  HomeInfo();
 
   final List<Map<String, dynamic>> gridItems = [
     {
@@ -128,7 +116,7 @@ class HomeInfo extends StatelessWidget {
           Container(
             padding: EdgeInsets.symmetric(vertical: 5),
             height: 270,
-            child: MyWatchList(navigateTo),
+            child: MyWatchList(),
           ),
           Container(
             width: MediaQuery.of(context).size.width,
@@ -151,9 +139,7 @@ class HomeInfo extends StatelessWidget {
 }
 
 class MyWatchList extends StatelessWidget {
-  final Function navigateTo;
-
-  MyWatchList(this.navigateTo);
+  MyWatchList();
 
   @override
   Widget build(BuildContext context) {
@@ -270,7 +256,7 @@ class MyWatchList extends StatelessWidget {
       width: 226,
       margin: EdgeInsets.only(left:20, top: 5, bottom: 5),
       child: InkWell(
-        onTap: () => navigateTo(1),
+        onTap: () => Provider.of<HomePageState>(context, listen: false).selectedIndex = 1,
         child: Container(
           padding: EdgeInsets.all(15),
           child: Center(
