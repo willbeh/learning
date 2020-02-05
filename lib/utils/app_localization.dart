@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show  rootBundle;
-import 'package:learning/lang/en.dart';
+import 'package:learning/lang/lang.dart';
 import 'package:learning/services/app_remote_config.dart';
 import 'package:learning/states/app_state.dart';
 

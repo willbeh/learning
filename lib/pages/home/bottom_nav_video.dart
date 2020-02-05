@@ -90,7 +90,7 @@ class _AnimatedScrollTextState extends State<AnimatedScrollText> {
       _duration = distanceDifference / speedFactor;
     }
 
-    _scrollController.animateTo((forward) ? _scrollController.position.maxScrollExtent : 0,
+    _scrollController?.animateTo((forward) ? _scrollController.position.maxScrollExtent : 0,
         duration: Duration(seconds: _duration.toInt()),
         curve: Curves.linear);
   }

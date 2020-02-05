@@ -25,16 +25,25 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static List<Widget> _widgetOptions = <Widget>[
-    HomeInfo(),
-    MyCoursesPage(),
-    ProfilePage(),
-  ];
 
-  void _onItemTapped(int index) {
+
+  void navigateTo(int index) {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  List<Widget> _widgetOptions;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _widgetOptions = <Widget>[
+      HomeInfo(navigateTo),
+      MyCoursesPage(),
+      ProfilePage(),
+    ];
   }
 
   @override
@@ -44,10 +53,11 @@ class _HomePageState extends State<HomePage> {
         child: Stack(
           children: <Widget>[
             _widgetOptions.elementAt(_selectedIndex),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: BottomNavVideo(),
-            )
+            if(_selectedIndex != 2)
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: BottomNavVideo(),
+              )
           ],
         ),
       ),
@@ -67,13 +77,17 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
           currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
+          onTap: navigateTo,
         ),
     );
   }
 }
 
 class HomeInfo extends StatelessWidget {
+  final Function navigateTo;
+
+  HomeInfo(this.navigateTo);
+
   final List<Map<String, dynamic>> gridItems = [
     {
       'title': 'Video',
@@ -114,7 +128,7 @@ class HomeInfo extends StatelessWidget {
           Container(
             padding: EdgeInsets.symmetric(vertical: 5),
             height: 270,
-            child: MyWatchList(),
+            child: MyWatchList(navigateTo),
           ),
           Container(
             width: MediaQuery.of(context).size.width,
@@ -137,6 +151,10 @@ class HomeInfo extends StatelessWidget {
 }
 
 class MyWatchList extends StatelessWidget {
+  final Function navigateTo;
+
+  MyWatchList(this.navigateTo);
+
   @override
   Widget build(BuildContext context) {
     List<SeriesWatch> seriesWatchs = Provider.of(context);
@@ -249,11 +267,31 @@ class MyWatchList extends StatelessWidget {
 
   Widget _buildMoreCard(BuildContext context) {
     return AppContainerCard(
-      width: 150,
+      width: 226,
       margin: EdgeInsets.only(left:20, top: 5, bottom: 5),
-      child: Container(
-        padding: EdgeInsets.all(15),
-        child: Center(child: Text('View more')),
+      child: InkWell(
+        onTap: () => navigateTo(1),
+        child: Container(
+          padding: EdgeInsets.all(15),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text('${AppTranslate.text(context, 'home_all')}', style: Theme.of(context).textTheme.headline.copyWith(color: Theme.of(context).primaryColor)),
+                CommonUI.heightPadding(),
+                Container(
+                  height: 30,
+                  width: 30,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(Icons.arrow_forward, color: Colors.white,),
+                )
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

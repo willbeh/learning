@@ -85,26 +85,11 @@ class VideoSeriesListTile extends StatelessWidget {
                   Container(
                     height: 2,
                     child: (cWatch == null) ? _buildLinearProgress(0) : 
-                    _buildLinearProgress(cWatch.furthest/video.data.duration),
+                    _buildLinearProgress(cWatch.position/video.data.duration),
                   )
-
                 ],
               ),
             ),
-
-//          Container(
-//            width: 50,
-//            margin: EdgeInsets.only(left: 10),
-//            child: InkWell(
-//              onTap: () => _selectVideo(context, cWatch, depend, videoState.selectedVideo.vid),
-//              child: Column(
-//                children: <Widget>[
-//                  Icon((depend) ? Icons.play_arrow : Icons.lock, size: iconSize,),
-//                  Text('${DateTimeUtil.formatDuration(Duration(seconds: video.data.duration))}', style: Theme.of(context).textTheme.display3,),
-//                ],
-//              ),
-//            ),
-//          )
           ],
         ),
       ),

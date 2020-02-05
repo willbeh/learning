@@ -1,5 +1,5 @@
 import 'package:firebase_remote_config/firebase_remote_config.dart';
-import 'package:learning/lang/en.dart';
+import 'package:learning/lang/lang.dart';
 
 Future<RemoteConfig> getRemoteConfig() async{
   final RemoteConfig remoteConfig = await RemoteConfig.instance;
