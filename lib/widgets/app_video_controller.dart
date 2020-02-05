@@ -102,6 +102,7 @@ class _AppVideoControlState extends State<AppVideoControl> {
               alignment: Alignment.bottomCenter,
               child: Container(
                 height: 40,
+                margin: EdgeInsets.only(bottom: 5),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -129,10 +130,10 @@ class _AppVideoControlState extends State<AppVideoControl> {
                       child: Row(
                         children: <Widget>[
                           (widget.controller.value.duration == null)
-                              ? Text('0')
+                              ? Text('0', style: Theme.of(context).textTheme.display3.copyWith(color: Colors.white),)
                               : Text(
                             '${DateTimeUtil.formatDuration(widget.controller.value.duration)}',
-                            style: TextStyle(color: Colors.white),
+                            style: Theme.of(context).textTheme.display3.copyWith(color: Colors.white),
                           ),
                           IconButton(
                             icon: Icon(
@@ -221,11 +222,13 @@ class _AppVideoPositionState extends State<AppVideoPosition> {
 
   @override
   Widget build(BuildContext context) {
+    TextStyle textStyle = Theme.of(context).textTheme.display3.copyWith(color: Colors.white);
+
     return (_displayDuration == null)
-        ? Text('0')
+        ? Text('0', style: textStyle,)
         : Text(
       '${DateTimeUtil.formatDuration(_displayDuration)}',
-      style: TextStyle(color: Colors.white),
+      style: textStyle,
     );
 //    return (controller.value.position == null) ? Text('0') :Text('${DateTimeUtil.formatDuration(controller.value.position)}');
   }
