@@ -50,56 +50,97 @@ class VideoSeriesListTile extends StatelessWidget {
     if(watchs != null)
       cWatch = watchs.firstWhere((w) => w.vid == video.vid, orElse: () => null);
 
-    return Container(
-      color: (video.vid == videoState.selectedVideo.vid) ? Colors.grey.shade200 : Colors.white,
-      padding: EdgeInsets.symmetric(vertical: 10),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            width: 50,
-            padding: EdgeInsets.only(left: 20),
-            child: Text('${i+1}'),
-          ),
+    return InkWell(
+      onTap: () {
+        if (depend) {
+          _selectVideo(context, cWatch, depend, videoState.selectedVideo.vid);
+        }
+      },
+      child: Container(
+        height: 80,
+        color: (video.vid == videoState.selectedVideo.vid) ? Colors.grey.shade200 : Colors.white,
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            _buildLeading(context, video, i, watchs),
 
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(video.data.name, style: Theme.of(context).textTheme.display2,),
-                CommonUI.heightPadding(height: 5),
-                (cWatch == null) ? LinearProgressIndicator(
-                  value: 0,
-                ) : LinearProgressIndicator(
-                  value: cWatch.position/video.data.duration,
-                  backgroundColor: Colors.grey.shade50,
-                )
-              ],
-            ),
-          ),
-
-          Container(
-            width: 50,
-            margin: EdgeInsets.only(left: 10),
-            child: InkWell(
-              onTap: () => _selectVideo(context, cWatch, depend, videoState.selectedVideo.vid),
+            Expanded(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Icon((depend) ? Icons.play_arrow : Icons.lock, size: iconSize,),
-                  Text('${DateTimeUtil.formatDuration(Duration(seconds: video.data.duration))}', style: Theme.of(context).textTheme.display3,),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Text(video.data.name, style: Theme.of(context).textTheme.display2, maxLines: 1,),
+                      ),
+                      Icon((depend) ? Icons.play_arrow : Icons.lock, size: iconSize, color: Colors.grey,),
+                      CommonUI.widthPadding(width: 10),
+                      Text('${DateTimeUtil.formatDuration(Duration(seconds: video.data.duration))}', style: Theme.of(context).textTheme.display3,),
+                    ],
+                  ),
+                  CommonUI.heightPadding(height: 10),
+                  Container(
+                    height: 2,
+                    child: (cWatch == null) ? _buildLinearProgress(0) : 
+                    _buildLinearProgress(cWatch.furthest/video.data.duration),
+                  )
+
                 ],
               ),
             ),
-          )
-        ],
+
+//          Container(
+//            width: 50,
+//            margin: EdgeInsets.only(left: 10),
+//            child: InkWell(
+//              onTap: () => _selectVideo(context, cWatch, depend, videoState.selectedVideo.vid),
+//              child: Column(
+//                children: <Widget>[
+//                  Icon((depend) ? Icons.play_arrow : Icons.lock, size: iconSize,),
+//                  Text('${DateTimeUtil.formatDuration(Duration(seconds: video.data.duration))}', style: Theme.of(context).textTheme.display3,),
+//                ],
+//              ),
+//            ),
+//          )
+          ],
+        ),
       ),
     );
+  }
+  
+  Widget _buildLinearProgress(double val) {
+    return LinearProgressIndicator(
+      value: val,
+      backgroundColor: Color(0xffF1F1F1),
+    );
+  }
+
+  Widget _buildLeading(BuildContext context, Video video, int i, List<Watch> watchs) {
+    Watch watch;
+    if(watchs.any((watch) => watch.vid == video.vid)) {
+      watch = watchs.firstWhere((watch) => watch.vid == video.vid, orElse: null);
+    }
+    if(watch != null && watch.status == 'completed') {
+      return Container(
+        width: 35,
+        alignment: Alignment.centerLeft,
+        child: Icon(Icons.check, color: Colors.grey,),
+      );
+    } else {
+      return Container(
+        width: 35,
+        alignment: Alignment.centerLeft,
+        child: Text('${i+1}', style: TextStyle(color: Colors.grey),),
+      );
+    }
   }
 
   _selectVideo(BuildContext context, Watch watch, bool depend, String selectedVid){
     if(!depend) return;
     if(video.vid == selectedVid) return;
-    log.d('_selectVideo');
     Provider.of<VideoState>(context, listen: false).selectVideo(video, watch);
   }
 

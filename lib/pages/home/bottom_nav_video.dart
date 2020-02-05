@@ -21,7 +21,7 @@ class BottomNavVideo extends StatelessWidget {
 
     Watch watch = watchs[0];
     // hide bottom play if watch completed
-    if(watch.status == 'completed') {
+    if(watch.position >= watch.vduration) {
       return Container();
     }
 
