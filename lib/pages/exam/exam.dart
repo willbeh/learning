@@ -250,7 +250,7 @@ class _ExamDetailState extends State<ExamDetail> {
                 _checkAnswers();
                 _answer.status = 'completed';
                 _answer.correct = _checkAnswers();
-                _answer.min = widget.video.min;
+                _answer.min = 10;// widget.video.min;
                 answerFirebaseService.update(id: _answer.id, data: _answer.toJson());
                 if(Provider.of<VideoState>(context, listen: false).selectedWatch != null){
                   watchFirebaseService.update(
@@ -286,7 +286,7 @@ class _ExamDetailState extends State<ExamDetail> {
 //    });
 //    log.d('${{ 'answer': _answer.toJson() }}');
 
-    callable.call(<String, dynamic>{ 'vid': _answer.vid, 'min': widget.video.min, 'questions': _questions.map((q) => q.toJson()).toList(), 'answer': _answer.toJson() }
+    callable.call(<String, dynamic>{ 'vid': _answer.vid, 'min': 10, 'questions': _questions.map((q) => q.toJson()).toList(), 'answer': _answer.toJson() }
     ).then((res) {
       log.d('OK ${res.toString()}');
     }).catchError((error){

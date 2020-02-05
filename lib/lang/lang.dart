@@ -33,7 +33,8 @@ Map<dynamic, dynamic> translationValue = {
     "account_select_zh": "中文",
     "my_courses_title": "My Courses",
     "my_courses_achievement": "Achievements",
-    "my_courses_taken": "These are all the courses you’ve taken so far"
+    "my_courses_taken": "These are all the courses you’ve taken so far",
+    "video_test": "Test Now"
   },
   'zh' : {
     "title": "Learning",
@@ -69,6 +70,7 @@ Map<dynamic, dynamic> translationValue = {
     "account_select_zh": "中文",
     "my_courses_title": "My Courses",
     "my_courses_achievement": "Achievements",
-    "my_courses_taken": "These are all the courses you’ve taken so far"
+    "my_courses_taken": "These are all the courses you’ve taken so far",
+    "video_test": "Test Now"
   }
 };

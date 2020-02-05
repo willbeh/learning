@@ -214,19 +214,19 @@ class VideoPage extends StatelessWidget {
     if (watchs.any((w) => (w.vid == video.vid && w.status == 'completed' && w.test == true))) {
       trailingIcon = Icon(Icons.check_circle, color: Colors.green,);
     } else if (watchs.any((w) => (w.vid == video.vid && w.status == 'completed'))) {
-      if(video.hastest == true){
-        trailingIcon = InkWell(
-          onTap: () => _openTest(context, video, watchs),
-          child: Column(
-            children: <Widget>[
-              Icon(Icons.list, color: Theme.of(context).primaryColor,),
-              Text('test', style: Theme.of(context).textTheme.display4.copyWith(color: Theme.of(context).primaryColor),),
-            ],
-          ),
-        );
-      } else {
-        trailingIcon = Icon(Icons.check_circle, color: Colors.green,);
-      }
+//      if(video.hastest == true){
+//        trailingIcon = InkWell(
+//          onTap: () => _openTest(context, video, watchs),
+//          child: Column(
+//            children: <Widget>[
+//              Icon(Icons.list, color: Theme.of(context).primaryColor,),
+//              Text('test', style: Theme.of(context).textTheme.display4.copyWith(color: Theme.of(context).primaryColor),),
+//            ],
+//          ),
+//        );
+//      } else {
+//        trailingIcon = Icon(Icons.check_circle, color: Colors.green,);
+//      }
     } else if (watchs.any((w) => (w.vid == video.vid))) {
       trailingIcon = Icon(Icons.visibility);
     }

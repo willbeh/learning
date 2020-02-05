@@ -25,7 +25,7 @@ class VideoSeriesDetail extends StatelessWidget {
                         labelColor: Colors.black87,
                         unselectedLabelColor: Colors.grey,
                         tabs: [
-                          Tab(text: 'LESSONS ❤️'),
+                          Tab(text: 'LESSONS'),
                           Tab(text: 'MATERIALS'),
                           Tab(child: Row(
                             children: <Widget>[

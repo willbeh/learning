@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:learning/models/video.dart';
 import 'package:learning/models/watch.dart';
 import 'package:learning/states/video_state.dart';
+import 'package:learning/utils/app_traslation_util.dart';
 import 'package:learning/utils/datetime_util.dart';
 import 'package:learning/utils/logger.dart';
+import 'package:learning/widgets/app_button.dart';
 import 'package:learning/widgets/common_ui.dart';
 import 'package:provider/provider.dart';
 
@@ -19,9 +21,19 @@ class VideoSeriesList extends StatelessWidget {
     return ListView.separated(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
-      itemCount: videos.length,
+      itemCount: videos.length + 1,
       separatorBuilder: (context, i) => Divider(height: 0,),
       itemBuilder: (context, i) {
+        if(i == videos.length){
+          return Container(
+            margin: EdgeInsets.symmetric(horizontal: 30),
+            child: AppButton.roundedButton(context,
+                text: '${AppTranslate.text(context, 'video_test')}'
+
+            ),
+          );
+        }
+
         return VideoSeriesListTile(
           video:videos[i],
           i:i,
