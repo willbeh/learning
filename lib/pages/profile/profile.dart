@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:learning/models/profile.dart';
-import 'package:learning/models/video.dart';
 import 'package:learning/models/video.service.dart';
 import 'package:learning/routes/router.gr.dart';
 import 'package:learning/services/user_repository.dart';
@@ -145,7 +144,7 @@ class ProfilePage extends StatelessWidget {
 
     videos.forEach((video) {
       log.d('video $video');
-      http.get('https://api.vimeo.com/videos/${video}',headers: headers).then((res) {
+      http.get('https://api.vimeo.com/videos/$video',headers: headers).then((res) {
         log.d('${json.decode(res.body)}');
         videoFirebaseService.insert(data: {
           'id': video,

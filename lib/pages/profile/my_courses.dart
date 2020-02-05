@@ -11,7 +11,7 @@ class MyCoursesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     List<SeriesWatch> seriesWatchs = Provider.of(context);
     List<SeriesWatch> ongoing = seriesWatchs.where((s) => s.status != 'completed').toList();
-    List<SeriesWatch> completed = seriesWatchs.where((s) => s.status == 'completed').toList();
+//    List<SeriesWatch> completed = seriesWatchs.where((s) => s.status == 'completed').toList();
     return Scaffold(
       appBar: AppBar(
         title: Text('${AppTranslate.text(context, 'my_courses_title')}'),

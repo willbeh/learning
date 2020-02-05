@@ -41,7 +41,7 @@ class Translations {
 //      _localizedValues = translation_value['${locale.languageCode}'];
 //    }
 
-    _localizedValues = translation_value['${locale.languageCode}'];
+    _localizedValues = translationValue['${locale.languageCode}'];
 
     return translations;
   }

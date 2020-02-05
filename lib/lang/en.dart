@@ -1,4 +1,4 @@
-Map<dynamic, dynamic> translation_value = {
+Map<dynamic, dynamic> translationValue = {
   'en' : {
     "title": "Learning",
     "okay": "Okay",

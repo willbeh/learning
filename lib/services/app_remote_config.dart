@@ -8,8 +8,8 @@ Future<RemoteConfig> getRemoteConfig() async{
     'home_series_watch': 3,
     'default_language': 'en',
     'home_upcoming': 5,
-    'lang_en': translation_value['en'],
-    'lang_zh': translation_value['zh']
+    'lang_en': translationValue['en'],
+    'lang_zh': translationValue['zh']
   };
   await remoteConfig.setDefaults(defaults);
 
