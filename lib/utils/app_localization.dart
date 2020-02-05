@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show  rootBundle;
+import 'package:learning/lang/en.dart';
+import 'package:learning/services/app_remote_config.dart';
 import 'package:learning/states/app_state.dart';
 
 class Translations {
@@ -27,9 +29,20 @@ class Translations {
   }
 
   static Future<Translations> load(Locale locale) async {
-    Translations translations = new Translations(locale);
-    String jsonContent = await rootBundle.loadString("lang/${locale.languageCode}.json");
-    _localizedValues = json.decode(jsonContent);
+    Translations translations = Translations(locale);
+
+//    String jsonContent = await rootBundle.loadString("lang/${locale.languageCode}.json");
+//    _localizedValues = json.decode(jsonContent);
+
+//    if(appRemoteConfig.remoteConfig != null) {
+//      String jsonContent = appRemoteConfig.remoteConfig.getString('lang_${locale.languageCode}');
+//      _localizedValues = json.decode(jsonContent);
+//    } else {
+//      _localizedValues = translation_value['${locale.languageCode}'];
+//    }
+
+    _localizedValues = translation_value['${locale.languageCode}'];
+
     return translations;
   }
 

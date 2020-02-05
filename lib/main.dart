@@ -39,11 +39,14 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
+
     return MultiProvider(
       providers: [
         StreamProvider<FirebaseUser>(create: (_) => userRepository.onAuthStateChange, lazy: false,),
         FutureProvider<SharedPreferences>(create: (_) => SharedPreferences.getInstance(), lazy: false,),
-        FutureProvider<RemoteConfig>(create: (_) => getRemoteConfig(), lazy: false,),
+//        FutureProvider<RemoteConfig>(create: (_) => getRemoteConfig(), lazy: false,),
+        FutureProvider<RemoteConfig>(create: (_) => appRemoteConfig.getRemoteConfig(), lazy: false,),
         ChangeNotifierProvider<AppState>(
           create: (_) => AppState(lang: 'en', isLightTheme: true),
           lazy: false,

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:learning/models/series.dart';
 import 'package:learning/models/series.service.dart';
@@ -266,7 +267,7 @@ class UpcomingSeries extends StatelessWidget {
     if(seriesWatchs != null && seriesWatchs.length > 0){
       return AppStreamBuilder(
         stream: seriesFirebaseService.find(
-          limit: 5,
+          limit: Provider.of<RemoteConfig>(context).getInt('home_upcoming'),
           query: seriesFirebaseService.colRef.where('order', isGreaterThan: seriesWatchs[0].sdata.order),
         ),
         fn: _buildPage,
