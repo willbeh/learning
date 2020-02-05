@@ -24,6 +24,8 @@ class VideoSeriesDetail extends StatelessWidget {
                       TabBar(
                         labelColor: Colors.black87,
                         unselectedLabelColor: Colors.grey,
+                        indicatorColor: Colors.black,
+
                         tabs: [
                           Tab(text: 'LESSONS'),
                           Tab(text: 'MATERIALS'),
