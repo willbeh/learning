@@ -19,8 +19,6 @@ import 'package:learning/widgets/common_ui.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
-  static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-
   @override
   Widget build(BuildContext context) {
     List<Widget> _widgetOptions = <Widget>[
@@ -32,17 +30,14 @@ class HomePage extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => HomePageState(),
       child: Consumer<HomePageState>(
-        builder: (context, homePageState, _) {
+        builder: (context, homePageState, child) {
           return Scaffold(
             body: SafeArea(
               child: Stack(
                 children: <Widget>[
                   _widgetOptions.elementAt(homePageState.selectedIndex),
                   if(homePageState.selectedIndex != 2)
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: BottomNavVideo(),
-                    )
+                    child,
                 ],
               ),
             ),
@@ -71,6 +66,11 @@ class HomePage extends StatelessWidget {
             ),
           );
         },
+        // don't need to rebuild bottomNavVideo
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: BottomNavVideo(),
+        ),
       ),
     );
   }

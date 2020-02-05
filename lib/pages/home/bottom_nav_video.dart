@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:learning/models/series_watch.dart';
@@ -78,10 +80,10 @@ class AnimatedScrollText extends StatefulWidget {
 
 class _AnimatedScrollTextState extends State<AnimatedScrollText> {
   ScrollController _scrollController;
-  bool scroll = false;
   int speedFactor = 20;
   double _duration = 0;
   var log = getLogger('_AnimatedScrollTextState');
+  Timer _timer;
 
   _scroll({bool forward = true}) {
     if(_duration == 0){
@@ -95,45 +97,32 @@ class _AnimatedScrollTextState extends State<AnimatedScrollText> {
         curve: Curves.linear);
   }
 
-  _toggleScrolling() {
-    if(_scrollController.position.maxScrollExtent == 0){
-      return;
-    }
-    setState(() {
-      scroll = !scroll;
-    });
-
-    if (scroll) {
-      _scroll();
-    } else {
-      _scrollController.animateTo(_scrollController.offset,
-          duration: Duration(seconds: 1), curve: Curves.linear);
-    }
-  }
-
   @override
   void initState() {
     super.initState();
 
     _scrollController = ScrollController()..addListener(() {
       if(_scrollController.offset == _scrollController.position.maxScrollExtent) {
-        Future.delayed(Duration(seconds: 2), () {
+        _timer.cancel();
+        _timer = Timer(Duration(seconds: 2), () {
           _scroll(forward: false);
         });
       }
       if(_scrollController.offset == 0) {
-        Future.delayed(Duration(seconds: 2), () {
+        _timer.cancel();
+        _timer = Timer(Duration(seconds: 2), () {
           _scroll(forward: true);
         });
       }
     });
-    Future.delayed(Duration(seconds: 2), () {
-      _toggleScrolling();
+    _timer = Timer(Duration(seconds: 2), () {
+      _scroll(forward: true);
     });
   }
 
   @override
   void dispose() {
+    _timer.cancel();
     _scrollController.dispose();
     super.dispose();
   }
@@ -152,13 +141,5 @@ class _AnimatedScrollTextState extends State<AnimatedScrollText> {
         ],
       ),
     );
-//    return ListView.builder(
-//        controller: _scrollController,
-//        itemCount: _list.length,
-//        scrollDirection: Axis.horizontal,
-//        itemBuilder: (context, i) {
-//          return Text(_list[i]);
-//        }
-//    );
   }
 }
