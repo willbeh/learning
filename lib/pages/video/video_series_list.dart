@@ -26,10 +26,10 @@ class VideoSeriesList extends StatelessWidget {
       itemBuilder: (context, i) {
         if(i == videos.length){
           return Container(
-            margin: EdgeInsets.symmetric(horizontal: 30),
+            margin: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
             child: AppButton.roundedButton(context,
-                text: '${AppTranslate.text(context, 'video_test')}'
-
+                text: '${AppTranslate.text(context, 'video_test')}',
+              height: 48
             ),
           );
         }

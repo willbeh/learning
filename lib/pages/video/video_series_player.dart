@@ -279,7 +279,6 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
 
   _initWatch(BuildContext context) async {
     if (videoState.selectedWatch != null) {
-      log.d('have watch');
       Watch wp; // preference watch
       if (prefs.getString(videoState.selectedVideo.vid) != null) {
         wp = Watch.fromJson(jsonDecode(prefs.getString(videoState.selectedVideo.vid)));
