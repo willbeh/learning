@@ -8,9 +8,11 @@ import 'package:learning/pages/home/bottom_nav_video.dart';
 import 'package:learning/pages/profile/my_courses.dart';
 import 'package:learning/pages/profile/profile.dart';
 import 'package:learning/routes/router.gr.dart';
+import 'package:learning/services/app_remote_config.dart';
 import 'package:learning/states/home_page_state.dart';
 import 'package:learning/states/video_state.dart';
 import 'package:learning/utils/app_traslation_util.dart';
+import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/app_carousel.dart';
 import 'package:learning/widgets/app_container.dart';
 import 'package:learning/widgets/app_loading_container.dart';
@@ -77,8 +79,6 @@ class HomePage extends StatelessWidget {
 }
 
 class HomeInfo extends StatelessWidget {
-  HomeInfo();
-
   final List<Map<String, dynamic>> gridItems = [
     {
       'title': 'Video',
@@ -142,7 +142,7 @@ class HomeInfo extends StatelessWidget {
 }
 
 class MyWatchList extends StatelessWidget {
-  MyWatchList();
+  final log = getLogger('MyWatchList');
 
   @override
   Widget build(BuildContext context) {
@@ -183,15 +183,19 @@ class MyWatchList extends StatelessWidget {
       );
     }
 
+    int maxSeries = Provider.of<RemoteConfig>(context).getInt('home_series_watch');
+
     return ListView.builder(
       shrinkWrap: true,
       scrollDirection: Axis.horizontal,
-      itemCount: seriesWatchs.length + 1,
+      // if there are more series than max, then only show the max number
+      itemCount: (seriesWatchs.length > maxSeries) ? maxSeries : seriesWatchs.length + 1,
       itemBuilder: (context, i) {
         //show more
         if(i == seriesWatchs.length) {
           return _buildMoreCard(context);
         }
+        // show series card
         return Padding(
           padding: const EdgeInsets.only(left: 20),
           child: _buildVideoCard(context, seriesWatchs[i]),
@@ -257,7 +261,7 @@ class MyWatchList extends StatelessWidget {
   Widget _buildMoreCard(BuildContext context) {
     return AppContainerCard(
       width: 226,
-      margin: EdgeInsets.only(left:20, top: 5, bottom: 5),
+      margin: EdgeInsets.only(left:20, top: 5, bottom: 5, right: 20),
       child: InkWell(
         onTap: () => Provider.of<HomePageState>(context, listen: false).selectedIndex = 1,
         child: Container(
