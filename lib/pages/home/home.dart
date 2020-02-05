@@ -50,18 +50,21 @@ class HomePage extends StatelessWidget {
               items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
                   icon: Icon(Icons.home),
-                  title: Text('${AppTranslate.text(context, 'bottom_home')}', style: Theme.of(context).textTheme.display3,),
+                  title: Text('${AppTranslate.text(context, 'bottom_home')}'),
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.book),
-                  title: Text('${AppTranslate.text(context, 'bottom_course')}', style: Theme.of(context).textTheme.display3,),
+                  title: Text('${AppTranslate.text(context, 'bottom_course')}'),
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.person),
-                  title: Text('${AppTranslate.text(context, 'bottom_account')}', style: Theme.of(context).textTheme.display3,),
+                  title: Text('${AppTranslate.text(context, 'bottom_account')}'),
                 ),
               ],
               currentIndex: homePageState.selectedIndex,
+              selectedItemColor: Theme.of(context).primaryColor,
+              selectedFontSize: 12,
+              unselectedFontSize: 12,
               onTap: (i) {
                 homePageState.selectedIndex = i;
               },
