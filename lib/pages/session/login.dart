@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:learning/app_color.dart';
+import 'package:learning/models/profile.service.dart';
 import 'package:learning/routes/router.gr.dart';
 import 'package:learning/services/user_repository.dart';
 import 'package:learning/utils/app_traslation_util.dart';
@@ -132,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
                 textInputAction: TextInputAction.done,
                 focusNode: _passwordFocus,
                 onFieldSubmittedFn: (_) {
-                  _signInEmail();
+                  _signInEmail(context);
                 },
                 suffixIcon: InkWell(
                   onTap: () {
@@ -147,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
               AppButton.roundedButton(
                 context,
                 text: 'Login',
-                onPressed: () => _signInEmail(), // Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.routeHomePage, (route) => false),
+                onPressed: () => _signInEmail(context), // Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.routeHomePage, (route) => false),
                 color: Theme.of(context).primaryColor,
                 width: MediaQuery.of(context).size.width,
                 textStyle: Theme.of(context).textTheme.display2.copyWith(color: Colors.white)
@@ -205,7 +207,7 @@ class _LoginPageState extends State<LoginPage> {
           Text('$text', style: TextStyle(color: color, fontSize: 14, fontWeight: FontWeight.bold))
         ],
       ),
-      onPressed: () => onTap(), // Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.routeHomePage, (route) => false),
+      onPressed: () => onTap(context), // Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.routeHomePage, (route) => false),
       color: Colors.white,
       width: 110,
       elevation: 0,
@@ -214,14 +216,14 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  _signInEmail(){
+  _signInEmail(BuildContext context){
     if(_formKey.currentState.validate()){
       setState(() {
         _isLoading = true;
       });
       CommonUI.dismissKeyboard(context);
       userRepository.signInWithCredentials(emailCtrl.text, passwordCtrl.text).then((user) {
-        AppRouter.navigator.pushNamedAndRemoveUntil(AppRouter.homePage, (route)=>false);
+        _signInSuccess(context, user);
       }).catchError((error) {
         setState(() {
           _isLoading = false;
@@ -237,15 +239,14 @@ class _LoginPageState extends State<LoginPage> {
 
   }
 
-  _signInGoogle() async{
+  _signInGoogle(BuildContext context) async{
     setState(() {
       _isLoading = true;
     });
 
     userRepository.signInWithGoogle().then((user) {
       if(user != null){
-        AppRouter.navigator.pushNamedAndRemoveUntil(AppRouter.homePage, (route)=>false);
-        return;
+        _signInSuccess(context, user);
       }
       setState(() {
         _isLoading = false;
@@ -255,6 +256,26 @@ class _LoginPageState extends State<LoginPage> {
         _isLoading = false;
       });
       log.d('error $error');
+    });
+  }
+
+  _signInSuccess(BuildContext context, FirebaseUser user){
+    profileFirebaseService.findById(id: user.uid).first.then((profile) {
+      AppRouter.navigator.pushNamedAndRemoveUntil(AppRouter.homePage, (route)=>false);
+    }).catchError((error) {
+      CommonUI.alertBox(context,
+          title: 'Whoops',
+          msg: '${AppTranslate.text(context, 'login_no_profile_msg')}',
+          titleColor: AppColor.redAlert,
+          closeText: 'Okay'
+      );
+      //userRepository.signOut();
+      //delete user if profile not exist
+      if(error.toString().contains('called on null')){
+        user.delete();
+      }
+      userRepository.signOut();
+      _isLoading = false;
     });
   }
 }
