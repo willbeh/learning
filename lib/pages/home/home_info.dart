@@ -49,7 +49,16 @@ class HomeInfo extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text('${AppTranslate.text(context, 'home_title')}', style: Theme.of(context).textTheme.headline,),
+                Row(
+                  children: <Widget>[
+                    Text('${AppTranslate.text(context, 'home_title')}', style: Theme.of(context).textTheme.headline,),
+                    InkWell(
+                      onTap: () => Provider.of<HomePageState>(context, listen: false).selectedIndex = 1,
+                      child: Text('${AppTranslate.text(context, 'home_all')}', style: Theme.of(context).textTheme.display2.copyWith(color: Theme.of(context).primaryColor),),
+                    )
+                  ],
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                ),
                 CommonUI.heightPadding(height: 5),
                 Text('${AppTranslate.text(context, 'home_taken')}', style: Theme.of(context).textTheme.display3.copyWith(color: Colors.grey),)
               ],
@@ -144,6 +153,8 @@ class MyWatchList extends StatelessWidget {
   }
 
   Widget _buildVideoCard(BuildContext context, SeriesWatch seriesWatch){
+
+
     return InkWell(
       onTap: () {
         Provider.of<VideoState>(context, listen: false).selectedSeries = seriesWatch.sdata;
@@ -155,22 +166,26 @@ class MyWatchList extends StatelessWidget {
         width: 226,
         child: Column(
           children: <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(5),
-                      topLeft: Radius.circular(5)
-                  ),
-                  image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: CachedNetworkImageProvider(
-                          seriesWatch.sdata.image
+            Stack(
+              children: <Widget>[
+                Container(
+                  decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(5),
+                          topLeft: Radius.circular(5)
+                      ),
+                      image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: CachedNetworkImageProvider(
+                              seriesWatch.sdata.image
+                          )
                       )
-                  )
-              ),
-              height: 127,
-              width: 226,
+                  ),
+                  height: 127,
+                  width: 226,
+                ),
+              ],
             ),
             Container(
               height: 123,
