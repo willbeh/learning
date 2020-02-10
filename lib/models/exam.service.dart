@@ -59,7 +59,7 @@ class ExamFirebaseService {
   }
 
   Stream<Exam> findById({@required String id}) {
-    if (id != null) {
+    if (id == null) {
       return null;
     }
     return colRef.document(id).snapshots().map((doc) {
