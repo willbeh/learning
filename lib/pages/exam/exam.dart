@@ -1,16 +1,19 @@
-import 'package:cloud_functions/cloud_functions.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:learning/app_color.dart';
 import 'package:learning/models/answer.dart';
-import 'package:learning/models/answer.service.dart';
-import 'package:learning/models/question.dart';
+import 'package:learning/models/exam.dart';
+import 'package:learning/models/exam.service.dart';
+import 'package:learning/models/question.dart' as q;
 import 'package:learning/models/question.service.dart';
-import 'package:learning/models/video.dart';
-import 'package:learning/models/watch.service.dart';
 import 'package:learning/states/video_state.dart';
+import 'package:learning/utils/app_const.dart';
+import 'package:learning/utils/app_traslation_util.dart';
 import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/app_button.dart';
+import 'package:learning/widgets/app_stream_builder.dart';
+import 'package:learning/models/answer.service.dart';
 import 'package:learning/widgets/common_ui.dart';
 import 'package:provider/provider.dart';
 
@@ -19,71 +22,84 @@ class ExamPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String vid = '382521859';
-    String title = 'Exam';
+    VideoState videoState = Provider.of<VideoState>(context, listen: false);
     FirebaseUser user = Provider.of(context);
-    VideoState videoState = Provider.of(context);
-
-    if(videoState != null && videoState.selectedVideo.vid != null){
-      vid = videoState.selectedVideo.vid;
-      title = videoState.selectedVideo.data.name;
-    }
 
     var answerStream = answerFirebaseService.findOne(
-      query: answerFirebaseService.colRef.where('uid', isEqualTo: user.uid).where('vid', isEqualTo: vid),
+      query: answerFirebaseService.colRef.where('uid', isEqualTo: user.uid).where('sid', isEqualTo: videoState.selectedSeries.id ),
     );
-    var questionStream = questionFirebaseService.find(query: questionFirebaseService.colRef.where('vid', isEqualTo: vid));
+
+    Stream examStream = examFirebaseService.findOne(query: examFirebaseService.colRef.where('sid', isEqualTo: videoState.selectedSeries.id));
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('$title'),
+        title: Text('${AppTranslate.text(context, 'test_title')}'),
         centerTitle: true,
       ),
       body: MultiProvider(
         providers: [
-          StreamProvider<List<Question>>.value(value: questionStream, lazy: false,
+          StreamProvider<Exam>.value(value: examStream, lazy: false,
             catchError: (_, error) {
-              log.d('QuestionService error $error');
+              log.d('examStream error $error');
               return;
             },
           ),
           StreamProvider<Answer>.value(value: answerStream, lazy: false,
             catchError: (_, error) {
               if(error.toString().contains('No element')) {
+                // create an answer if it does not exist
                 Answer tempAnswer = Answer(
                     uid: user.uid,
-                    vid: vid,
-                    status: 'draft',
+                    sid: videoState.selectedSeries.id,
+                    status: '',
                     answers: []
                 );
-
                 answerFirebaseService.insert(data: tempAnswer.toJson());
               }
               log.d('answerStream error $error');
               return;
             },
-          ),
+          )
         ],
-        child: ExamDetail(video: videoState.selectedVideo,),
+        child: ExamQuestions(),
       ),
+//      body: AppStreamBuilder(
+//        stream: examFirebaseService.findOne(query: examFirebaseService.colRef.where('sid', isEqualTo: videoState.selectedSeries.id)),
+//        fn: _buildPage,
+//      ),
     );
+  }
+
+  Widget _buildPage(BuildContext context, Exam exam) {
+    if(exam == null) {
+      return Container();
+    }
+//    return ExamQuestions(exam);
   }
 }
 
-class ExamDetail extends StatefulWidget {
-  final Video video;
+class ExamQuestions extends StatefulWidget {
+//  final Exam exam;
+//
+//  ExamQuestions(this.exam);
 
-  ExamDetail({this.video});
   @override
-  _ExamDetailState createState() => _ExamDetailState();
+  _ExamQuestionsState createState() => _ExamQuestionsState();
 }
 
-class _ExamDetailState extends State<ExamDetail> {
-
+class _ExamQuestionsState extends State<ExamQuestions> {
+  final log = getLogger('_ExamQuestionsState');
   final PageController _controller = PageController(initialPage: 0);
-  var log = getLogger('_ExamDetailState');
   int _currentPage = 0;
+  Exam _exam;
   Answer _answer;
-  List<Question> _questions;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _exam = Provider.of<Exam>(context);
+    _answer = Provider.of<Answer>(context);
+  }
 
   @override
   void dispose() {
@@ -92,100 +108,168 @@ class _ExamDetailState extends State<ExamDetail> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _answer = Provider.of(context);
+  void initState() {
+    super.initState();
+
+//    _exam = widget.exam;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<List<Question>>(
-      builder: (_, questions, child) {
-        _questions = questions;
-        if(questions == null || questions.length == 0)
-          return Center(child: CircularProgressIndicator(),);
-
-        return Column(
-          children: <Widget>[
-            if(_controller != null)
-              LinearProgressIndicator(
-                value: (_currentPage+1)/questions.length,
-                backgroundColor: AppColor.greyLight,
-              ),
-            Expanded(
-              child: PageView(
-                controller: _controller,
-                scrollDirection: Axis.vertical,
-                onPageChanged: (i) {
-                  setState(() {
-                    _currentPage = i;
-                  });
-                },
-                children: <Widget>[
-                  for(int i=0; i<questions.length; i++)
-                    ExamQuestion(
-                      i: i+1,
-                      question: questions[i],
-                      answer: _answer,
-                      moveUp: (i > 0) ? _moveUp : null,
-                      moveNext: ((i+1) < questions.length) ? _moveNext: null,
-                      updateAnswer: _updateAnswer,
-                    ) ,
-                ],
-              ),
-            ),
-            if(_answer != null)
-              _buildPageScroll(questions),
-          ],
-        );
-      },
+    return Column(
+      children: <Widget>[
+        LinearProgressIndicator(
+          value: (_currentPage)/_exam.questions.length,
+          backgroundColor: AppColor.greyLight,
+        ),
+        Expanded(
+          child: PageView(
+            controller: _controller,
+            scrollDirection: Axis.horizontal,
+            onPageChanged: (i) {
+              setState(() {
+                _currentPage = i;
+              });
+            },
+            children: <Widget>[
+              _buildFirstPage(context, _exam),
+              for(int i=0; i< _exam.questions.length; i++)
+                _buildQuestion(context, _exam.questions[i]),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: _buildPageNav(context),
+        ),
+      ],
     );
   }
 
-  Widget _buildPageScroll(List<Question> questions){
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Row(
+  Widget _buildPageNav(BuildContext context) {
+    if(_currentPage == 0) {
+      // first page question description button
+      return Center(
+        child: AppButton.roundedButton(context,
+            height: 48,
+            child: Text('${AppTranslate.text(context, 'test_get_started')}', style: Theme.of(context).textTheme.display2.copyWith(color: Colors.white),),
+
+            onPressed: () => _moveUp()
+        ),
+      );
+    } else {
+      // navigation previous, page num and next
+      return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          if(_answer.status == 'completed')
-            Text('${_answer.correct}/${questions.length} correct', style: Theme.of(context).textTheme.display2,),
-          if(_answer.status != 'completed')
-            Text('${questions.length} Questions', style: Theme.of(context).textTheme.display2,),
-          CommonUI.widthPadding(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              if(_currentPage > 0)
-                RaisedButton(
-                  child: Icon(Icons.keyboard_arrow_up, color: Colors.white,),
-                  onPressed: () => _moveUp(),
-                  color: Theme.of(context).primaryColor,
-                ),
-              CommonUI.widthPadding(width: 2),
-              if(_currentPage < (questions.length - 1))
-                RaisedButton(
-                  child: Icon(Icons.keyboard_arrow_down, color: Colors.white,),
-                  onPressed: () => _moveNext(),
-                  color: Theme.of(context).primaryColor,
-                ),
-              if(_currentPage == (questions.length - 1) && _answer.status != 'completed')
-                RaisedButton(
-                  child: Text('Submit', style: TextStyle(fontWeight: FontWeight.w600),),
-                  onPressed: () => _submitAnswer(),
-                  color: Colors.yellow,
-                ),
-              if(_currentPage == (questions.length - 1) && _answer.status == 'completed')
-                RaisedButton(
-                  child: Icon(Icons.check, color: Colors.white,),
-                  onPressed: () => null,
-                  color: Colors.green,
-                ),
-            ],
+          FlatButton(
+            child: Text('${AppTranslate.text(context, 'previous')}', style: Theme.of(context).textTheme.display2.copyWith(color: Theme.of(context).primaryColor),),
+            onPressed: () => _moveDown(),
+          ),
+          Text('$_currentPage/${_exam.questions.length}'),
+          AppButton.roundedButton(context,
+            height: 48,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text('${AppTranslate.text(context, (_currentPage == _exam.questions.length) ? 'test_submit' : 'next')}', style: Theme.of(context).textTheme.display2.copyWith(color: Colors.white),),
+                CommonUI.widthPadding(width: 10),
+                CircleAvatar(
+                  radius: 15,
+                  backgroundColor: Colors.white,
+                  child: Icon(Icons.arrow_forward, color: Theme.of(context).primaryColor,),
+                )
+              ],
+            ),
+            width: 100,
+            onPressed: () {
+              if(_currentPage < _exam.questions.length) {
+                return _moveUp();
+              } else {
+                return _submitAnswer();
+              }
+            }
           )
         ],
+      );
+    }
+  }
+
+  Widget _buildFirstPage(BuildContext context, Exam exam){
+    VideoState videoState = Provider.of<VideoState>(context);
+
+    return SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            // TODO get authors
+            Text('Someone', style: Theme.of(context).textTheme.display3.copyWith(color: Colors.grey),),
+            CommonUI.heightPadding(height: 5),
+            Text('${videoState.selectedSeries.name}', style: Theme.of(context).textTheme.headline,),
+            CommonUI.heightPadding(),
+            CachedNetworkImage(
+              imageUrl: exam.image,
+            ),
+            CommonUI.heightPadding(),
+            Text('${exam.desc}'),
+            CommonUI.heightPadding(),
+
+          ],
+        ),
       ),
     );
+  }
+
+  Widget _buildQuestion(BuildContext context, Question question) {
+    if(question.type == AppConstant.single) {
+      return _buildSingleQuestion(context, question);
+    } else {
+      return Container();
+    }
+  }
+
+  Widget _buildSingleQuestion(BuildContext context, Question question) {
+
+    return SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(question.question, style: Theme.of(context).textTheme.display1.copyWith(fontWeight: FontWeight.w500),),
+            CommonUI.heightPadding(),
+            Card(
+              elevation: 2,
+              child: ListView.separated(
+                shrinkWrap: true,
+                itemCount: question.options.length,
+                separatorBuilder: (context, i) => Divider(color: Colors.grey,),
+                itemBuilder: (context, i) {
+                  return RadioListTile(
+                    value: question.options[i].code,
+                    activeColor: Theme.of(context).primaryColor,
+                    groupValue: _getAnswer(question.options[i].code),
+                    title: Text(question.options[i].option),
+                    onChanged: (val) => _updateAnswer(question.options[i].code, val),
+                  );
+                },
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+  
+  _getAnswer(String code) {
+    for(int i=0; i<_answer.answers.length; i++){
+      if(_answer.answers[i].qid == code){
+        return _answer.answers[i].qid;
+      }
+    }
+    return null;
   }
 
   _updateAnswer(String qid, String answer){
@@ -204,29 +288,30 @@ class _ExamDetailState extends State<ExamDetail> {
     if(_answer.id != null && _answer.id != '') {
       answerFirebaseService.update(id: _answer.id, data: _answer.toJson());
     }
-//    log.d('answer - ${_answer.answers.length} - ${_answer.toJson()}');
+
+    _moveUp();
   }
 
   _submitAnswer(){
     // if not all question is answered, the prompt message and bring to unanswered question
-    if(_answer.answers.length < _questions.length){
+    if(_answer.answers.length < _exam.questions.length){
       CommonUI.alertBox(context, title: 'Answer all question', titleColor: AppColor.redAlert, msg: 'Please answer all questions',
-        actions: [
-          AppButton.roundedButton(context,
-            text: 'Continue',
-            paddingVertical: 5,
-            textStyle: Theme.of(context).textTheme.display4.copyWith(color: Colors.white),
-            onPressed: () {
-              Navigator.pop(context);
-              for(int i=0; i< _questions.length-1; i++){
-                if (!_answer.answers.any((a) => a.qid == _questions[i].id)){
-                  _controller.animateToPage(i, duration: Duration(milliseconds: 200), curve: Curves.easeIn);
-                  break;
+          actions: [
+            AppButton.roundedButton(context,
+              text: 'Continue',
+              paddingVertical: 5,
+              textStyle: Theme.of(context).textTheme.display4.copyWith(color: Colors.white),
+              onPressed: () {
+                Navigator.pop(context);
+                for(int i=0; i< _exam.questions.length-1; i++){
+                  if (!_answer.answers.any((a) => a.qid == _exam.questions[i].code)){
+                    _controller.animateToPage(i, duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+                    break;
+                  }
                 }
-              }
-            },
-          )
-        ]
+              },
+            )
+          ]
       );
     } else {
       CommonUI.alertBox(context, title: 'Submit Question', titleColor: Theme.of(context).primaryColor, msg: 'Continue to submit question?',
@@ -252,12 +337,12 @@ class _ExamDetailState extends State<ExamDetail> {
                 _answer.correct = _checkAnswers();
                 _answer.min = 10;// widget.video.min;
                 answerFirebaseService.update(id: _answer.id, data: _answer.toJson());
-                if(Provider.of<VideoState>(context, listen: false).selectedWatch != null){
-                  watchFirebaseService.update(
-                    id: Provider.of<VideoState>(context, listen: false).selectedWatch.id,
-                    data: {'test': true}
-                  ).catchError((error) => log.d('error WatchService update $error'));
-                }
+//                if(Provider.of<VideoState>(context, listen: false).selectedWatch != null){
+//                  watchFirebaseService.update(
+//                      id: Provider.of<VideoState>(context, listen: false).selectedWatch.id,
+//                      data: {'test': true}
+//                  ).catchError((error) => log.d('error WatchService update $error'));
+//                }
                 Navigator.pop(context);
               },
             )
@@ -268,34 +353,30 @@ class _ExamDetailState extends State<ExamDetail> {
 
   _checkAnswers(){
     int count = 0;
-    for(int i = 0; i<_questions.length; i++){
-      Question question = _questions[i];
-      UserAnswer answer = _answer.answers.where((a) => a.qid == question.id).first;
+    for(int i = 0; i<_exam.questions.length; i++){
+      Question question = _exam.questions[i];
+      UserAnswer answer = _answer.answers.where((a) => a.qid == question.code).first;
       if(answer.answer == question.answer){
         count = count + 1;
       }
     }
 
-    final HttpsCallable callable = CloudFunctions(region: 'asia-northeast1').getHttpsCallable(
-      functionName: 'updateResult',
-    );
+    // TODO update function
 
-//    log.d('${{ 'vid': _answer.vid }}');
-//    _questions.forEach((q) {
-//      log.d('${q.toJson()}');
+//    final HttpsCallable callable = CloudFunctions(region: 'asia-northeast1').getHttpsCallable(
+//      functionName: 'updateResult',
+//    );
+//
+//    callable.call(<String, dynamic>{ 'vid': _answer.sid, 'min': 10, 'questions': _questions.map((q) => q.toJson()).toList(), 'answer': _answer.toJson() }
+//    ).then((res) {
+//      log.d('OK ${res.toString()}');
+//    }).catchError((error){
+//      log.w('updateResult error $error}');
 //    });
-//    log.d('${{ 'answer': _answer.toJson() }}');
-
-    callable.call(<String, dynamic>{ 'vid': _answer.vid, 'min': 10, 'questions': _questions.map((q) => q.toJson()).toList(), 'answer': _answer.toJson() }
-    ).then((res) {
-      log.d('OK ${res.toString()}');
-    }).catchError((error){
-      log.w('updateResult error $error}');
-    });
     return count;
   }
 
-  _moveUp(){
+  _moveDown(){
     if(_controller.page > 0){
       _controller.animateToPage(_controller.page.toInt() - 1,
           duration: Duration(milliseconds: 300),
@@ -303,107 +384,50 @@ class _ExamDetailState extends State<ExamDetail> {
     }
   }
 
-  _moveNext(){
+  _moveUp(){
     _controller.animateToPage(_controller.page.toInt() + 1,
         duration: Duration(milliseconds: 300),
         curve: Curves.easeIn);
   }
-}
 
-class ExamQuestion extends StatefulWidget {
-  final int i;
-  final Question question;
-  final Answer answer;
-  final Function moveUp;
-  final Function moveNext;
-  final Function updateAnswer;
+  // temp generate questions
+  _getQues(BuildContext context, Exam exam) async{
+    List<q.Question> questions = await questionFirebaseService.find(
+        query: questionFirebaseService.colRef.where('vid', isEqualTo: '382117382').orderBy('order')
+    ).first;
 
-  ExamQuestion({this.i, @required this.question, this.answer, this.moveUp, this.moveNext, this.updateAnswer});
-  @override
-  _ExamQuestionState createState() => _ExamQuestionState();
-}
+    questions.forEach((question) {
+      Map qm = question.toJson();
+      qm['code'] = qm['vid'];
+      qm.remove('id');
+      qm.remove('vid');
+      qm.remove('status');
+      qm.remove('order');
+      qm.remove('correct');
+      qm.remove('wrong');
+      qm['type'] = AppConstant.single;
+      qm['answer'] = [qm['answer']];
+      List options = qm['options'];
+      List no = [];
 
-class _ExamQuestionState extends State<ExamQuestion> {
-  String _answer;
-  var log = getLogger('_ExamQuestionState');
-
-  @override
-  void initState() {
-    super.initState();
-    if(widget.answer != null){
-      for(int i=0; i<widget.answer.answers.length; i++) {
-        if(widget.answer.answers[i].qid == widget.question.id) {
-          _answer = widget.answer.answers[i].answer;
-        }
+      for(int i=0; i<options.length; i++) {
+        Map m = qm['options'][i];
+        m.remove('type');
+        m.remove('selected');
+        no.add(m);
       }
-    }
-  }
 
-  @override
-  Widget build(BuildContext context) {
-    if(widget.answer == null){
-      return Container();
-    }
+      qm['options'] = no;
 
-    Color boxColor = Theme.of(context).primaryColor;
-    if (widget.answer?.status == 'completed') {
-      if(_answer == widget.question.answer){
-        boxColor = Colors.green.shade300;
-      } else {
-        boxColor = Colors.red.shade300;
-      }
-    }
+      Question ques = Question.fromJson(qm);
+      exam.questions.add(ques);
+    });
 
-    return Container(
-      padding: EdgeInsets.all(20),
-      child: Stack(
-        children: <Widget>[
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text('${widget.i}) ${widget.question.question}'),
-              for(int i=0; i<widget.question.options.length; i++)
-                GestureDetector(
-                  onTap: () {
-                    if(widget.answer.status != 'completed' && _answer != widget.question.options[i].code) {
-                      setState(() {
-                        _answer = widget.question.options[i].code;
-                      });
-                      widget.updateAnswer(widget.question.id, widget.question.options[i].code);
-                      if(widget.moveNext != null)
-                        Future.delayed(Duration(milliseconds: 300), () => widget.moveNext());
-                    } else {
-                      if(widget.moveNext != null)
-                        widget.moveNext();
-                    }
-                  },
-                  child: AnimatedContainer(
-                    duration: Duration(milliseconds: 200),
-                    curve: (_answer == widget.question.options[i].code) ? Curves.decelerate : Curves.fastOutSlowIn,
-                    margin: EdgeInsets.only(top: 10),
-                    padding: EdgeInsets.all(10),
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(color: AppColor.greyLight),
-                        color: (_answer == widget.question.options[i].code) ? boxColor : Colors.white
-                    ),
-                    child: (widget.answer.status != null && widget.answer.status != 'completed') ?
-                    Text('${widget.question.options[i].option}', style: TextStyle(color: (_answer == widget.question.options[i].code) ? Colors.white : Colors.black),) :
-                    Row(
-                      children: <Widget>[
-                        Expanded(child: Text('${widget.question.options[i].option}', style: TextStyle(color: (_answer == widget.question.options[i].code) ? Colors.white : Colors.black),)),
-                        if(_answer != widget.question.options[i].code && widget.question.options[i].code == widget.question.answer)
-                          Icon(Icons.check_circle, color: Colors.green, size: 20,),
-                      ],
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ],
-      ),
-    );
+    log.d('${exam.toJson()}');
+
+    examFirebaseService.update(id: exam.id, data: exam.toJson());
+
+
   }
 }
 

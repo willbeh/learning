@@ -6,6 +6,8 @@ Map<dynamic, dynamic> translationValue = {
     "change": "Change",
     "camera": "Camera",
     "gallery": "Gallery",
+    "previous": "Previous",
+    "next": "Next",
     "login_title": "Login",
     "login_email": "Email",
     "login_email_err": "Please enter your email",
@@ -41,13 +43,20 @@ Map<dynamic, dynamic> translationValue = {
     "my_courses_taken": "These are all the courses you’ve taken so far",
     "video_test": "Test Now",
     "avatar_title": "Profile image",
-    "avatar_confirm_change": "The current image will be remove.\nSelect image source"
+    "avatar_confirm_change": "The current image will be remove.\nSelect image source",
+    "test_title": "Test",
+    "test_get_started": "Get Started",
+    "test_submit": "Submit"
   },
   "zh" : {
     "title": "Learning",
     "okay": "Okay",
-    "change": "Change",
     "logout": "Sign Out",
+    "change": "Change",
+    "camera": "Camera",
+    "gallery": "Gallery",
+    "previous": "Previous",
+    "next": "Next",
     "login_title": "Login",
     "login_email": "Email",
     "login_email_err": "Please enter your email",
@@ -83,6 +92,9 @@ Map<dynamic, dynamic> translationValue = {
     "my_courses_taken": "These are all the courses you’ve taken so far",
     "video_test": "Test Now",
     "avatar_title": "Profile image",
-    "avatar_confirm_change": "The current image will be remove.\nSelect image source"
+    "avatar_confirm_change": "The current image will be remove.\nSelect image source",
+    "test_title": "Test",
+    "test_get_started": "Get Started",
+    "test_submit": "Submit"
   }
 };

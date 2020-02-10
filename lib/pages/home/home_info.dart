@@ -4,7 +4,7 @@ import 'package:learning/models/series.dart';
 import 'package:learning/models/series.service.dart';
 import 'package:learning/states/home_page_state.dart';
 import 'package:learning/states/video_state.dart';
-import 'package:learning/utils/app_status.dart';
+import 'package:learning/utils/app_const.dart';
 import 'package:learning/widgets/app_stream_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
@@ -156,7 +156,7 @@ class MyWatchList extends StatelessWidget {
   Widget _buildVideoCard(BuildContext context, SeriesWatch seriesWatch){
     Color shadowColor = Colors.black26;
 
-    if(seriesWatch.status == AppStatus.completed){
+    if(seriesWatch.status == AppConstant.completed){
       shadowColor = Theme.of(context).primaryColor;
     }
 

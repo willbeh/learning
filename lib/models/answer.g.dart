@@ -23,7 +23,7 @@ Answer _$AnswerFromJson(Map json) {
   return Answer(
     id: json['id'] as String,
     uid: json['uid'] as String,
-    vid: json['vid'] as String,
+    sid: json['sid'] as String,
     answers: (json['answers'] as List)
         ?.map((e) => e == null
             ? null
@@ -40,7 +40,7 @@ Answer _$AnswerFromJson(Map json) {
 Map<String, dynamic> _$AnswerToJson(Answer instance) => <String, dynamic>{
       'id': instance.id,
       'uid': instance.uid,
-      'vid': instance.vid,
+      'sid': instance.sid,
       'answers': UserAnswer.utilToJson(instance.answers),
       'status': instance.status,
       'correct': instance.correct,

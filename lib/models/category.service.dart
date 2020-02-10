@@ -50,7 +50,7 @@ class CategoryFirebaseService {
     if (orderField != null) {
       inColRef = inColRef.orderBy(orderField, descending: descending);
     }
-    return inColRef.snapshots().map((list) {
+    return inColRef.limit(1).snapshots().map((list) {
       return list.documents.map((doc) {
         Map data = doc.data;
         data['id'] = doc.documentID;

@@ -22,11 +22,11 @@ class UserAnswer {
 @FirebaseService(name: 'answer', col: 'answers')
 @JsonSerializable(anyMap: true)
 class Answer {
-  Answer({this.id, this.uid, this.vid, List<UserAnswer> answers, this.status, this.correct, this.min}) : answers = answers ?? <UserAnswer>[];
+  Answer({this.id, this.uid, this.sid, List<UserAnswer> answers, this.status, this.correct, this.min}) : answers = answers ?? <UserAnswer>[];
 
   String id;
   String uid;
-  String vid;
+  String sid;
   @JsonKey( toJson: UserAnswer.utilToJson)
   List<UserAnswer> answers;
   String status;

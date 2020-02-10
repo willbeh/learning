@@ -68,7 +68,7 @@ Map<String, dynamic> _$ExamToJson(Exam instance) => <String, dynamic>{
       'image': instance.image,
       'sid': instance.sid,
       'status': instance.status,
-      'questions': instance.questions,
+      'questions': Question.utilToJson(instance.questions),
       'min': instance.min,
       'passed': instance.passed,
       'failed': instance.failed,

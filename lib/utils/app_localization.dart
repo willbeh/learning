@@ -21,7 +21,7 @@ class Translations {
 
   String text(String key) {
     try {
-      return _localizedValues[key] ?? '** $key not found';
+      return _localizedValues[key] ?? '**$key**';
     } catch(exception) {
       return '';
     }

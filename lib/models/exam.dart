@@ -34,6 +34,10 @@ class Question {
   factory Question.fromJson(Map<String, dynamic> json) => _$QuestionFromJson(json);
 
   Map<String, dynamic> toJson() => _$QuestionToJson(this);
+
+  static List<Map<String, dynamic>> utilToJson(List<Question> vs){
+    return vs.map((v) => v.toJson()).toList();
+  }
 }
 
 @FirebaseService(name: 'exam', col: 'exams')
@@ -47,6 +51,7 @@ class Exam {
   String image;
   String sid;
   String status;
+  @JsonKey(toJson: Question.utilToJson)
   List<Question> questions;
   int min;
   int passed;

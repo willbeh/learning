@@ -299,11 +299,11 @@ packages:
     dependency: "direct dev"
     description:
       path: "."
-      ref: "0.1.1"
-      resolved-ref: "1fc12a99f8de506986f26da44ae4af304eb5c0df"
+      ref: "0.1.2"
+      resolved-ref: cdd43cd2943cbe1baec56fc410b53ecca96250cc
       url: "https://bitbucket.org/william_recursivex/firebase_service_generator.git"
     source: git
-    version: "0.1.1"
+    version: "0.1.2"
   firebase_storage:
     dependency: "direct main"
     description:

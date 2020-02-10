@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:learning/models/series.dart';
 import 'package:learning/pages/video/video_series_list.dart';
+import 'package:learning/routes/router.gr.dart';
 import 'package:learning/states/video_state.dart';
 import 'package:learning/widgets/common_ui.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +26,11 @@ class VideoSeriesDetail extends StatelessWidget {
                         labelColor: Colors.black87,
                         unselectedLabelColor: Colors.grey,
                         indicatorColor: Colors.black,
-
+                        onTap: (i) {
+                          if(i == 2) {
+                            AppRouter.navigator.pushNamed(AppRouter.examPage);
+                          }
+                        },
                         tabs: [
                           Tab(text: 'LESSONS'),
                           Tab(text: 'MATERIALS'),
