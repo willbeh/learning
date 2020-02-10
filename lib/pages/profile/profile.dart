@@ -91,6 +91,7 @@ class ProfilePage extends StatelessWidget {
           ListTile(
             title: Text('${AppTranslate.text(context, 'account_edit_profile')}'),
             trailing: Icon(Icons.navigate_next),
+            onTap: () => AppRouter.navigator.pushNamed(AppRouter.editProfilePage),
           ),
           ListTile(
             title: Text('${AppTranslate.text(context, 'account_settings')}'),
