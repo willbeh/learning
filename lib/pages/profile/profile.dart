@@ -24,7 +24,6 @@ class ProfilePage extends StatelessWidget {
     Profile profile = Provider.of(context);
     FirebaseUser user = Provider.of(context);
 
-
     // TODO avatar
 
     return Scaffold(
@@ -37,7 +36,7 @@ class ProfilePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             CommonUI.heightPadding(),
-            AppAvatar(image: user?.photoUrl, radius: 50,),
+            AppAvatar(radius: 50, fontSize: 36,),
             CommonUI.heightPadding(),
             Text('${profile?.name}', style: Theme.of(context).textTheme.headline.copyWith(fontWeight: FontWeight.w500),),
             CommonUI.heightPadding(height: 15),

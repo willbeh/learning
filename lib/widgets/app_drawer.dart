@@ -24,7 +24,7 @@ class AppDrawer extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                AppAvatar(image: user?.photoUrl, radius: 30, text: '${(user?.email != null) ? user?.email[0].toUpperCase() : ''}',),
+                AppAvatar(radius: 30),
                 CommonUI.heightPadding(),
                 if(user?.displayName != null)
                   Text('${user?.displayName}', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
