@@ -17,6 +17,7 @@ import 'package:learning/pages/exam/exam.dart';
 import 'package:learning/pages/profile/profile.dart';
 import 'package:learning/pages/profile/my_videos.dart';
 import 'package:learning/pages/video/video_series_player.dart';
+import 'package:learning/pages/profile/edit_profile.dart';
 import 'package:learning/pages/temp.dart';
 
 class AppRouter {
@@ -30,6 +31,7 @@ class AppRouter {
   static const profilePage = '/profilePage';
   static const myVideosPage = '/myVideosPage';
   static const videoSeriesPlayerPage = '/videoSeriesPlayerPage';
+  static const editProfilePage = '/editProfilePage';
   static const tempPage = '/tempPage';
   static GlobalKey<NavigatorState> get navigatorKey =>
       getNavigatorKey<AppRouter>();
@@ -86,6 +88,11 @@ class AppRouter {
       case AppRouter.videoSeriesPlayerPage:
         return MaterialPageRoute(
           builder: (_) => VideoSeriesPlayerPage(),
+          settings: settings,
+        );
+      case AppRouter.editProfilePage:
+        return MaterialPageRoute(
+          builder: (_) => EditProfilePage(),
           settings: settings,
         );
       case AppRouter.tempPage:
