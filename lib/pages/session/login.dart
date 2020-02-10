@@ -48,6 +48,7 @@ class _LoginPageState extends State<LoginPage> {
             appBar: AppBar(
               title: Text('${AppTranslate.text(context, 'login_title')}'),
               centerTitle: true,
+              backgroundColor: Colors.transparent,
             ),
             backgroundColor: Colors.transparent,
             body: LayoutBuilder(
@@ -149,6 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () => _signInEmail(), // Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.routeHomePage, (route) => false),
                 color: Theme.of(context).primaryColor,
                 width: MediaQuery.of(context).size.width,
+                textStyle: Theme.of(context).textTheme.display2.copyWith(color: Colors.white)
               ),
             ],
           ),

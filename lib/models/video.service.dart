@@ -60,6 +60,9 @@ class VideoFirebaseService {
   }
 
   Stream<Video> findById({@required String id}) {
+    if (id != null) {
+      return null;
+    }
     return colRef.document(id).snapshots().map((doc) {
       Map data = doc.data;
       data['id'] = doc.documentID;

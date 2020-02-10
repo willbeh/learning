@@ -90,16 +90,16 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
   void initState() {
     super.initState();
 
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.blue, //or set color with: Color(0xFF0000FF)
-    ));
+//    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+//      statusBarColor: Color(0xffFCFCFC), //or set color with: Color(0xFF0000FF)
+//      statusBarIconBrightness:Brightness.light
+//    ));
   }
 
   @override
   Widget build(BuildContext context) {
     if(videoState?.selectedVideo == null){
       return Scaffold(
-
       );
     }
 

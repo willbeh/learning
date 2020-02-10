@@ -11,6 +11,7 @@ final ThemeData lightTheme = ThemeData(
   accentColor: Color(0xffA5BBAF), //Color(0xffff8f00),
   accentColorBrightness: Brightness.dark,
   scaffoldBackgroundColor: Color(0xffFCFCFC),
+  backgroundColor: Color(0xffFCFCFC),
   bottomAppBarColor: Color(0xffffffff),
   canvasColor: Color(0xffFCFCFC),
 //  cardColor: Color(0xffffffff),
