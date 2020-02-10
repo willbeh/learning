@@ -1,8 +1,11 @@
 Map<dynamic, dynamic> translationValue = {
-  'en' : {
+  "en" : {
     "title": "Learning",
     "okay": "Okay",
     "logout": "Sign Out",
+    "change": "Change",
+    "camera": "Camera",
+    "gallery": "Gallery",
     "login_title": "Login",
     "login_email": "Email",
     "login_email_err": "Please enter your email",
@@ -35,11 +38,14 @@ Map<dynamic, dynamic> translationValue = {
     "my_courses_title": "My Courses",
     "my_courses_achievement": "Achievements",
     "my_courses_taken": "These are all the courses you’ve taken so far",
-    "video_test": "Test Now"
+    "video_test": "Test Now",
+    "avatar_title": "Profile image",
+    "avatar_confirm_change": "The current image will be remove.\nSelect image source"
   },
-  'zh' : {
+  "zh" : {
     "title": "Learning",
     "okay": "Okay",
+    "change": "Change",
     "logout": "Sign Out",
     "login_title": "Login",
     "login_email": "Email",
@@ -73,6 +79,8 @@ Map<dynamic, dynamic> translationValue = {
     "my_courses_title": "My Courses",
     "my_courses_achievement": "Achievements",
     "my_courses_taken": "These are all the courses you’ve taken so far",
-    "video_test": "Test Now"
+    "video_test": "Test Now",
+    "avatar_title": "Profile image",
+    "avatar_confirm_change": "The current image will be remove.\nSelect image source"
   }
 };

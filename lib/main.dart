@@ -105,7 +105,7 @@ class _MyAppLoadState extends State<MyAppLoad> {
 
     return MultiProvider(
       providers: [
-
+        Provider<FirebaseAnalytics>.value(value: analytics),
         StreamProvider<List<Watch>>.value(
           value: watchFirebaseService.find(query: watchFirebaseService.colRef.where('uid', isEqualTo: user?.uid), orderField: 'date', descending: true),
           lazy: false,

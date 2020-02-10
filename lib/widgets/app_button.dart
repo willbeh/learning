@@ -8,7 +8,7 @@ class AppButton {
       color: color != null ? color : Theme.of(context).primaryColor,
       child: Container(
         alignment: Alignment.center,
-        padding: EdgeInsets.symmetric(vertical: paddingVertical),
+//        padding: EdgeInsets.symmetric(vertical: paddingVertical),
         width: width,
         height: height,
         child: (child != null) ? child : Text(text, textAlign: TextAlign.center, style: (textStyle != null) ? textStyle : Theme.of(context).textTheme.display3.copyWith(color: textColor == null ? Colors.white : textColor),),
