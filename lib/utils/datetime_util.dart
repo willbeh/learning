@@ -8,9 +8,8 @@ class DateTimeUtil {
     }
     else if(timestamp is String) {
       if (timestamp.contains(".")) {
-        timestamp = timestamp.substring(0, timestamp.length - 1);
+        return DateTime.parse(timestamp.substring(0, timestamp.length - 1));
       }
-
       return DateTime.parse(timestamp);
     }
     else {

@@ -34,7 +34,7 @@ class QuestionFirebaseService {
     }
     return inColRef.snapshots().map((list) {
       return list.documents.map((doc) {
-        Map data = doc.data;
+        Map<String, dynamic> data = doc.data;
         data['id'] = doc.documentID;
         return Question.fromJson(data);
       }).toList();
@@ -52,7 +52,7 @@ class QuestionFirebaseService {
     }
     return inColRef.limit(1).snapshots().map((list) {
       return list.documents.map((doc) {
-        Map data = doc.data;
+        Map<String, dynamic> data = doc.data;
         data['id'] = doc.documentID;
         return Question.fromJson(data);
       }).first;
@@ -64,7 +64,7 @@ class QuestionFirebaseService {
       return null;
     }
     return colRef.document(id).snapshots().map((doc) {
-      Map data = doc.data;
+      Map<String, dynamic> data = doc.data;
       data['id'] = doc.documentID;
       return Question.fromJson(data);
     });

@@ -415,7 +415,7 @@ class _ExamQuestionsState extends State<ExamQuestions> {
   }
 
   _moveDown(){
-    if(_controller.page > 0){
+    if(_controller.page > 0) {
       _controller.animateToPage(_controller.page.toInt() - 1,
           duration: Duration(milliseconds: 300),
           curve: Curves.easeIn);
@@ -423,9 +423,11 @@ class _ExamQuestionsState extends State<ExamQuestions> {
   }
 
   _moveUp(){
-    _controller.animateToPage(_controller.page.toInt() + 1,
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeIn);
+    if(_currentPage < _exam.questions.length) {
+      _controller.animateToPage(_controller.page.toInt() + 1,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeIn);
+    }
   }
 
   // temp generate questions

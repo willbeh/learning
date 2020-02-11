@@ -166,7 +166,7 @@ class _ExamAnswerSegmentState extends State<ExamAnswerSegment> {
 
         onValueChanged: (v) {
           setState(() {
-            _selected = v;
+            _selected = v as String;
           });
         },
         groupValue: _selected,

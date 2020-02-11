@@ -24,7 +24,7 @@ class ExamPage extends StatelessWidget {
       query: answerFirebaseService.colRef.where('uid', isEqualTo: user.uid).where('sid', isEqualTo: videoState.selectedSeries.id ),
     );
 
-    Stream examStream = examFirebaseService.findOne(query: examFirebaseService.colRef.where('sid', isEqualTo: videoState.selectedSeries.id));
+    Stream<Exam> examStream = examFirebaseService.findOne(query: examFirebaseService.colRef.where('sid', isEqualTo: videoState.selectedSeries.id));
 
     return Scaffold(
       appBar: AppBar(

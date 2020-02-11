@@ -34,7 +34,7 @@ class SeriesWatchFirebaseService {
     }
     return inColRef.snapshots().map((list) {
       return list.documents.map((doc) {
-        Map data = doc.data;
+        Map<String, dynamic> data = doc.data;
         data['id'] = doc.documentID;
         return SeriesWatch.fromJson(data);
       }).toList();
@@ -52,7 +52,7 @@ class SeriesWatchFirebaseService {
     }
     return inColRef.limit(1).snapshots().map((list) {
       return list.documents.map((doc) {
-        Map data = doc.data;
+        Map<String, dynamic> data = doc.data;
         data['id'] = doc.documentID;
         return SeriesWatch.fromJson(data);
       }).first;
@@ -64,7 +64,7 @@ class SeriesWatchFirebaseService {
       return null;
     }
     return colRef.document(id).snapshots().map((doc) {
-      Map data = doc.data;
+      Map<String, dynamic> data = doc.data;
       data['id'] = doc.documentID;
       return SeriesWatch.fromJson(data);
     });
