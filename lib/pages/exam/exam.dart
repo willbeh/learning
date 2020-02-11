@@ -150,6 +150,7 @@ class _ExamQuestionsState extends State<ExamQuestions> {
         ),
       );
     } else {
+      Color btnColor = (_answer.answers.length < _currentPage) ? Colors.grey : Theme.of(context).primaryColor;
       // navigation previous, page num and next
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -161,6 +162,7 @@ class _ExamQuestionsState extends State<ExamQuestions> {
           Text('$_currentPage/${_exam.questions.length}'),
           AppButton.roundedButton(context,
             height: 48,
+            color: btnColor,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -169,12 +171,15 @@ class _ExamQuestionsState extends State<ExamQuestions> {
                 CircleAvatar(
                   radius: 15,
                   backgroundColor: Colors.white,
-                  child: Icon(Icons.arrow_forward, color: Theme.of(context).primaryColor,),
+                  child: Icon(Icons.arrow_forward, color: btnColor,),
                 )
               ],
             ),
             width: 100,
             onPressed: () {
+              if(_answer.answers.length < _currentPage){
+                return null;
+              }
               if(_currentPage < _exam.questions.length) {
                 return _moveUp();
               } else {
@@ -293,6 +298,24 @@ class _ExamQuestionsState extends State<ExamQuestions> {
       ),
     );
   }
+
+  _updateAnswer(String qid, List<String> answer){
+    bool exist = false;
+    for(int i=0; i<_answer.answers.length; i++){
+      if(_answer.answers[i].qid == qid){
+        exist = true;
+        _answer.answers[i].answer = answer;
+        break;
+      }
+    }
+    if(!exist){
+      _answer.answers.add(UserAnswer(qid: qid, answer: answer));
+    }
+
+    if(_answer.id != null && _answer.id != '') {
+      answerFirebaseService.update(id: _answer.id, data: _answer.toJson());
+    }
+  }
   
   _getAnswer(String code, String qid) {
     for(int i=0; i<_answer.answers.length; i++){
@@ -324,38 +347,17 @@ class _ExamQuestionsState extends State<ExamQuestions> {
       }
     }
 
-    log.d('in multi $exist');
-
     if(!exist){
       List<String> answer = [];
       for(int j=0; j<total; j++){
         answer.add((j == i) ? 'true' : 'false');
       }
-      log.d('an - ${answer}');
       _answer.answers.add(UserAnswer(qid: qid, answer: answer));
     }
 
     if(_answer.id != null && _answer.id != '') {
       answerFirebaseService.update(id: _answer.id, data: _answer.toJson());
-    };
-  }
-
-  _updateAnswer(String qid, List<String> answer){
-    bool exist = false;
-    for(int i=0; i<_answer.answers.length; i++){
-      if(_answer.answers[i].qid == qid){
-        exist = true;
-        _answer.answers[i].answer = answer;
-        break;
-      }
     }
-    if(!exist){
-      _answer.answers.add(UserAnswer(qid: qid, answer: answer));
-    }
-
-    if(_answer.id != null && _answer.id != '') {
-      answerFirebaseService.update(id: _answer.id, data: _answer.toJson());
-    };
   }
 
   _submitAnswer(){
