@@ -4,4 +4,7 @@ abstract class AppConstant {
 
   static String single = 'single';
   static String multiple = 'multiple';
+
+  static String emojiRight = '✔';
+  static String emojiWrong = '❌';
 }

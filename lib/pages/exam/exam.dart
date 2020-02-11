@@ -60,7 +60,8 @@ class ExamPage extends StatelessWidget {
           builder: (_, answer, child) {
             if(answer == null)
               return Container();
-            return (answer.status == AppConstant.completed) ? ExamAnswer() : ExamQuestions();
+            return (answer.status == AppConstant.completed) ? ExamAnswer() :
+              ExamQuestions();
           },
         ),
 //        child: (Provider.of<Answer>(context, listen: false) == null || Provider.of<Answer>(context, listen: false).status != AppConstant.completed) ? ExamQuestions() : ExamAnswer(),
