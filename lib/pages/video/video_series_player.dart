@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
@@ -25,7 +26,7 @@ class VideoSeriesPlayerPage extends StatefulWidget {
 }
 
 class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
-  final log = getLogger('VideoSeriesPlayerPage');
+  final Logger log = getLogger('VideoSeriesPlayerPage');
   bool _isLoaded = false;
   VideoState videoState;
   Video _currentVideo;
@@ -54,7 +55,7 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
     }
 
     if(!_isLoaded){
-      if(videos == null || videos.length == 0){
+      if(videos == null || videos.isEmpty){
         return;
       }
 
@@ -99,7 +100,7 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
   @override
   Widget build(BuildContext context) {
     if(videoState?.selectedVideo == null){
-      return Scaffold(
+      return const Scaffold(
       );
     }
 
@@ -125,7 +126,7 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
     return false;
   }
 
-  _setupController(BuildContext context){
+  void _setupController(BuildContext context){
     _isCompleted = false;
     _initWatch(context);
 
@@ -163,7 +164,7 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
       ..addListener(_logInfo);
   }
 
-  _setOrientation(Orientation orientation) {
+  void _setOrientation(Orientation orientation) {
     if (orientation == Orientation.portrait) {
       SystemChrome.setPreferredOrientations([
         DeviceOrientation.landscapeLeft,
@@ -180,10 +181,10 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
     }
   }
 
-  _buildPage(BuildContext context, Orientation orientation){
-    double height = (orientation == Orientation.portrait) ? MediaQuery.of(context).size.width / 1.7777777 : MediaQuery.of(context).size.height;
+  Widget _buildPage(BuildContext context, Orientation orientation){
+    final double height = (orientation == Orientation.portrait) ? MediaQuery.of(context).size.width / 1.7777777 : MediaQuery.of(context).size.height;
     bool haveSelectedVideo = false;
-    if(videos != null && videos.length > 0 && videos[0].sid == videoState.selectedSeries.id) {
+    if(videos != null && videos.isNotEmpty && videos[0].sid == videoState.selectedSeries.id) {
       haveSelectedVideo = true;
     }
 
@@ -202,11 +203,11 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
   }
 
   Widget _buildPlayer(BuildContext context, Orientation orientation) {
-    double ratio = videoState.selectedVideo.data.width / videoState.selectedVideo.data.height;
-    double height = (orientation == Orientation.portrait)
+    final double ratio = videoState.selectedVideo.data.width / videoState.selectedVideo.data.height;
+    final double height = (orientation == Orientation.portrait)
         ? MediaQuery.of(context).size.width / ratio
         : MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
+    final double width = MediaQuery.of(context).size.width;
 
     if(_controller == null){
       return Container();
@@ -214,14 +215,14 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
 
     return Stack(
       children: <Widget>[
-        _controller.value.initialized ? Container(
+        if (_controller.value.initialized) Container(
           height: height,
           width: width,
           child: AspectRatio(
             aspectRatio: ratio,
             child: VideoPlayer(_controller),
           ),
-        ) : AppLoadingContainer(height: height,),
+        ) else AppLoadingContainer(height: height,),
         GestureDetector(
           onTap: () {
             if (_controller.value.isPlaying) _restartTimer();
@@ -251,12 +252,12 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
     );
   }
 
-  _setSelectedVideo(BuildContext context){
-    List<Watch> watchs = Provider.of(context);
-    List<Video> videos = Provider.of(context);
+  void _setSelectedVideo(BuildContext context){
+    final List<Watch> watchs = Provider.of(context);
+    final List<Video> videos = Provider.of(context);
     videoState = Provider.of(context);
 
-    if(watchs == null || watchs.length == 0){
+    if(watchs == null || watchs.isEmpty){
       videoState.selectedWatch = null;
       videoState.selectedVideo = videos[0];
 //      setState(() {});
@@ -277,11 +278,11 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
     }
   }
 
-  _initWatch(BuildContext context) async {
+  void _initWatch(BuildContext context){
     if (videoState.selectedWatch != null) {
       Watch wp; // preference watch
       if (prefs.getString(videoState.selectedVideo.vid) != null) {
-        wp = Watch.fromJson(jsonDecode(prefs.getString(videoState.selectedVideo.vid)));
+        wp = Watch.fromJson(jsonDecode(prefs.getString(videoState.selectedVideo.vid)) as Map<String, dynamic>);
       }
       // preference watch is further than firestore
       if (wp != null && wp.furthest > videoState.selectedWatch.furthest) {
@@ -292,9 +293,9 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
     } else {
       log.d('create watch');
       // insert a new document if not exist
-      FirebaseUser user = Provider.of(context);
+      final FirebaseUser user = Provider.of(context);
 
-      Watch newWatch = Watch(
+      final Watch newWatch = Watch(
         vid: videoState.selectedVideo.vid,
         vname: videoState.selectedVideo.data.name,
         vpicture: videoState.selectedVideo.data.pictures.sizes[0].link,
@@ -348,7 +349,7 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
     });
   }
 
-  _playVideo() {
+  void _playVideo() {
     if (_controller.value.isPlaying) {
       Wakelock.disable();
       _controller.pause();
@@ -362,14 +363,14 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
     setState(() {});
   }
 
-  _seekVideo({int second = -10, bool forward = false}){
+  void _seekVideo({int second = -10, bool forward = false}){
     int newPosition = _controller.value.position.inSeconds + second;
     if(forward && newPosition > _controller.value.duration.inSeconds){
       newPosition = _controller.value.duration.inSeconds;
     } else if(!forward && newPosition < 0){
       newPosition = 0;
     }
-    bool isPlaying = _controller.value.isPlaying;
+    final bool isPlaying = _controller.value.isPlaying;
 
     if(isPlaying) _controller.pause();
 
@@ -378,7 +379,7 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
     if(isPlaying) _controller.play();
   }
 
-  _updateWatchDocument(Map<String, dynamic> data) {
+  void _updateWatchDocument(Map<String, dynamic> data) {
     data['date'] = DateTime.now();
     if (_watch != null && _watch.id != '') {
       watchFirebaseService.update(id: _watch.id, data: data).catchError((error) {
@@ -387,7 +388,7 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
     }
   }
 
-  _logInfo(){
+  void _logInfo(){
     if (_watch != null) {
       if (_controller.value.position.inSeconds > _watch.furthest + 1) {
         // if try to scroll further than 1 second, prevent the user
@@ -427,7 +428,7 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
           _setOrientation(_orientation);
         }
         _controller.removeListener(_logInfo);
-        _controller.seekTo(Duration(seconds: 0)).then((_) {
+        _controller.seekTo(const Duration(seconds: 0)).then((_) {
           _controller.pause().then((_) {
             _controller.addListener(_logInfo);
             setState(() {});

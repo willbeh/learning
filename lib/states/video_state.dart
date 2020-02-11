@@ -17,7 +17,7 @@ class VideoState with ChangeNotifier {
     notifyListeners();
   }
 
-  selectVideo(Video video, Watch watch){
+  void selectVideo(Video video, Watch watch){
     selectedVideo = video;
     selectedWatch = watch;
     notifyListeners();

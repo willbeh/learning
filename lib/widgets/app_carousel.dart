@@ -6,16 +6,17 @@ import 'package:learning/models/banner.service.dart';
 import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/app_loading_container.dart';
 import 'package:learning/widgets/app_stream_builder.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:learning/states/app_state.dart';
 
 class AppCarousel extends StatelessWidget {
-  final log = getLogger('AppCarousel');
+  final Logger log = getLogger('AppCarousel');
 
   @override
   Widget build(BuildContext context) {
-    List<AppBanner> banners = Provider.of<AppState>(context).banners;
-    if(banners == null || banners.length == 0) {
+    final List<AppBanner> banners = Provider.of<AppState>(context).banners;
+    if(banners == null || banners.isEmpty) {
       return AppStreamBuilder(
         stream: bannerFirebaseService.find(
             query: bannerFirebaseService.colRef.where(
@@ -48,7 +49,7 @@ class AppCarousel extends StatelessWidget {
 class AppCarouselBanner extends StatefulWidget {
   final List<AppBanner> banners;
 
-  AppCarouselBanner(this.banners);
+  const AppCarouselBanner(this.banners);
 
   @override
   _AppCarouselBannerState createState() => _AppCarouselBannerState();
@@ -78,7 +79,7 @@ class _AppCarouselBannerState extends State<AppCarouselBanner> {
                   ),
               );
             }).toList(),
-            pauseAutoPlayOnTouch: Duration(seconds: 3),
+            pauseAutoPlayOnTouch: const Duration(seconds: 3),
             autoPlay: true,
             viewportFraction: 1.0,
             height: 200,
@@ -99,7 +100,7 @@ class _AppCarouselBannerState extends State<AppCarouselBanner> {
                     Container(
                       width: 8.0,
                       height: 8.0,
-                      margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+                      margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: _current == i ? Theme.of(context).primaryColor : Colors.white

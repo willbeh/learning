@@ -10,6 +10,7 @@ import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/app_dotted_seperator.dart';
 import 'package:learning/widgets/app_text.dart';
 import 'package:learning/widgets/loading_stack_screen.dart';
+import 'package:logger/logger.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/app_text_field.dart';
 import '../../widgets/common_ui.dart';
@@ -25,7 +26,7 @@ class _LoginPageState extends State<LoginPage> {
   final FocusNode _passwordFocus = FocusNode();
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
-  var log = getLogger('_LoginPageState');
+  Logger log = getLogger('_LoginPageState');
   bool _obscurePassword = true;
   double _initHeight = 0;
 
@@ -55,8 +56,9 @@ class _LoginPageState extends State<LoginPage> {
             backgroundColor: Colors.transparent,
             body: LayoutBuilder(
               builder: (BuildContext context, BoxConstraints constraints) {
-                if(_initHeight == 0)
+                if(_initHeight == 0) {
                   _initHeight = constraints.constrainHeight();
+                }
 
                 return SingleChildScrollView(
                   child: Column(
@@ -68,8 +70,8 @@ class _LoginPageState extends State<LoginPage> {
                           children: <Widget>[
                             _buildEmailSignIn(context),
                             InkWell(
-                              child: Text('${AppTranslate.text(context, 'login_forget')}', style: Theme.of(context).textTheme.display2.copyWith(color: Colors.white),),
                               onTap: () => AppRouter.navigator.pushNamed(AppRouter.forgetPage),
+                              child: Text('${AppTranslate.text(context, 'login_forget')}', style: Theme.of(context).textTheme.display2.copyWith(color: Colors.white),),
                             ),
                             _buildSocialSignIn(context)
                           ],
@@ -99,9 +101,9 @@ class _LoginPageState extends State<LoginPage> {
   
   Widget _buildEmailSignIn(BuildContext context) {
     return Card(
-      margin: EdgeInsets.fromLTRB(25, 20, 25, 20),
+      margin: const EdgeInsets.fromLTRB(25, 20, 25, 20),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 30),
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 30),
         child: Form(
           key: _formKey,
           child: Column(
@@ -112,11 +114,13 @@ class _LoginPageState extends State<LoginPage> {
                 keyboardType: TextInputType.emailAddress,
                 borderColor: AppColor.greyLight,
                 validatorFn: (String value) {
-                  if(value.trim() == '')
+                  if(value.trim() == '') {
                     return '${AppTranslate.text(context, 'login_email_err')}';
+                  }
 
-                  if(!AppText.validateEmail(value))
+                  if(!AppText.validateEmail(value)) {
                     return '${AppTranslate.text(context, 'login_email_err_valid')}';
+                  }
 
                   return null;
                 },
@@ -142,7 +146,7 @@ class _LoginPageState extends State<LoginPage> {
                       _obscurePassword = !_obscurePassword;
                     });
                   },
-                  child: Icon((_obscurePassword) ? Icons.visibility_off : Icons.visibility),
+                  child: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
                 ),
               ),
               CommonUI.heightPadding(height: 30),
@@ -163,7 +167,7 @@ class _LoginPageState extends State<LoginPage> {
   
   Widget _buildSocialSignIn(BuildContext context){
     return Container(
-      margin: EdgeInsets.all(20.0),
+      margin: const EdgeInsets.all(20.0),
       child: Column(
         children: <Widget>[
           Row(
@@ -216,7 +220,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  _signInEmail(BuildContext context){
+  void _signInEmail(BuildContext context){
     if(_formKey.currentState.validate()){
       setState(() {
         _isLoading = true;
@@ -239,7 +243,7 @@ class _LoginPageState extends State<LoginPage> {
 
   }
 
-  _signInGoogle(BuildContext context) async{
+  void _signInGoogle(BuildContext context){
     setState(() {
       _isLoading = true;
     });
@@ -259,7 +263,7 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  _signInSuccess(BuildContext context, FirebaseUser user){
+  void _signInSuccess(BuildContext context, FirebaseUser user){
     profileFirebaseService.findById(id: user.uid).first.then((profile) {
       AppRouter.navigator.pushNamedAndRemoveUntil(AppRouter.homePage, (route)=>false);
     }).catchError((error) {

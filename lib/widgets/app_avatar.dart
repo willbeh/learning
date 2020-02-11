@@ -11,6 +11,7 @@ import 'package:learning/utils/image_util.dart';
 import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/app_button.dart';
 import 'package:learning/widgets/common_ui.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class AppAvatar extends StatelessWidget {
@@ -18,12 +19,12 @@ class AppAvatar extends StatelessWidget {
   final double fontSize;
   AppAvatar({this.radius = 30, this.fontSize = 24});
 
-  final log = getLogger('AppAvatar');
+  final Logger log = getLogger('AppAvatar');
 
   @override
   Widget build(BuildContext context) {
-    Profile profile = Provider.of(context);
-    FirebaseUser user = Provider.of(context);
+    final Profile profile = Provider.of(context);
+    final FirebaseUser user = Provider.of(context);
 
     String photoUrl = '';
     String photoText = '';
@@ -41,14 +42,14 @@ class AppAvatar extends StatelessWidget {
           onTap: () => _viewImage(context, photoUrl),
           child: ImageUtil.showCircularImage(radius, photoUrl),
         )
-        : CircleAvatar(
-      child: Text('$photoText', style: TextStyle(fontSize: fontSize),), //Icon(Icons.person, size: 32,),
+        : CircleAvatar( //Icon(Icons.person, size: 32,),
       radius: radius,
+      child: Text('$photoText', style: TextStyle(fontSize: fontSize),),
     );
   }
 
-  _viewImage(BuildContext context, photoUrl) {
-    FirebaseAnalytics analytics = Provider.of<FirebaseAnalytics>(context, listen: false);
+  void _viewImage(BuildContext context, String photoUrl) {
+    final FirebaseAnalytics analytics = Provider.of<FirebaseAnalytics>(context, listen: false);
     analytics.logEvent(name: 'avatar_view');
     CommonUI.alertBox(context, title: '${AppTranslate.text(context, 'avatar_title')}',
       child: CachedNetworkImage(
@@ -57,8 +58,8 @@ class AppAvatar extends StatelessWidget {
       ),
       actions: [
         FlatButton(
-          child: Text('${AppTranslate.text(context, 'change')}'),
           onPressed: () => _changeImage(context),
+          child: Text('${AppTranslate.text(context, 'change')}'),
         ),
         AppButton.roundedButton(context,
           text: 'Ok',
@@ -71,7 +72,7 @@ class AppAvatar extends StatelessWidget {
     );
   }
 
-  _changeImage(BuildContext context) {
+  void _changeImage(BuildContext context) {
     Navigator.pop(context);
     showBottomSheet(
         context: context,
@@ -85,7 +86,7 @@ class AppAvatar extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Text('${AppTranslate.text(context, 'avatar_confirm_change')}', textAlign: TextAlign.center,),
               ),
-              Divider(),
+              const Divider(),
               ListTile(
                 leading: Icon(Icons.camera_alt),
                 title: Text('${AppTranslate.text(context, 'camera')}'),
@@ -97,7 +98,7 @@ class AppAvatar extends StatelessWidget {
                   });
                 },
               ),
-              Divider(),
+              const Divider(),
               ListTile(
                 leading: Icon(Icons.image),
                 title: Text('${AppTranslate.text(context, 'gallery')}'),
@@ -109,7 +110,7 @@ class AppAvatar extends StatelessWidget {
                   }) ;
                 },
               ),
-              Divider(),
+              const Divider(),
               AppButton.roundedButton(context,
                 text: 'Cancel',
                 textStyle: Theme.of(context).textTheme.display3.copyWith(color: Colors.white),
@@ -126,13 +127,13 @@ class AppAvatar extends StatelessWidget {
 
   Future _getImage(BuildContext context, {ImageSource source = ImageSource.camera}) async {
 
-    var pickImg = await ImagePicker.pickImage(source: source, maxWidth: 500, maxHeight: 500);
+    final pickImg = await ImagePicker.pickImage(source: source, maxWidth: 500, maxHeight: 500);
 
     if(pickImg != null) {
       // remove old image if exist
-      FirebaseUser user = Provider.of<FirebaseUser>(context, listen: false);
-      Profile profile = Provider.of<Profile>(context, listen: false);
-      FirebaseAnalytics analytics = Provider.of<FirebaseAnalytics>(context, listen: false);
+      final FirebaseUser user = Provider.of<FirebaseUser>(context, listen: false);
+      final Profile profile = Provider.of<Profile>(context, listen: false);
+      final FirebaseAnalytics analytics = Provider.of<FirebaseAnalytics>(context, listen: false);
 
       if(profile.photo != null && profile.photo != '') {
         final StorageReference tmpStorage = FirebaseStorage().ref().child('${profile.photo}');
@@ -140,22 +141,22 @@ class AppAvatar extends StatelessWidget {
       }
 
       // add in new image
-      String ext = pickImg.path.substring(pickImg.path.lastIndexOf('.'), pickImg.path.length);
+      final String ext = pickImg.path.substring(pickImg.path.lastIndexOf('.'), pickImg.path.length);
       final StorageReference storageReference = FirebaseStorage().ref().child('/avatars/${user.uid}/${user.uid}$ext');
 
 
       final StorageUploadTask uploadTask = storageReference.putFile(pickImg, StorageMetadata(contentType: 'image/jpeg'));
 
-      final snackBar = SnackBar(content: Text('Please wait while your image is uploaded'));
+      const snackBar = SnackBar(content: Text('Please wait while your image is uploaded'));
       Scaffold.of(context).showSnackBar(snackBar);
 
       analytics.logEvent(name: 'avatar_create', parameters: {'source': '${source.toString()}'});
 
       uploadTask.onComplete.then((val) async{
-        String downloadUrl = await storageReference.getDownloadURL();
+        final dynamic downloadUrl = await storageReference.getDownloadURL();
 
         profile.photo = storageReference.path;
-        profile.photoUrl = downloadUrl;
+        profile.photoUrl = downloadUrl.toString();
 
         profileFirebaseService.update(id: user.uid, data: profile.toJson());
 

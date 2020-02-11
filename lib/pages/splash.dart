@@ -7,6 +7,7 @@ import 'package:learning/routes/router.gr.dart';
 import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/app_button.dart';
 import 'package:learning/widgets/common_ui.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:flare_flutter/flare_actor.dart';
 
@@ -18,7 +19,7 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   Timer _timer;
-  final log = getLogger('_SplashPageState');
+  final Logger log = getLogger('_SplashPageState');
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   @override
@@ -87,7 +88,7 @@ class _SplashPageState extends State<SplashPage> {
           decoration: BoxDecoration(
             color: Theme.of(context).accentColor,
           ),
-          child: Center(
+          child: const Center(
             child: FlareActor("assets/flare/lion.flr", alignment:Alignment.center, fit:BoxFit.contain, animation:"animation"),
           ),
         ),
@@ -95,9 +96,9 @@ class _SplashPageState extends State<SplashPage> {
     );
   }
 
-  _setTimer({int seconds = 4}) {
+  void _setTimer({int seconds = 4}) {
     _timer = Timer(Duration(seconds: seconds), () {
-      FirebaseUser user = Provider.of<FirebaseUser>(context, listen: false);
+      final FirebaseUser user = Provider.of<FirebaseUser>(context, listen: false);
 
       if(user == null){
         AppRouter.navigator.pushNamedAndRemoveUntil(AppRouter.loginPage, (route)=>false);

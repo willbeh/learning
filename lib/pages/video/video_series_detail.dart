@@ -32,12 +32,12 @@ class VideoSeriesDetail extends StatelessWidget {
                           }
                         },
                         tabs: [
-                          Tab(text: 'LESSONS'),
-                          Tab(text: 'MATERIALS'),
+                          const Tab(text: 'LESSONS'),
+                          const Tab(text: 'MATERIALS'),
                           Tab(child: Row(
                             children: <Widget>[
                               Icon(Icons.lock, size: 12, color: Theme.of(context).primaryColor,),
-                              Text('TEST')
+                              const Text('TEST')
                             ],
                           ),)
                         ],
@@ -61,7 +61,7 @@ class VideoSeriesDetail extends StatelessWidget {
   }
 
   Widget _buildSeriesDetail(BuildContext context){
-    Series series = Provider.of<VideoState>(context).selectedSeries;
+    final Series series = Provider.of<VideoState>(context).selectedSeries;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
@@ -78,7 +78,7 @@ class VideoSeriesDetail extends StatelessWidget {
           if(series.subHeader != null && series.subHeader != '')
             Text('${series.subHeader}'),
 
-          Text('After the class you\'ll be able to:'),
+          const Text('After the class you\'ll be able to:'),
           CommonUI.heightPadding(height: 10),
           if(series.about != null && series.about != '')
             Text('${series.about}', style: Theme.of(context).textTheme.display2,),
@@ -107,9 +107,9 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    VideoState videoState = Provider.of(context);
+    final VideoState videoState = Provider.of(context);
 
-    double topHeight = (maxExtent - shrinkOffset - _tabBar.preferredSize.height);
+    final double topHeight = maxExtent - shrinkOffset - _tabBar.preferredSize.height;
 
     return Container(
       decoration: BoxDecoration(

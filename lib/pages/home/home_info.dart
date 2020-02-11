@@ -6,6 +6,7 @@ import 'package:learning/states/home_page_state.dart';
 import 'package:learning/states/video_state.dart';
 import 'package:learning/utils/app_const.dart';
 import 'package:learning/widgets/app_stream_builder.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:learning/models/series_watch.dart';
@@ -19,38 +20,21 @@ import 'package:learning/widgets/common_ui.dart';
 
 
 class HomeInfo extends StatelessWidget {
-  final List<Map<String, dynamic>> gridItems = [
-    {
-      'title': 'Video',
-      'routeName': AppRouter.videoPage,
-      'icon': Icons.video_library,
-    },
-    {
-      'title': 'History',
-      'routeName': AppRouter.myVideosPage,
-      'icon': Icons.playlist_add_check,
-    },
-    {
-      'title': 'Temp',
-      'routeName': AppRouter.tempPage,
-      'icon': Icons.playlist_add_check,
-    },
-  ];
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      physics: ClampingScrollPhysics(),
+      physics: const ClampingScrollPhysics(),
       child: Column(
         children: <Widget>[
           AppCarousel(),
           Container(
             width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text('${AppTranslate.text(context, 'home_title')}', style: Theme.of(context).textTheme.headline,),
                     InkWell(
@@ -58,7 +42,6 @@ class HomeInfo extends StatelessWidget {
                       child: Text('${AppTranslate.text(context, 'home_all')}', style: Theme.of(context).textTheme.display2.copyWith(color: Theme.of(context).primaryColor),),
                     )
                   ],
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 ),
                 CommonUI.heightPadding(height: 5),
                 Text('${AppTranslate.text(context, 'home_taken')}', style: Theme.of(context).textTheme.display3.copyWith(color: Colors.grey),)
@@ -66,13 +49,13 @@ class HomeInfo extends StatelessWidget {
             ),
           ),
           Container(
-            padding: EdgeInsets.symmetric(vertical: 5),
+            padding: const EdgeInsets.symmetric(vertical: 5),
             height: 270,
             child: MyWatchList(),
           ),
           Container(
             width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -91,27 +74,28 @@ class HomeInfo extends StatelessWidget {
 }
 
 class MyWatchList extends StatelessWidget {
-  final log = getLogger('MyWatchList');
+  final Logger log = getLogger('MyWatchList');
 
   @override
   Widget build(BuildContext context) {
-    List<SeriesWatch> seriesWatchs = Provider.of(context);
+    final List<SeriesWatch> seriesWatchs = Provider.of<List<SeriesWatch>>(context);
 
     if(seriesWatchs == null) {
       return Container(
         width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.only(left: 20),
+        padding: const EdgeInsets.only(left: 20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             AppContainerCard(
               shadowColor: Theme.of(context).primaryColor,
-              margin: EdgeInsets.only(top: 5, bottom: 5),
+              margin: const EdgeInsets.only(top: 5, bottom: 5),
               width: 226,
               height: 250,
               child: Column(
+                // ignore: prefer_const_literals_to_create_immutables
                 children: <Widget>[
-                  AppLoadingContainer(
+                  const AppLoadingContainer(
                     height: 127,
                   )
                 ],
@@ -122,17 +106,17 @@ class MyWatchList extends StatelessWidget {
       );
     }
 
-    if(seriesWatchs.length == 0) {
+    if(seriesWatchs.isEmpty) {
       return Container(
         width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.only(left: 20),
-        child: Center(
+        padding: const EdgeInsets.only(left: 20),
+        child: const Center(
           child: Text('No series'),
         ),
       );
     }
 
-    int maxSeries = Provider.of<RemoteConfig>(context).getInt('home_series_watch');
+    final int maxSeries = Provider.of<RemoteConfig>(context).getInt('home_series_watch');
 
     return ListView.builder(
       shrinkWrap: true,
@@ -168,7 +152,7 @@ class MyWatchList extends StatelessWidget {
       },
       child: AppContainerCard(
         shadowColor: shadowColor,
-        margin: EdgeInsets.only(top: 5, bottom: 5),
+        margin: const EdgeInsets.only(top: 5, bottom: 5),
         width: 226,
         child: Column(
           children: <Widget>[
@@ -177,7 +161,7 @@ class MyWatchList extends StatelessWidget {
                 Container(
                   decoration: BoxDecoration(
                       color: Colors.blue,
-                      borderRadius: BorderRadius.only(
+                      borderRadius: const BorderRadius.only(
                           topRight: Radius.circular(5),
                           topLeft: Radius.circular(5)
                       ),
@@ -196,7 +180,7 @@ class MyWatchList extends StatelessWidget {
             Container(
               height: 123,
               width: 226,
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -221,11 +205,11 @@ class MyWatchList extends StatelessWidget {
   Widget _buildMoreCard(BuildContext context) {
     return AppContainerCard(
       width: 226,
-      margin: EdgeInsets.only(left:20, top: 5, bottom: 5, right: 20),
+      margin: const EdgeInsets.only(left:20, top: 5, bottom: 5, right: 20),
       child: InkWell(
         onTap: () => Provider.of<HomePageState>(context, listen: false).selectedIndex = 1,
         child: Container(
-          padding: EdgeInsets.all(15),
+          padding: const EdgeInsets.all(15),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -253,9 +237,9 @@ class MyWatchList extends StatelessWidget {
 class UpcomingSeries extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    List<SeriesWatch> seriesWatchs = Provider.of(context);
+    final List<SeriesWatch> seriesWatchs = Provider.of(context);
 
-    if(seriesWatchs != null && seriesWatchs.length > 0){
+    if(seriesWatchs != null && seriesWatchs.isNotEmpty){
       return AppStreamBuilder(
         stream: seriesFirebaseService.find(
           limit: Provider.of<RemoteConfig>(context).getInt('home_upcoming'),
@@ -271,11 +255,11 @@ class UpcomingSeries extends StatelessWidget {
   Widget _buildPage(BuildContext context, List<Series> series){
     return ListView.separated(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: series.length,
       separatorBuilder: (context, i) => CommonUI.heightPadding(),
       itemBuilder: (context, i) {
-        Series s = series[i];
+        final Series s = series[i];
         return AppContainerCard(
             width: MediaQuery.of(context).size.width,
             height: 120,
@@ -293,7 +277,7 @@ class UpcomingSeries extends StatelessWidget {
                       alignment: Alignment.topLeft,
                       height: 30,
                       width: 30,
-                      margin: EdgeInsets.all(8),
+                      margin: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Colors.white
@@ -304,7 +288,7 @@ class UpcomingSeries extends StatelessWidget {
                 ),
                 Expanded(
                   child: Container(
-                    padding: EdgeInsets.all(15),
+                    padding: const EdgeInsets.all(15),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[

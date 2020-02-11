@@ -24,6 +24,7 @@ import 'package:learning/states/app_state.dart';
 import 'package:learning/states/video_state.dart';
 import 'package:learning/utils/app_localization.dart';
 import 'package:learning/utils/logger.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -66,16 +67,16 @@ class MyAppLoad extends StatefulWidget {
 }
 
 class _MyAppLoadState extends State<MyAppLoad> {
-  final log = getLogger('MyAppLoad');
+  final Logger log = getLogger('MyAppLoad');
   SharedPreferences prefs;
   SpecificLocalizationDelegate _localeOverrideDelegate;
   AppState appState;
   String _currentLang;
 
-  onLocaleChange(Locale locale){
+  void onLocaleChange(Locale locale){
     setState((){
       _currentLang = locale.languageCode;
-      _localeOverrideDelegate = new SpecificLocalizationDelegate(locale);
+      _localeOverrideDelegate = SpecificLocalizationDelegate(locale);
     });
   }
 
@@ -95,13 +96,13 @@ class _MyAppLoadState extends State<MyAppLoad> {
   @override
   void initState() {
     super.initState();
-    _localeOverrideDelegate = new SpecificLocalizationDelegate(null);
+    _localeOverrideDelegate = const SpecificLocalizationDelegate(null);
   }
 
   @override
   Widget build(BuildContext context) {
-    FirebaseUser user = Provider.of(context);
-    FirebaseAnalytics analytics = FirebaseAnalytics();
+    final FirebaseUser user = Provider.of(context);
+    final FirebaseAnalytics analytics = FirebaseAnalytics();
 
     return MultiProvider(
       providers: [
@@ -160,12 +161,10 @@ class _MyAppLoadState extends State<MyAppLoad> {
           GlobalWidgetsLocalizations.delegate,
         ],
         localeResolutionCallback: (locale, supportedLocales) {
-          if(appState == null) {
-            appState = Provider.of(context);
-          }
-//           Check if the current device locale is supported
-          for (var supportedLocale in supportedLocales) {
+          appState = appState ?? Provider.of(context);
 
+//           Check if the current device locale is supported
+          for (final supportedLocale in supportedLocales) {
 //            if (supportedLocale.languageCode == locale.languageCode &&
 //                supportedLocale.countryCode == locale.countryCode) {
             if (supportedLocale.languageCode == locale.languageCode) {
@@ -174,6 +173,7 @@ class _MyAppLoadState extends State<MyAppLoad> {
               return supportedLocale;
             }
           }
+
           // If the locale of the device is not supported, use the first one
           // from the list (English, in this case).
           _currentLang = 'en';

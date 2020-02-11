@@ -28,7 +28,7 @@ class CommonUI {
     return Text(text, style: Theme.of(context).textTheme.headline,);
   }
 
-  static alertBox(BuildContext context, {@required String title, String msg, Widget child, Color titleColor = Colors.black, List<Widget> actions, String closeText}) {
+  static Future<void> alertBox(BuildContext context, {@required String title, String msg, Widget child, Color titleColor = Colors.black, List<Widget> actions, String closeText}) {
     return showDialog<void>(
       context: context,
 //      barrierDismissible: false, // user must tap button!
@@ -69,12 +69,12 @@ class CommonUI {
       content: Text(content),
       action: SnackBarAction(
         label: label,
-        onPressed: onPressed,
+        onPressed: () => onPressed,
       ),
     );
   }
 
-  static dismissKeyboard(BuildContext context) {
-    FocusScope.of(context).requestFocus(new FocusNode());
+  static void dismissKeyboard(BuildContext context) {
+    FocusScope.of(context).requestFocus(FocusNode());
   }
 }

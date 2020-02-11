@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    List<Widget> _widgetOptions = <Widget>[
+    final List<Widget> _widgetOptions = <Widget>[
       HomeInfo(),
       MyCoursesPage(),
       ProfilePage(),

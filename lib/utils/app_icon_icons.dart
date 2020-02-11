@@ -28,10 +28,10 @@ class AppIcon {
 
   static const _kFontFam = 'AppIcon';
 
-  static const IconData podcast = const IconData(0xe800, fontFamily: _kFontFam);
-  static const IconData qrcode = const IconData(0xe801, fontFamily: _kFontFam);
-  static const IconData facebook = const IconData(0xf09a, fontFamily: _kFontFam);
-  static const IconData filter = const IconData(0xf0b0, fontFamily: _kFontFam);
-  static const IconData google = const IconData(0xf1a0, fontFamily: _kFontFam);
-  static const IconData whatsapp = const IconData(0xf232, fontFamily: _kFontFam);
+  static const IconData podcast = IconData(0xe800, fontFamily: _kFontFam);
+  static const IconData qrcode = IconData(0xe801, fontFamily: _kFontFam);
+  static const IconData facebook = IconData(0xf09a, fontFamily: _kFontFam);
+  static const IconData filter = IconData(0xf0b0, fontFamily: _kFontFam);
+  static const IconData google = IconData(0xf1a0, fontFamily: _kFontFam);
+  static const IconData whatsapp = IconData(0xf232, fontFamily: _kFontFam);
 }

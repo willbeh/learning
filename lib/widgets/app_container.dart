@@ -7,14 +7,14 @@ class AppContainerCard extends StatelessWidget {
   final Color color;
   final Color shadowColor;
   final EdgeInsetsGeometry margin;
-  AppContainerCard({this.child, this.width, this.height = 120, this.color, this.shadowColor, this.margin});
+  const AppContainerCard({this.child, this.width, this.height = 120, this.color, this.shadowColor, this.margin});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: width ?? MediaQuery.of(context).size.width,
       height: height,
-      margin: margin ?? EdgeInsets.all(0),
+      margin: margin ?? const EdgeInsets.all(0),
       decoration: BoxDecoration(
           color: color ?? Colors.white,
           borderRadius: BorderRadius.circular(5),

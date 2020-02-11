@@ -37,7 +37,7 @@ class UserRepository {
   /// Sign in using email and password
 
   Future<FirebaseUser> signInWithCredentials(String email, String password) async{
-    AuthResult result = await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
+    final AuthResult result = await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
     return result.user;
   }
 
@@ -45,14 +45,15 @@ class UserRepository {
   /// Sign up new user with email and password
 
   Future<FirebaseUser> signUp(String email, String password) async {
-    AuthResult result = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
+    final AuthResult result = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
     return result.user;
   }
 
   Future<FirebaseUser> signInWithGoogle() async {
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-    if(googleUser == null)
+    if(googleUser == null) {
       return null;
+    }
 
 //    Profile profile = await profileFirebaseService.findOne(query: profileFirebaseService.colRef.where('email', isEqualTo: googleUser.email)).first;
 //
@@ -150,7 +151,7 @@ class UserRepository {
   }
 
   Future<FirebaseUser> getUser() async {
-    return await _firebaseAuth.currentUser();
+    return _firebaseAuth.currentUser();
   }
 
 //  Future changePassword(String current, String password) async {

@@ -5,7 +5,7 @@ class AppHeroWidget extends StatelessWidget {
   final VoidCallback onTap;
   final Widget child;
 
-  AppHeroWidget({this.tag, this.onTap, this.child});
+  const AppHeroWidget({this.tag, this.onTap, this.child});
 
   @override
   Widget build(BuildContext context) {

@@ -7,26 +7,27 @@ import 'package:learning/utils/datetime_util.dart';
 import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/app_button.dart';
 import 'package:learning/widgets/common_ui.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class VideoSeriesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    List<Video> videos = Provider.of(context);
+    final List<Video> videos = Provider.of(context);
 
-    if(videos == null || videos.length == 0){
+    if(videos == null || videos.isEmpty){
       return Container();
     }
 
     return ListView.separated(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: videos.length + 1,
-      separatorBuilder: (context, i) => Divider(height: 0,),
+      separatorBuilder: (context, i) => const Divider(height: 0,),
       itemBuilder: (context, i) {
         if(i == videos.length){
           return Container(
-            margin: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+            margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
             child: AppButton.roundedButton(context,
                 text: '${AppTranslate.text(context, 'video_test')}',
               height: 48
@@ -48,19 +49,20 @@ class VideoSeriesListTile extends StatelessWidget {
   final Video video;
   final Video previousVideo;
   final int i;
-  final log = getLogger('VideoSeriesListTile');
+  final Logger log = getLogger('VideoSeriesListTile');
   final double iconSize = 16;
 
   VideoSeriesListTile({this.video, this.i, this.previousVideo});
   @override
   Widget build(BuildContext context) {
-    VideoState videoState = Provider.of(context);
-    List<Watch> watchs = Provider.of(context);
-    bool depend = _checkDependancy(watchs);
+    final VideoState videoState = Provider.of(context);
+    final List<Watch> watchs = Provider.of(context);
+    final bool depend = _checkDependancy(watchs);
 
     Watch cWatch;
-    if(watchs != null)
+    if(watchs != null) {
       cWatch = watchs.firstWhere((w) => w.vid == video.vid, orElse: () => null);
+    }
 
     return InkWell(
       onTap: () {
@@ -71,7 +73,7 @@ class VideoSeriesListTile extends StatelessWidget {
       child: Container(
         height: 80,
         color: (video.vid == videoState.selectedVideo.vid) ? Colors.grey.shade200 : Colors.white,
-        padding: EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -88,7 +90,7 @@ class VideoSeriesListTile extends StatelessWidget {
                       Expanded(
                         child: Text(video.data.name, style: Theme.of(context).textTheme.display2, maxLines: 1,),
                       ),
-                      Icon((depend) ? Icons.play_arrow : Icons.lock, size: iconSize, color: Colors.grey,),
+                      Icon(depend ? Icons.play_arrow : Icons.lock, size: iconSize, color: Colors.grey,),
                       CommonUI.widthPadding(width: 10),
                       Text('${DateTimeUtil.formatDuration(Duration(seconds: video.data.duration))}', style: Theme.of(context).textTheme.display3,),
                     ],
@@ -111,14 +113,14 @@ class VideoSeriesListTile extends StatelessWidget {
   Widget _buildLinearProgress(double val) {
     return LinearProgressIndicator(
       value: val,
-      backgroundColor: Color(0xffF1F1F1),
+      backgroundColor: const Color(0xffF1F1F1),
     );
   }
 
   Widget _buildLeading(BuildContext context, Video video, int i, List<Watch> watchs) {
     Watch watch;
     if(watchs.any((watch) => watch.vid == video.vid)) {
-      watch = watchs.firstWhere((watch) => watch.vid == video.vid, orElse: null);
+      watch = watchs.firstWhere((watch) => watch.vid == video.vid, orElse: () => null);
     }
     if(watch != null && watch.status == 'completed') {
       return Container(
@@ -135,7 +137,7 @@ class VideoSeriesListTile extends StatelessWidget {
     }
   }
 
-  _selectVideo(BuildContext context, Watch watch, bool depend, String selectedVid){
+  void _selectVideo(BuildContext context, Watch watch, bool depend, String selectedVid){
     if(!depend) return;
     if(video.vid == selectedVid) return;
     Provider.of<VideoState>(context, listen: false).selectVideo(video, watch);
@@ -150,21 +152,23 @@ class VideoSeriesListTile extends StatelessWidget {
     switch(video.depend) {
     // contains any of the video
       case 'any':
-        video.vlist.forEach((vid) {
-          if(watchs.any((w) => (w.vid == vid && w.status == 'completed'))){
+        for(final String vid in video.vlist) {
+          if(watchs.any((w) => w.vid == vid && w.status == 'completed')){
             contain = true;
+            break;
           }
-        });
+        }
         break;
 
     // must contain all the video
       case 'all':
         bool exist = true;
-        video.vlist.forEach((vid) {
-          if(exist && !watchs.any((w) => (w.vid == vid && w.status == 'completed'))){
+        for(final String vid in video.vlist) {
+          if(exist && !watchs.any((w) => w.vid == vid && w.status == 'completed')){
             exist = false;
+            break;
           }
-        });
+        }
         contain = exist;
         break;
 

@@ -6,14 +6,14 @@ class LoadingStackScreen extends StatelessWidget {
   final String text;
   final bool translate;
 
-  LoadingStackScreen({this.child, this.isLoading = false, this.text, this.translate = true});
+  const LoadingStackScreen({this.child, this.isLoading = false, this.text, this.translate = true});
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
         child,
-        (isLoading == true) ? Container(
+        if (isLoading == true) Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           color: Colors.grey.withOpacity(0.7),
@@ -22,14 +22,14 @@ class LoadingStackScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                CircularProgressIndicator(),
-                (text != null) ? Text(text,
+                const CircularProgressIndicator(),
+                if (text != null) Text(text,
                   style: TextStyle(color: Colors.white),
-                ) : Container(),
+                ) else Container(),
               ],
             ),
           ),
-        ) : Container(),
+        ) else Container(),
       ],
     );
   }

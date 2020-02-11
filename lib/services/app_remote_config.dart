@@ -44,7 +44,7 @@ class AppRemoteConfig {
     return remoteConfig;
   }
 
-  fetchAgain(){
+  void fetchAgain(){
     remoteConfig.activateFetched();
   }
 }

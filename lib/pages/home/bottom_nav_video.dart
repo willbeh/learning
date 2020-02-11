@@ -8,27 +8,28 @@ import 'package:learning/routes/router.gr.dart';
 import 'package:learning/states/video_state.dart';
 import 'package:learning/utils/logger.dart';
 import 'package:provider/provider.dart';
+import 'package:logger/logger.dart';
 
 class BottomNavVideo extends StatelessWidget {
-  final log = getLogger('BottomNavVideo');
+  final Logger log = getLogger('BottomNavVideo');
 
   @override
   Widget build(BuildContext context) {
-    List<Watch> watchs = Provider.of(context);
+    final List<Watch> watchs = Provider.of(context);
 
     // hide bottom play if no current watch
-    if(watchs == null || watchs.length == 0) {
+    if(watchs == null || watchs.isEmpty) {
       return Container();
     }
 
-    Watch watch = watchs[0];
+    final Watch watch = watchs[0];
     // hide bottom play if watch completed
     if(watch.position >= watch.vduration) {
       return Container();
     }
 
-    List<SeriesWatch> seriesWatchs = Provider.of(context);
-    SeriesWatch seriesWatch = seriesWatchs.firstWhere((s) => s.sid == watch.sid);
+    final List<SeriesWatch> seriesWatchs = Provider.of(context);
+    final SeriesWatch seriesWatch = seriesWatchs.firstWhere((s) => s.sid == watch.sid);
 
     return Container(
       height: 55,
@@ -49,14 +50,14 @@ class BottomNavVideo extends StatelessWidget {
           ),
           Expanded(
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               child: AnimatedScrollText(title: seriesWatch.sdata.name, sub: watch.vname,),
             ),
           ),
           IconButton(
             icon: Icon(Icons.play_circle_filled, color: Colors.white, size: 27,),
             onPressed: () {
-              VideoState videoState = Provider.of(context, listen: false);
+              final VideoState videoState = Provider.of(context, listen: false);
               videoState.selectedWatch = watch;
               videoState.selectedSeries = seriesWatch.sdata;
               AppRouter.navigator.pushNamed(AppRouter.videoSeriesPlayerPage);
@@ -72,7 +73,7 @@ class AnimatedScrollText extends StatefulWidget {
   final String title;
   final String sub;
 
-  AnimatedScrollText({this.title, this.sub});
+  const AnimatedScrollText({this.title, this.sub});
 
   @override
   _AnimatedScrollTextState createState() => _AnimatedScrollTextState();
@@ -82,17 +83,17 @@ class _AnimatedScrollTextState extends State<AnimatedScrollText> {
   ScrollController _scrollController;
   int speedFactor = 20;
   double _duration = 0;
-  var log = getLogger('_AnimatedScrollTextState');
+  Logger log = getLogger('_AnimatedScrollTextState');
   Timer _timer;
 
-  _scroll({bool forward = true}) {
+  void _scroll({bool forward = true}) {
     if(_duration == 0){
-      double maxExtent = _scrollController.position.maxScrollExtent;
-      double distanceDifference = maxExtent - _scrollController.offset;
+      final double maxExtent = _scrollController.position.maxScrollExtent;
+      final double distanceDifference = maxExtent - _scrollController.offset;
       _duration = distanceDifference / speedFactor;
     }
 
-    _scrollController?.animateTo((forward) ? _scrollController.position.maxScrollExtent : 0,
+    _scrollController?.animateTo(forward ? _scrollController.position.maxScrollExtent : 0,
         duration: Duration(seconds: _duration.toInt()),
         curve: Curves.linear);
   }
@@ -104,18 +105,18 @@ class _AnimatedScrollTextState extends State<AnimatedScrollText> {
     _scrollController = ScrollController()..addListener(() {
       if(_scrollController.offset == _scrollController.position.maxScrollExtent) {
         _timer.cancel();
-        _timer = Timer(Duration(seconds: 2), () {
+        _timer = Timer(const Duration(seconds: 2), () {
           _scroll(forward: false);
         });
       }
       if(_scrollController.offset == 0) {
         _timer.cancel();
-        _timer = Timer(Duration(seconds: 2), () {
+        _timer = Timer(const Duration(seconds: 2), () {
           _scroll(forward: true);
         });
       }
     });
-    _timer = Timer(Duration(seconds: 2), () {
+    _timer = Timer(const Duration(seconds: 2), () {
       _scroll(forward: true);
     });
   }

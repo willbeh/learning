@@ -11,28 +11,22 @@ import 'package:learning/pages/home/home.dart';
 import 'package:learning/pages/splash.dart';
 import 'package:learning/pages/session/login.dart';
 import 'package:learning/pages/session/forget.dart';
-import 'package:learning/pages/video/video.dart';
-import 'package:learning/pages/video/video_player.dart';
 import 'package:learning/pages/exam/exam.dart';
 import 'package:learning/pages/profile/profile.dart';
 import 'package:learning/pages/profile/my_videos.dart';
 import 'package:learning/pages/video/video_series_player.dart';
 import 'package:learning/pages/profile/edit_profile.dart';
-import 'package:learning/pages/temp.dart';
 
 class AppRouter {
   static const homePage = '/homePage';
   static const splashPage = '/';
   static const loginPage = '/loginPage';
   static const forgetPage = '/forgetPage';
-  static const videoPage = '/videoPage';
-  static const videoPlayerPage = '/videoPlayerPage';
   static const examPage = '/examPage';
   static const profilePage = '/profilePage';
   static const myVideosPage = '/myVideosPage';
   static const videoSeriesPlayerPage = '/videoSeriesPlayerPage';
   static const editProfilePage = '/editProfilePage';
-  static const tempPage = '/tempPage';
   static GlobalKey<NavigatorState> get navigatorKey =>
       getNavigatorKey<AppRouter>();
   static NavigatorState get navigator => navigatorKey.currentState;
@@ -60,16 +54,6 @@ class AppRouter {
           builder: (_) => ForgetPage(),
           settings: settings,
         );
-      case AppRouter.videoPage:
-        return MaterialPageRoute(
-          builder: (_) => VideoPage(),
-          settings: settings,
-        );
-      case AppRouter.videoPlayerPage:
-        return MaterialPageRoute(
-          builder: (_) => VideoPlayerPage(),
-          settings: settings,
-        );
       case AppRouter.examPage:
         return MaterialPageRoute(
           builder: (_) => ExamPage(),
@@ -93,11 +77,6 @@ class AppRouter {
       case AppRouter.editProfilePage:
         return MaterialPageRoute(
           builder: (_) => EditProfilePage(),
-          settings: settings,
-        );
-      case AppRouter.tempPage:
-        return MaterialPageRoute(
-          builder: (_) => TempPage(),
           settings: settings,
         );
       default:

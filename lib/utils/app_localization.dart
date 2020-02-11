@@ -7,12 +7,13 @@ import 'package:learning/services/app_remote_config.dart';
 import 'package:learning/states/app_state.dart';
 
 class Translations {
-  Translations(Locale locale) {
-    this.locale = locale;
+  Locale locale;
+
+  Translations(this.locale) {
+//    this.locale = locale;
     _localizedValues = null;
   }
 
-  Locale locale;
   static Map<dynamic, dynamic> _localizedValues;
 
   static Translations of(BuildContext context){
@@ -21,7 +22,7 @@ class Translations {
 
   String text(String key) {
     try {
-      return _localizedValues[key] ?? '**$key**';
+      return _localizedValues[key] as String?? '**$key**';
     } catch(exception) {
       return '';
     }
@@ -29,7 +30,7 @@ class Translations {
   }
 
   static Future<Translations> load(Locale locale) async {
-    Translations translations = Translations(locale);
+    final Translations translations = Translations(locale);
 
 //    String jsonContent = await rootBundle.loadString("lang/${locale.languageCode}.json");
 //    _localizedValues = json.decode(jsonContent);
@@ -41,12 +42,12 @@ class Translations {
 //      _localizedValues = translation_value['${locale.languageCode}'];
 //    }
 
-    _localizedValues = translationValue['${locale.languageCode}'];
+    _localizedValues = translationValue['${locale.languageCode}'] as Map;
 
     return translations;
   }
 
-  get currentLanguage => locale.languageCode;
+  String get currentLanguage => locale.languageCode;
 }
 
 class TranslationsDelegate extends LocalizationsDelegate<Translations> {

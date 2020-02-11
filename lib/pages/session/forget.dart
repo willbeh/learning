@@ -29,7 +29,7 @@ class _ForgetPageState extends State<ForgetPage> {
         body: Form(
           key: _formKey,
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
             child: Column(
               children: <Widget>[
                 AppTextField(
@@ -38,11 +38,13 @@ class _ForgetPageState extends State<ForgetPage> {
                   keyboardType: TextInputType.emailAddress,
                   borderColor: AppColor.greyLight,
                   validatorFn: (String value) {
-                    if (value.trim() == '')
+                    if (value.trim() == '') {
                       return '${AppTranslate.text(context, 'login_email_err')}';
+                    }
 
-                    if (!AppText.validateEmail(value))
+                    if (!AppText.validateEmail(value)) {
                       return '${AppTranslate.text(context, 'login_email_err_valid')}';
+                    }
 
                     return null;
                   },
@@ -73,7 +75,7 @@ class _ForgetPageState extends State<ForgetPage> {
     );
   }
 
-  _resetPassword() {
+  void _resetPassword() {
     if (_formKey.currentState.validate()) {
       setState(() {
         _isLoading = true;
@@ -93,7 +95,7 @@ class _ForgetPageState extends State<ForgetPage> {
               ),
               CommonUI.heightPadding(),
               Container(
-                padding: EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.symmetric(vertical: 8),
                 width: double.infinity,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),

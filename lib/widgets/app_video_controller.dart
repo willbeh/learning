@@ -3,6 +3,7 @@ import 'package:learning/utils/datetime_util.dart';
 import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/app_video_progress_bar.dart';
 import 'package:video_player/video_player.dart';
+import 'package:logger/logger.dart';
 
 class AppVideoControl extends StatefulWidget {
   final VideoPlayerController controller;
@@ -18,7 +19,7 @@ class AppVideoControl extends StatefulWidget {
   final Function replayVideo;
   final Function forwardVideo;
 
-  AppVideoControl(this.controller,
+  const AppVideoControl(this.controller,
       {this.width,
         this.height,
         this.playVideo,
@@ -40,7 +41,7 @@ class _AppVideoControlState extends State<AppVideoControl> {
 //  bool _dragging = false;
 //  VideoPlayerController _controller;
 
-  var log = getLogger('_AppVideoControlState');
+  final Logger log = getLogger('_AppVideoControlState');
 
   @override
   void initState() {
@@ -74,7 +75,7 @@ class _AppVideoControlState extends State<AppVideoControl> {
                         size: 50,
                         color: Colors.white,
                       ),
-                      onPressed: widget.replayVideo,
+                      onPressed: () => widget.replayVideo,
                     ),
                     IconButton(
                       icon: Icon(
@@ -84,7 +85,7 @@ class _AppVideoControlState extends State<AppVideoControl> {
                         size: 50,
                         color: Colors.white,
                       ),
-                      onPressed: widget.playVideo,
+                      onPressed: () => widget.playVideo,
                     ),
                     IconButton(
                       icon: Icon(
@@ -92,7 +93,7 @@ class _AppVideoControlState extends State<AppVideoControl> {
                         size: 50,
                         color: Colors.white,
                       ),
-                      onPressed: widget.forwardVideo,
+                      onPressed: () => widget.forwardVideo,
                     ),
                   ],
                 ),
@@ -102,7 +103,7 @@ class _AppVideoControlState extends State<AppVideoControl> {
               alignment: Alignment.bottomCenter,
               child: Container(
                 height: 40,
-                margin: EdgeInsets.only(bottom: 5),
+                margin: const EdgeInsets.only(bottom: 5),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -129,9 +130,7 @@ class _AppVideoControlState extends State<AppVideoControl> {
                       padding: const EdgeInsets.only(left: 10),
                       child: Row(
                         children: <Widget>[
-                          (widget.controller.value.duration == null)
-                              ? Text('0', style: Theme.of(context).textTheme.display3.copyWith(color: Colors.white),)
-                              : Text(
+                          if (widget.controller.value.duration == null) Text('0', style: Theme.of(context).textTheme.display3.copyWith(color: Colors.white),) else Text(
                             '${DateTimeUtil.formatDuration(widget.controller.value.duration)}',
                             style: Theme.of(context).textTheme.display3.copyWith(color: Colors.white),
                           ),
@@ -142,7 +141,7 @@ class _AppVideoControlState extends State<AppVideoControl> {
                                   : Icons.fullscreen_exit,
                               color: Colors.white,
                             ),
-                            onPressed: widget.changeOrientation,
+                            onPressed: () => widget.changeOrientation,
                           ),
                         ],
                       ),
@@ -155,7 +154,7 @@ class _AppVideoControlState extends State<AppVideoControl> {
               Align(
                 alignment: Alignment.topRight,
                 child: Padding(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   child: Text(
                     'Completed',
                     style: TextStyle(color: Colors.white),
@@ -194,7 +193,7 @@ class _AppVideoControlState extends State<AppVideoControl> {
 class AppVideoPosition extends StatefulWidget {
   final VideoPlayerController controller;
 
-  AppVideoPosition(this.controller);
+  const AppVideoPosition(this.controller);
   @override
   _AppVideoPositionState createState() => _AppVideoPositionState();
 }
@@ -210,7 +209,7 @@ class _AppVideoPositionState extends State<AppVideoPosition> {
   }
 
   VoidCallback listener;
-  Duration _displayDuration = Duration(seconds: 0);
+  Duration _displayDuration = const Duration(seconds: 0);
 
   VideoPlayerController get controller => widget.controller;
 
@@ -222,7 +221,7 @@ class _AppVideoPositionState extends State<AppVideoPosition> {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle textStyle = Theme.of(context).textTheme.display3.copyWith(color: Colors.white);
+    final TextStyle textStyle = Theme.of(context).textTheme.display3.copyWith(color: Colors.white);
 
     return (_displayDuration == null)
         ? Text('0', style: textStyle,)

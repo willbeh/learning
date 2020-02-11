@@ -34,7 +34,7 @@ class VideoFirebaseService {
     }
     return inColRef.snapshots().map((list) {
       return list.documents.map((doc) {
-        Map<String, dynamic> data = doc.data;
+        final Map<String, dynamic> data = doc.data;
         data['id'] = doc.documentID;
         return Video.fromJson(data);
       }).toList();
@@ -52,7 +52,7 @@ class VideoFirebaseService {
     }
     return inColRef.limit(1).snapshots().map((list) {
       return list.documents.map((doc) {
-        Map<String, dynamic> data = doc.data;
+        final Map<String, dynamic> data = doc.data;
         data['id'] = doc.documentID;
         return Video.fromJson(data);
       }).first;
@@ -64,7 +64,7 @@ class VideoFirebaseService {
       return null;
     }
     return colRef.document(id).snapshots().map((doc) {
-      Map<String, dynamic> data = doc.data;
+      final Map<String, dynamic> data = doc.data;
       data['id'] = doc.documentID;
       return Video.fromJson(data);
     });

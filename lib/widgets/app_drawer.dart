@@ -10,7 +10,7 @@ import '../widgets/common_ui.dart';
 class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    FirebaseUser user = Provider.of(context);
+    final FirebaseUser user = Provider.of(context);
 
     return Drawer(
       // Add a ListView to the drawer. This ensures the user can scroll
@@ -21,6 +21,9 @@ class AppDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -31,30 +34,27 @@ class AppDrawer extends StatelessWidget {
                 Text('${user?.email}', style: TextStyle(color: Colors.white),),
               ],
             ),
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
-            ),
           ),
           ListTile(
             title: Text('Change to ${(Provider.of<AppState>(context, listen: false).isLightTheme) ? 'Dark' : 'Light'} theme'),
             onTap: () => Provider.of<AppState>(context, listen: false).invertTheme(),
           ),
           ListTile(
-            title: Text('Profile'),
+            title: const Text('Profile'),
             onTap: (){
               Navigator.pop(context);
               AppRouter.navigator.pushNamed(AppRouter.profilePage);
             }
           ),
           ListTile(
-              title: Text('My Video'),
+              title: const Text('My Video'),
               onTap: (){
                 Navigator.pop(context);
                 AppRouter.navigator.pushNamed(AppRouter.myVideosPage);
               }
           ),
           ListTile(
-            title: Text('Logout'),
+            title: const Text('Logout'),
             onTap: () {
               AppRouter.navigator.pushNamedAndRemoveUntil(AppRouter.splashPage, (route) => false);
               userRepository.signOut();

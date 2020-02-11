@@ -8,7 +8,7 @@ class AppLoadingContainer extends StatefulWidget {
   final bool showLoadingIndicator;
   final Color loadingIndicatorColor;
 
-  AppLoadingContainer({this.height, this.width,
+  const AppLoadingContainer({this.height, this.width,
     this.bgColor1 = Colors.black,
     this.bgColor2 = Colors.black54,
     this.showLoadingIndicator = true,
@@ -60,8 +60,8 @@ class _AppLoadingContainerState extends State<AppLoadingContainer> with SingleTi
           stops: [0, val],
         ),
       ),
-      child: Center(child: (widget.showLoadingIndicator) ? CircularProgressIndicator(
-        valueColor: new AlwaysStoppedAnimation<Color>(Colors.grey),
+      child: Center(child: (widget.showLoadingIndicator) ? const CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
         ) : Container(),
       ),
     );

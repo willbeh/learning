@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import '../utils/logger.dart';
 
 class AppStreamBuilder extends StatelessWidget {
@@ -9,7 +10,7 @@ class AppStreamBuilder extends StatelessWidget {
   final Function fnError;
   final bool showLoading;
 
-  final log = getLogger('AppStreamBuilder');
+  final Logger log = getLogger('AppStreamBuilder');
 
   AppStreamBuilder({@required this.stream, @required this.fn, this.fnLoading, this.fnNone, this.fnError, this.showLoading = true});
 
@@ -21,25 +22,29 @@ class AppStreamBuilder extends StatelessWidget {
       builder: (context, AsyncSnapshot snapshot) {
         if (snapshot.hasError) {
           log.w('snapshot error ${snapshot.error}');
-          if(fnError != null)
-            return fnError(context, snapshot.error);
+          if(fnError != null) {
+            return fnError(context, snapshot.error) as Widget;
+          }
           return AppStreamError(error: 'Error: ${snapshot.error}',);
         }
 
         switch (snapshot.connectionState) {
           case ConnectionState.none:
 //            log.d('Connection None');
-            if(fnNone != null)
-              return fnNone(context);
+            if(fnNone != null) {
+              return fnNone(context) as Widget;
+            }
             return AppStreamNone();
             break;
 
           case ConnectionState.waiting:
 //            log.d('Connection waiting');
-            if(fnLoading != null)
-              return fnLoading(context);
-            if(showLoading)
-              return Center(child: CircularProgressIndicator(),);
+            if(fnLoading != null) {
+              return fnLoading(context) as Widget;
+            }
+            if(showLoading) {
+              return const Center(child: CircularProgressIndicator(),);
+            }
             break;
 
           case ConnectionState.done:
@@ -48,10 +53,10 @@ class AppStreamBuilder extends StatelessWidget {
 
           case ConnectionState.active:
             if(!snapshot.hasData) {
-              return (fnNone == null) ? AppStreamNone() : fnNone(context);
+              return (fnNone == null) ? AppStreamNone() : fnNone(context) as Widget;
             }
 
-            return fn(context, snapshot.data);
+            return fn(context, snapshot.data) as Widget;
             break;
         }
         return Container();
@@ -64,7 +69,7 @@ class AppStreamNone extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Center(
+      child: const Center(
         child: Text('No item'),
       ),
     );
@@ -85,7 +90,7 @@ class AppStreamWait extends StatelessWidget {
 class AppStreamError extends StatelessWidget {
   final String error;
 
-  AppStreamError({this.error = ''});
+  const AppStreamError({this.error = ''});
 
   @override
   Widget build(BuildContext context) {

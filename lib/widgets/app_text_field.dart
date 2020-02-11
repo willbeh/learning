@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 class AppTextField extends StatelessWidget {
   final String label;
   final String errorMsg;
-  final Function saveFn;
-  final Function validatorFn;
-  final Function onFieldSubmittedFn;
+  final Function(String) saveFn;
+  final Function(String) validatorFn;
+  final Function(String) onFieldSubmittedFn;
   final TextInputType keyboardType;
   final IconData iconData;
   final FocusNode focusNode;
@@ -14,10 +14,10 @@ class AppTextField extends StatelessWidget {
   final bool obscureText;
   final int maxLines;
   final Color borderColor;
-  final Function onChange;
+  final Function(String) onChange;
   final Widget suffixIcon;
 
-  AppTextField({this.label, this.errorMsg = '', this.saveFn, this.validatorFn, this.iconData, this.focusNode, this.onFieldSubmittedFn,
+  const AppTextField({this.label, this.errorMsg = '', this.saveFn, this.validatorFn, this.iconData, this.focusNode, this.onFieldSubmittedFn,
     this.keyboardType = TextInputType.text, this.textInputAction = TextInputAction.done, this.controller, this.obscureText = false, this.maxLines = 1,
     this.borderColor = Colors.grey, this.onChange, this.suffixIcon
   });
@@ -26,7 +26,7 @@ class AppTextField extends StatelessWidget {
     return InputDecoration(
       labelText: label,
       suffixIcon: suffixIcon,
-      contentPadding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 10.0),
+      contentPadding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 10.0),
       focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(color: Theme.of(context).primaryColor),
       ),

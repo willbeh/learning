@@ -9,8 +9,8 @@ import 'package:provider/provider.dart';
 class MyCoursesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    List<SeriesWatch> seriesWatchs = Provider.of(context);
-    List<SeriesWatch> ongoing = seriesWatchs.where((s) => s.status != 'completed').toList();
+    final List<SeriesWatch> seriesWatchs = Provider.of(context);
+    final List<SeriesWatch> ongoing = seriesWatchs.where((s) => s.status != 'completed').toList();
 //    List<SeriesWatch> completed = seriesWatchs.where((s) => s.status == 'completed').toList();
     return Scaffold(
       appBar: AppBar(
@@ -20,10 +20,10 @@ class MyCoursesPage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            if(ongoing.length > 0)
+            if(ongoing.isNotEmpty)
               ListView.separated(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 itemCount: ongoing.length,
                 separatorBuilder: (context, i) => Container(),
                 itemBuilder: (context, i) {
@@ -46,7 +46,7 @@ class MyCoursesPage extends StatelessWidget {
                 ),
                 ListView.separated(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: seriesWatchs.length,
                   separatorBuilder: (context, i) => Container(),
                   itemBuilder: (context, i) {
@@ -64,7 +64,7 @@ class MyCoursesPage extends StatelessWidget {
 
   Widget _buildSeriesCard(BuildContext context, {SeriesWatch seriesWatch, Color color}) {
     return AppContainerCard(
-      margin: EdgeInsets.fromLTRB(20, 20, 20, 0),
+      margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
       shadowColor: color,
       height: 120,
       child: Row(

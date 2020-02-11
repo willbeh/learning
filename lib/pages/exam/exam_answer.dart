@@ -10,18 +10,19 @@ import 'package:learning/utils/app_traslation_util.dart';
 import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/app_dotted_seperator.dart';
 import 'package:learning/widgets/common_ui.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class ExamAnswer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Exam exam = Provider.of<Exam>(context);
-    VideoState videoState = Provider.of<VideoState>(context);
-    Answer answer = Provider.of<Answer>(context);
+    final Exam exam = Provider.of<Exam>(context);
+    final VideoState videoState = Provider.of<VideoState>(context);
+    final Answer answer = Provider.of<Answer>(context);
 
     return SingleChildScrollView(
       child: Container(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -43,7 +44,7 @@ class ExamAnswer extends StatelessWidget {
   }
 
   Widget _buildScoreCard(BuildContext context, Exam exam, Answer answer) {
-    double width = MediaQuery.of(context).size.width - 40;
+    final double width = MediaQuery.of(context).size.width - 40;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -125,21 +126,19 @@ class _ExamAnswerSegmentState extends State<ExamAnswerSegment> {
   Map<String, String> _segments;
   Exam _exam;
   Answer _answer;
-  var log = getLogger('_ExamAnswerSegmentState');
+  Logger log = getLogger('_ExamAnswerSegmentState');
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if(_segments == null)
-      _segments = {
-        '1': '${AppTranslate.text(context, 'test_result_all')}',
-        '2': '${AppTranslate.text(context, 'test_result_incorrect')}'
-      };
-    if(_exam == null)
-      _exam = Provider.of<Exam>(context);
+    _segments = {
+      '1': '${AppTranslate.text(context, 'test_result_all')}',
+      '2': '${AppTranslate.text(context, 'test_result_incorrect')}'
+    };
 
-    if(_answer == null)
-      _answer = Provider.of<Answer>(context);
+    _exam = _exam ?? Provider.of<Exam>(context);
+
+    _answer = _answer ?? Provider.of<Answer>(context);
   }
 
   @override
@@ -181,11 +180,11 @@ class _ExamAnswerSegmentState extends State<ExamAnswerSegment> {
   Widget _buildQuestionList(BuildContext context) {
     return ListView.separated(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: _exam.questions.length,
       separatorBuilder: (context, i) {
         if(_selected == '2') {
-          UserAnswer userAnswer = _answer.answers.firstWhere((ans) => ans.qid == _exam.questions[i].code);
+          final UserAnswer userAnswer = _answer.answers.firstWhere((ans) => ans.qid == _exam.questions[i].code);
           if (listEquals(userAnswer.answer, _exam.questions[i].answer)){
             return Container();
           }
@@ -194,7 +193,7 @@ class _ExamAnswerSegmentState extends State<ExamAnswerSegment> {
       },
       itemBuilder: (context, i) {
         if(_selected == '2') {
-          UserAnswer userAnswer = _answer.answers.firstWhere((ans) => ans.qid == _exam.questions[i].code);
+          final UserAnswer userAnswer = _answer.answers.firstWhere((ans) => ans.qid == _exam.questions[i].code);
           if (listEquals(userAnswer.answer, _exam.questions[i].answer)){
             return Container();
           }
@@ -216,11 +215,11 @@ class _ExamAnswerSegmentState extends State<ExamAnswerSegment> {
       elevation: 2,
       child: ListView.separated(
         shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         itemCount: _exam.questions[i].options.length,
-        separatorBuilder: (context, j) => Divider(height: 1,),
+        separatorBuilder: (context, j) => const Divider(height: 1,),
         itemBuilder: (context, j) {
-          UserAnswer userAnswer = _answer.answers.firstWhere((ans) => ans.qid == _exam.questions[i].code);
+          final UserAnswer userAnswer = _answer.answers.firstWhere((ans) => ans.qid == _exam.questions[i].code);
           if(_exam.questions[i].type == AppConstant.single) {
             return _buildAnswerRow(context,
               correct: _exam.questions[i].answer.contains(_exam.questions[i].options[j].code),
@@ -255,7 +254,7 @@ class _ExamAnswerSegmentState extends State<ExamAnswerSegment> {
       bgColor = Colors.red.withOpacity(0.3);
     }
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: bgColor
       ),

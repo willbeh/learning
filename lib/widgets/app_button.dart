@@ -6,7 +6,9 @@ class AppButton {
   }) {
     return RaisedButton(
       color: color ?? Theme.of(context).primaryColor,
-      onPressed: () => onPressed,
+      // TODO find out how
+      // ignore: argument_type_not_assignable
+      onPressed: onPressed,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(borderRadius),
         side: BorderSide(color: borderColor ?? Theme.of(context).primaryColor),
@@ -17,7 +19,8 @@ class AppButton {
 //        padding: EdgeInsets.symmetric(vertical: paddingVertical),
         width: width,
         height: height,
-        child: (child != null) ? child : Text(text, textAlign: TextAlign.center, style: (textStyle != null) ? textStyle : Theme.of(context).textTheme.display3.copyWith(color: textColor == null ? Colors.white : textColor),),
+        child: (child != null) ? child : Text(text, textAlign: TextAlign.center,
+          style: (textStyle != null) ? textStyle : Theme.of(context).textTheme.display3.copyWith(color: textColor ?? Colors.white),),
       ),
     );
   }

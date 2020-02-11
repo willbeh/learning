@@ -11,20 +11,21 @@ import 'package:learning/utils/app_traslation_util.dart';
 import 'package:learning/utils/logger.dart';
 import 'package:learning/models/answer.service.dart';
 import 'package:provider/provider.dart';
+import 'package:logger/logger.dart';
 
 class ExamPage extends StatelessWidget {
-  final log = getLogger('ExamPage');
+  final Logger log = getLogger('ExamPage');
 
   @override
   Widget build(BuildContext context) {
-    VideoState videoState = Provider.of<VideoState>(context, listen: false);
-    FirebaseUser user = Provider.of(context);
+    final VideoState videoState = Provider.of<VideoState>(context, listen: false);
+    final FirebaseUser user = Provider.of(context);
 
-    var answerStream = answerFirebaseService.findOne(
+    final answerStream = answerFirebaseService.findOne(
       query: answerFirebaseService.colRef.where('uid', isEqualTo: user.uid).where('sid', isEqualTo: videoState.selectedSeries.id ),
     );
 
-    Stream<Exam> examStream = examFirebaseService.findOne(query: examFirebaseService.colRef.where('sid', isEqualTo: videoState.selectedSeries.id));
+    final Stream<Exam> examStream = examFirebaseService.findOne(query: examFirebaseService.colRef.where('sid', isEqualTo: videoState.selectedSeries.id));
 
     return Scaffold(
       appBar: AppBar(
@@ -43,7 +44,7 @@ class ExamPage extends StatelessWidget {
             catchError: (_, error) {
               if(error.toString().contains('No element')) {
                 // create an answer if it does not exist
-                Answer tempAnswer = Answer(
+                final Answer tempAnswer = Answer(
                     uid: user.uid,
                     sid: videoState.selectedSeries.id,
                     status: '',
@@ -58,8 +59,9 @@ class ExamPage extends StatelessWidget {
         ],
         child: Consumer<Answer>(
           builder: (_, answer, child) {
-            if(answer == null)
+            if(answer == null) {
               return Container();
+            }
             return (answer.status == AppConstant.completed) ? ExamAnswer() :
               ExamQuestions();
           },

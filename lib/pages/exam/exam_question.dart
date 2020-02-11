@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:learning/app_color.dart';
 import 'package:learning/models/answer.dart';
 import 'package:learning/models/exam.dart';
-import 'package:learning/models/exam.service.dart';
-import 'package:learning/models/question.dart' as q;
-import 'package:learning/models/question.service.dart';
 import 'package:learning/models/series_watch.service.dart';
 import 'package:learning/states/video_state.dart';
 import 'package:learning/utils/app_const.dart';
@@ -16,6 +13,7 @@ import 'package:learning/widgets/app_button.dart';
 import 'package:learning/models/answer.service.dart';
 import 'package:learning/widgets/common_ui.dart';
 import 'package:provider/provider.dart';
+import 'package:logger/logger.dart';
 
 class ExamQuestions extends StatefulWidget {
   @override
@@ -23,7 +21,7 @@ class ExamQuestions extends StatefulWidget {
 }
 
 class _ExamQuestionsState extends State<ExamQuestions> {
-  final log = getLogger('_ExamQuestionsState');
+  final Logger log = getLogger('_ExamQuestionsState');
   final PageController _controller = PageController(initialPage: 0);
   int _currentPage = 0;
   Exam _exam;
@@ -32,11 +30,8 @@ class _ExamQuestionsState extends State<ExamQuestions> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if(_exam == null)
-      _exam = Provider.of<Exam>(context);
-
-    if(_answer == null)
-      _answer = Provider.of<Answer>(context);
+    _exam = Provider.of<Exam>(context);
+    _answer = Provider.of<Answer>(context);
   }
 
   @override
@@ -61,7 +56,7 @@ class _ExamQuestionsState extends State<ExamQuestions> {
         SizedBox(
           height: 4,
           child: LinearProgressIndicator(
-            value: (_currentPage)/_exam.questions.length,
+            value: _currentPage/_exam.questions.length,
             backgroundColor: AppColor.greyLight,
             valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
           ),
@@ -102,14 +97,14 @@ class _ExamQuestionsState extends State<ExamQuestions> {
         ),
       );
     } else {
-      Color btnColor = (_answer.answers.length < _currentPage) ? Colors.grey : Theme.of(context).primaryColor;
+      final Color btnColor = (_answer.answers.length < _currentPage) ? Colors.grey : Theme.of(context).primaryColor;
       // navigation previous, page num and next
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           FlatButton(
-            child: Text('${AppTranslate.text(context, 'previous')}', style: Theme.of(context).textTheme.display2.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold,),),
             onPressed: () => _moveDown(),
+            child: Text('${AppTranslate.text(context, 'previous')}', style: Theme.of(context).textTheme.display2.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold,),),
           ),
           Text('$_currentPage/${_exam.questions.length}', style: Theme.of(context).textTheme.display2.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold,),),
           AppButton.roundedButton(context,
@@ -137,12 +132,12 @@ class _ExamQuestionsState extends State<ExamQuestions> {
               width: 90,
               onPressed: () {
                 if(_answer.answers.length < _currentPage){
-                  return null;
+                  return;
                 }
                 if(_currentPage < _exam.questions.length) {
-                  return _moveUp();
+                  _moveUp();
                 } else {
-                  return _submitAnswer();
+                  _submitAnswer();
                 }
               }
           )
@@ -152,11 +147,11 @@ class _ExamQuestionsState extends State<ExamQuestions> {
   }
 
   Widget _buildFirstPage(BuildContext context, Exam exam){
-    VideoState videoState = Provider.of<VideoState>(context);
+    final VideoState videoState = Provider.of<VideoState>(context);
 
     return SingleChildScrollView(
       child: Container(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -191,7 +186,7 @@ class _ExamQuestionsState extends State<ExamQuestions> {
   Widget _buildSingleQuestion(BuildContext context, Question question) {
     return SingleChildScrollView(
       child: Container(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -210,8 +205,8 @@ class _ExamQuestionsState extends State<ExamQuestions> {
                     groupValue: _getAnswer(question.options[i].code, question.code),
                     title: Text('${question.options[i].option}'),
                     onChanged: (val) {
-                      _updateAnswer(question.code, [val]);
-                      Future.delayed(Duration(milliseconds: 300), () => _moveUp());
+                      _updateAnswer(question.code, [val as String]);
+                      Future.delayed(const Duration(milliseconds: 300), () => _moveUp());
                     },
                   );
                 },
@@ -226,7 +221,7 @@ class _ExamQuestionsState extends State<ExamQuestions> {
   Widget _buildMultiQuestion(BuildContext context, Question question) {
     return SingleChildScrollView(
       child: Container(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -258,7 +253,7 @@ class _ExamQuestionsState extends State<ExamQuestions> {
     );
   }
 
-  _updateAnswer(String qid, List<String> answer){
+  void _updateAnswer(String qid, List<String> answer){
     bool exist = false;
     for(int i=0; i<_answer.answers.length; i++){
       if(_answer.answers[i].qid == qid){
@@ -276,7 +271,7 @@ class _ExamQuestionsState extends State<ExamQuestions> {
     }
   }
 
-  _getAnswer(String code, String qid) {
+  String _getAnswer(String code, String qid) {
     for(int i=0; i<_answer.answers.length; i++){
       if(_answer.answers[i].qid == qid){
         return _answer.answers[i].answer[0];
@@ -285,7 +280,7 @@ class _ExamQuestionsState extends State<ExamQuestions> {
     return null;
   }
 
-  _getMutipleAnswer(String qid, String code, int i){
+  bool _getMutipleAnswer(String qid, String code, int i){
     for(int x=0; x<_answer.answers.length; x++){
       if(_answer.answers[x].qid == qid){
         return _answer.answers[x].answer[i] == 'true';
@@ -295,7 +290,7 @@ class _ExamQuestionsState extends State<ExamQuestions> {
     return false;
   }
 
-  _updateMutipleAnswer(String qid, int i, int total, bool val){
+  void _updateMutipleAnswer(String qid, int i, int total, bool val){
     bool exist = false;
 
     for(int x=0; x<_answer.answers.length; x++){
@@ -307,7 +302,7 @@ class _ExamQuestionsState extends State<ExamQuestions> {
     }
 
     if(!exist){
-      List<String> answer = [];
+      final List<String> answer = [];
       for(int j=0; j<total; j++){
         answer.add((j == i) ? 'true' : 'false');
       }
@@ -319,7 +314,7 @@ class _ExamQuestionsState extends State<ExamQuestions> {
     }
   }
 
-  _submitAnswer(){
+  void _submitAnswer(){
     // if not all question is answered, the prompt message and bring to unanswered question
     if(_answer.answers.length < _exam.questions.length){
       CommonUI.alertBox(context, title: 'Answer all question', titleColor: AppColor.redAlert, msg: 'Please answer all questions',
@@ -333,7 +328,7 @@ class _ExamQuestionsState extends State<ExamQuestions> {
                 Navigator.pop(context);
                 for(int i=0; i< _exam.questions.length-1; i++){
                   if (!_answer.answers.any((a) => a.qid == _exam.questions[i].code)){
-                    _controller.animateToPage(i+1, duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+                    _controller.animateToPage(i+1, duration: const Duration(milliseconds: 200), curve: Curves.easeIn);
                     break;
                   }
                 }
@@ -362,7 +357,7 @@ class _ExamQuestionsState extends State<ExamQuestions> {
               width: 100,
               textStyle: Theme.of(context).textTheme.display4.copyWith(color: Colors.white),
               onPressed: () {
-                VideoState videoState = Provider.of<VideoState>(context, listen: false);
+                final VideoState videoState = Provider.of<VideoState>(context, listen: false);
                 // update answer
                 _answer.status = AppConstant.completed;
                 _answer.correct = _checkAnswers();
@@ -386,11 +381,11 @@ class _ExamQuestionsState extends State<ExamQuestions> {
     }
   }
 
-  _checkAnswers(){
+  int _checkAnswers(){
     int count = 0;
     for(int i = 0; i<_exam.questions.length; i++){
-      Question question = _exam.questions[i];
-      UserAnswer answer = _answer.answers.firstWhere((a) => a.qid == question.code);
+      final Question question = _exam.questions[i];
+      final UserAnswer answer = _answer.answers.firstWhere((a) => a.qid == question.code);
       log.d('answer ${listEquals(answer.answer, question.answer)} - ${answer.answer} == ${question.answer}');
       if(listEquals(answer.answer, question.answer)){
         count = count + 1;
@@ -414,57 +409,57 @@ class _ExamQuestionsState extends State<ExamQuestions> {
     return count;
   }
 
-  _moveDown(){
+  void _moveDown(){
     if(_controller.page > 0) {
       _controller.animateToPage(_controller.page.toInt() - 1,
-          duration: Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 300),
           curve: Curves.easeIn);
     }
   }
 
-  _moveUp(){
+  void _moveUp(){
     if(_currentPage < _exam.questions.length) {
       _controller.animateToPage(_controller.page.toInt() + 1,
-          duration: Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 300),
           curve: Curves.easeIn);
     }
   }
 
   // temp generate questions
-  _getQues(BuildContext context) async{
-    List<q.Question> questions = await questionFirebaseService.find(
-        query: questionFirebaseService.colRef.where('vid', isEqualTo: '382117382').orderBy('order')
-    ).first;
-
-    questions.forEach((question) {
-      Map qm = question.toJson();
-      qm['code'] = qm['id'];
-      qm.remove('id');
-      qm.remove('vid');
-      qm.remove('status');
-      qm.remove('order');
-      qm.remove('correct');
-      qm.remove('wrong');
-      qm['type'] = AppConstant.single;
-      qm['answer'] = [qm['answer']];
-      List options = qm['options'];
-      List no = [];
-
-      for(int i=0; i<options.length; i++) {
-        Map m = qm['options'][i];
-        m.remove('type');
-        m.remove('selected');
-        no.add(m);
-      }
-
-      qm['options'] = no;
-
-      Question ques = Question.fromJson(qm);
-      _exam.questions.add(ques);
-    });
-
-    log.d('${_exam.toJson()}');
-
-    examFirebaseService.update(id: _exam.id, data: _exam.toJson());
-  }
+//  _getQues(BuildContext context) async{
+//    List<q.Question> questions = await questionFirebaseService.find(
+//        query: questionFirebaseService.colRef.where('vid', isEqualTo: '382117382').orderBy('order')
+//    ).first;
+//
+//    questions.forEach((question) {
+//      Map qm = question.toJson();
+//      qm['code'] = qm['id'];
+//      qm.remove('id');
+//      qm.remove('vid');
+//      qm.remove('status');
+//      qm.remove('order');
+//      qm.remove('correct');
+//      qm.remove('wrong');
+//      qm['type'] = AppConstant.single;
+//      qm['answer'] = [qm['answer']];
+//      List options = qm['options'];
+//      List no = [];
+//
+//      for(int i=0; i<options.length; i++) {
+//        Map m = qm['options'][i];
+//        m.remove('type');
+//        m.remove('selected');
+//        no.add(m);
+//      }
+//
+//      qm['options'] = no;
+//
+//      Question ques = Question.fromJson(qm);
+//      _exam.questions.add(ques);
+//    });
+//
+//    log.d('${_exam.toJson()}');
+//
+//    examFirebaseService.update(id: _exam.id, data: _exam.toJson());
+//  }
 }
