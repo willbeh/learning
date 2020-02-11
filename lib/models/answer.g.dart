@@ -9,7 +9,7 @@ part of 'answer.dart';
 UserAnswer _$UserAnswerFromJson(Map json) {
   return UserAnswer(
     qid: json['qid'] as String,
-    answer: json['answer'] as String,
+    answer: (json['answer'] as List)?.map((e) => e as String)?.toList(),
   );
 }
 

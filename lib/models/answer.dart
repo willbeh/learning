@@ -8,7 +8,7 @@ class UserAnswer {
   UserAnswer({this.qid, this.answer});
 
   String qid;
-  String answer;
+  List<String> answer;
 
   factory UserAnswer.fromJson(Map<String, dynamic> json) => _$UserAnswerFromJson(json);
 
