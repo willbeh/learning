@@ -162,6 +162,7 @@ class MyWatchList extends StatelessWidget {
 
     return InkWell(
       onTap: () {
+        Provider.of<VideoState>(context, listen: false).selectedSeriesWatch = seriesWatch;
         Provider.of<VideoState>(context, listen: false).selectedSeries = seriesWatch.sdata;
         AppRouter.navigator.pushNamed(AppRouter.videoSeriesPlayerPage);
       },

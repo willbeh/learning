@@ -46,7 +46,13 @@ Map<dynamic, dynamic> translationValue = {
     "avatar_confirm_change": "The current image will be remove.\nSelect image source",
     "test_title": "Test",
     "test_get_started": "Get Started",
-    "test_submit": "Submit"
+    "test_submit": "Submit",
+    "test_result_title": "Results & Analysis",
+    "test_result_desc": "Here’s what you get for this completed course",
+    "test_result_score": "Your Score",
+    "test_result_correct": "Correct Answer",
+    "test_result_all": "All",
+    "test_result_incorrect": "Incorrect",
   },
   "zh" : {
     "title": "Learning",
@@ -95,6 +101,12 @@ Map<dynamic, dynamic> translationValue = {
     "avatar_confirm_change": "The current image will be remove.\nSelect image source",
     "test_title": "Test",
     "test_get_started": "Get Started",
-    "test_submit": "Submit"
+    "test_submit": "Submit",
+    "test_result_title": "Results & Analysis",
+    "test_result_desc": "Here’s what you get for this completed course",
+    "test_result_score": "Your Score",
+    "test_result_correct": "Correct Answer",
+    "test_result_all": "All",
+    "test_result_incorrect": "Incorrect",
   }
 };

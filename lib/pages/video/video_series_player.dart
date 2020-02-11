@@ -302,7 +302,6 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
         uid: user.uid,
         position: 0,
         furthest: 0,
-        test: false,
         status: '',
         date: DateTime.now(),
         created: DateTime.now(),

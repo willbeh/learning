@@ -211,7 +211,7 @@ class VideoPage extends StatelessWidget {
   
   Widget _buildTrailingIcon(BuildContext context, Video video, List<Watch> watchs) {
     Widget trailingIcon = Container(width: 0,);
-    if (watchs.any((w) => (w.vid == video.vid && w.status == 'completed' && w.test == true))) {
+    if (watchs.any((w) => (w.vid == video.vid && w.status == 'completed'))) {
       trailingIcon = Icon(Icons.check_circle, color: Colors.green,);
     } else if (watchs.any((w) => (w.vid == video.vid && w.status == 'completed'))) {
 //      if(video.hastest == true){

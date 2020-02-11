@@ -16,6 +16,7 @@ SeriesWatch _$SeriesWatchFromJson(Map json) {
     created: DateTimeUtil.fromTimestamp(json['created']),
     completed: DateTimeUtil.fromTimestamp(json['completed']),
     status: json['status'] as String,
+    test: json['test'] as bool,
   );
 }
 
@@ -29,4 +30,5 @@ Map<String, dynamic> _$SeriesWatchToJson(SeriesWatch instance) =>
       'created': instance.created?.toIso8601String(),
       'completed': instance.completed?.toIso8601String(),
       'status': instance.status,
+      'test': instance.test,
     };

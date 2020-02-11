@@ -7,7 +7,7 @@ part 'watch.g.dart';
 @FirebaseService(name: 'watch', col: 'watch')
 @JsonSerializable()
 class Watch {
-  Watch({this.id, this.vid, this.vname, this.vpicture, this.vduration, this.uid, this.position = 0, this.furthest = 0, this.status = '', this.test = false, this.date, this.created,
+  Watch({this.id, this.vid, this.vname, this.vpicture, this.vduration, this.uid, this.position = 0, this.furthest = 0, this.status = '', this.date, this.created,
     this.sid,
   });
 
@@ -19,7 +19,6 @@ class Watch {
   String uid;
   int position;
   int furthest;
-  bool test;
   String status;
   @JsonKey(fromJson: DateTimeUtil.fromTimestamp) //, toJson: DateTimeUtil.toTimestamp)
   DateTime date;
