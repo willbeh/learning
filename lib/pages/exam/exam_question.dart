@@ -174,9 +174,9 @@ class _ExamQuestionsState extends State<ExamQuestions> {
   }
 
   Widget _buildQuestion(BuildContext context, Question question) {
-    if(question.type == AppConstant.single) {
+    if(question.type == constSingle) {
       return _buildSingleQuestion(context, question);
-    } else if (question.type == AppConstant.multiple) {
+    } else if (question.type == constMultiple) {
       return _buildMultiQuestion(context, question);
     } else {
       return Container();
@@ -197,7 +197,7 @@ class _ExamQuestionsState extends State<ExamQuestions> {
               child: ListView.separated(
                 shrinkWrap: true,
                 itemCount: question.options.length,
-                separatorBuilder: (context, i) => Divider(color: Colors.grey,),
+                separatorBuilder: (context, i) => const Divider(color: Colors.grey,),
                 itemBuilder: (context, i) {
                   return RadioListTile(
                     value: question.options[i].code,
@@ -232,7 +232,7 @@ class _ExamQuestionsState extends State<ExamQuestions> {
               child: ListView.separated(
                 shrinkWrap: true,
                 itemCount: question.options.length,
-                separatorBuilder: (context, i) => Divider(color: Colors.grey,),
+                separatorBuilder: (context, i) => const Divider(color: Colors.grey,),
                 itemBuilder: (context, i) {
                   return CheckboxListTile(
                     value: _getMutipleAnswer(question.code, question.options[i].code, i),
@@ -359,7 +359,7 @@ class _ExamQuestionsState extends State<ExamQuestions> {
               onPressed: () {
                 final VideoState videoState = Provider.of<VideoState>(context, listen: false);
                 // update answer
-                _answer.status = AppConstant.completed;
+                _answer.status = constCompleted;
                 _answer.correct = _checkAnswers();
                 _answer.min = _exam.min;// widget.video.min;
                 answerFirebaseService.update(id: _answer.id, data: _answer.toJson());

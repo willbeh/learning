@@ -68,6 +68,7 @@ class AppStreamBuilder extends StatelessWidget {
 class AppStreamNone extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // ignore: avoid_unnecessary_containers
     return Container(
       child: const Center(
         child: Text('No item'),
@@ -79,6 +80,7 @@ class AppStreamNone extends StatelessWidget {
 class AppStreamWait extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // ignore: avoid_unnecessary_containers
     return Container(
       child: Center(
         child: CircularProgressIndicator(backgroundColor: Theme.of(context).primaryColor,),
@@ -94,6 +96,7 @@ class AppStreamError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: avoid_unnecessary_containers
     return Container(
       child: Center(
         child: Text(error),

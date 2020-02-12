@@ -173,9 +173,9 @@ class _LoginPageState extends State<LoginPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Container(width: MediaQuery.of(context).size.width/2 - 85, child: AppDottedSeparator(color: AppColor.greyDottedLine,)),
+              Container(width: MediaQuery.of(context).size.width/2 - 85, child: const AppDottedSeparator(color: AppColor.greyDottedLine,)),
               Text('or continue with', style: Theme.of(context).textTheme.display2.copyWith(fontWeight: FontWeight.bold),),
-              Container(width: MediaQuery.of(context).size.width/2 - 85, child: AppDottedSeparator(color: AppColor.greyDottedLine,)),
+              Container(width: MediaQuery.of(context).size.width/2 - 85, child: const AppDottedSeparator(color: AppColor.greyDottedLine,)),
             ],
           ),
           CommonUI.heightPadding(),

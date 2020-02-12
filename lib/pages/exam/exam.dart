@@ -62,7 +62,7 @@ class ExamPage extends StatelessWidget {
             if(answer == null) {
               return Container();
             }
-            return (answer.status == AppConstant.completed) ? ExamAnswer() :
+            return (answer.status == constCompleted) ? ExamAnswer() :
               ExamQuestions();
           },
         ),

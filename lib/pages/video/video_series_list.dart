@@ -132,7 +132,7 @@ class VideoSeriesListTile extends StatelessWidget {
       return Container(
         width: 35,
         alignment: Alignment.centerLeft,
-        child: Text('${i+1}', style: TextStyle(color: Colors.grey),),
+        child: Text('${i+1}', style: const TextStyle(color: Colors.grey),),
       );
     }
   }

@@ -1,10 +1,6 @@
-abstract class AppConstant {
-  static String completed = 'completed';
-  static String published = 'published';
-
-  static String single = 'single';
-  static String multiple = 'multiple';
-
-  static String emojiRight = '✔';
-  static String emojiWrong = '❌';
-}
+const String constCompleted = 'completed';
+const String constPublished = 'published';
+const String constSingle = 'single';
+const String constMultiple = 'multiple';
+const String emojiRight = '✔';
+const String emojiWrong = '❌';

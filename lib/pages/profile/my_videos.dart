@@ -17,6 +17,7 @@ class MyVideosPage extends StatelessWidget {
   Widget _buildMyVideosList(BuildContext context){
     final List<Watch> watchs = Provider.of(context);
     if(watchs == null) {
+      // ignore: avoid_unnecessary_containers
       return Container(
         child: const Text('None'),
       );

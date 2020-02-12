@@ -220,13 +220,13 @@ class _ExamAnswerSegmentState extends State<ExamAnswerSegment> {
         separatorBuilder: (context, j) => const Divider(height: 1,),
         itemBuilder: (context, j) {
           final UserAnswer userAnswer = _answer.answers.firstWhere((ans) => ans.qid == _exam.questions[i].code);
-          if(_exam.questions[i].type == AppConstant.single) {
+          if(_exam.questions[i].type == constSingle) {
             return _buildAnswerRow(context,
               correct: _exam.questions[i].answer.contains(_exam.questions[i].options[j].code),
               option: _exam.questions[i].options[j].option,
               selected: userAnswer.answer.contains(_exam.questions[i].options[j].code)
             );
-          } else if(_exam.questions[i].type == AppConstant.multiple) {
+          } else if(_exam.questions[i].type == constMultiple) {
             return _buildAnswerRow(context,
                 correct: _exam.questions[i].answer[j] == 'true',
                 option: _exam.questions[i].options[j].option,

@@ -140,7 +140,7 @@ class MyWatchList extends StatelessWidget {
   Widget _buildVideoCard(BuildContext context, SeriesWatch seriesWatch){
     Color shadowColor = Colors.black26;
 
-    if(seriesWatch.status == AppConstant.completed){
+    if(seriesWatch.status == constCompleted){
       shadowColor = Theme.of(context).primaryColor;
     }
 

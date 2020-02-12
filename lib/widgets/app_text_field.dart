@@ -61,6 +61,8 @@ class AppTextField extends StatelessWidget {
       focusNode: focusNode,
       onFieldSubmitted: onFieldSubmittedFn,
       maxLines: maxLines,
+      // TODO find out how
+      // ignore: argument_type_not_assignable
       validator: errorMsg != '' ? (value) {
         if (value.isEmpty) {
           return errorMsg;
