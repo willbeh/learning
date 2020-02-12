@@ -4,7 +4,7 @@ class AppTextField extends StatelessWidget {
   final String label;
   final String errorMsg;
   final Function(String) saveFn;
-  final Function(String) validatorFn;
+  final String Function(String) validatorFn;
   final Function(String) onFieldSubmittedFn;
   final TextInputType keyboardType;
   final IconData iconData;
@@ -61,8 +61,6 @@ class AppTextField extends StatelessWidget {
       focusNode: focusNode,
       onFieldSubmitted: onFieldSubmittedFn,
       maxLines: maxLines,
-      // TODO find out how
-      // ignore: argument_type_not_assignable
       validator: errorMsg != '' ? (value) {
         if (value.isEmpty) {
           return errorMsg;

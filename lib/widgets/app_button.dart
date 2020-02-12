@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 
 class AppButton {
-  static Widget roundedButton(BuildContext context, {String text, Function onPressed, Widget child, double width = 200, double height = 48, Color textColor, Color color, double borderRadius = 5, double paddingVertical = 15,
+  static Widget roundedButton(BuildContext context, {String text, VoidCallback onPressed, Widget child, double width = 200, double height = 48, Color textColor, Color color, double borderRadius = 5, double paddingVertical = 15,
     Color borderColor, double elevation = 1, TextStyle textStyle,
   }) {
     return RaisedButton(
       color: color ?? Theme.of(context).primaryColor,
-      // TODO find out how
-      // ignore: argument_type_not_assignable
       onPressed: onPressed,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(borderRadius),

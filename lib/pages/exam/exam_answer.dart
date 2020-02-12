@@ -30,7 +30,7 @@ class ExamAnswer extends StatelessWidget {
             CommonUI.heightPadding(height: 5),
             Text('${videoState.selectedSeries.name}', style: Theme.of(context).textTheme.headline,),
             CommonUI.heightPadding(),
-            AppDottedSeparator(color: AppColor.greyDottedLine,),
+            const AppDottedSeparator(color: AppColor.greyDottedLine,),
             CommonUI.heightPadding(),
             Text('${AppTranslate.text(context, 'test_result_title')}', style: Theme.of(context).textTheme.headline,),
             Text('${AppTranslate.text(context, 'test_result_desc')}', style: Theme.of(context).textTheme.display3.copyWith(color: Colors.grey),),
