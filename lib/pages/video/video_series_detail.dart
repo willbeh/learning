@@ -5,6 +5,8 @@ import 'package:learning/models/series.dart';
 import 'package:learning/pages/video/video_series_list.dart';
 import 'package:learning/routes/router.gr.dart';
 import 'package:learning/states/video_state.dart';
+import 'package:learning/utils/app_traslation_util.dart';
+import 'package:learning/widgets/app_series_authors.dart';
 import 'package:learning/widgets/common_ui.dart';
 import 'package:provider/provider.dart';
 
@@ -32,12 +34,12 @@ class VideoSeriesDetail extends StatelessWidget {
                           }
                         },
                         tabs: [
-                          const Tab(text: 'LESSONS'),
-                          const Tab(text: 'MATERIALS'),
+                          Tab(text: '${AppTranslate.text(context, 'video_tab_lesson')}'),
+                          Tab(text: '${AppTranslate.text(context, 'video_tab_material')}'),
                           Tab(child: Row(
                             children: <Widget>[
                               Icon(Icons.lock, size: 12, color: Theme.of(context).primaryColor,),
-                              const Text('TEST')
+                              Text('${AppTranslate.text(context, 'video_tab_test')}')
                             ],
                           ),)
                         ],
@@ -125,16 +127,17 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
       child: Column(
         children: <Widget>[
           Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20),
             height: (topHeight < 0) ? 0 : topHeight,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 if(topHeight > 80)
-                Text('${videoState.selectedSeries.name}', style: Theme.of(context).textTheme.display1.copyWith(fontWeight: FontWeight.bold),),
+                  AppSeriesAuthors(videoState.selectedSeries.authors),
+                CommonUI.heightPadding(height: 5),
                 if(topHeight > 60)
-                CommonUI.heightPadding(height: 10),
-                if(topHeight > 50)
-                Text('${videoState.selectedSeries.desc}', style: Theme.of(context).textTheme.display2),
+                  Text('${videoState.selectedSeries.name}', style: Theme.of(context).textTheme.display1.copyWith(fontWeight: FontWeight.bold), maxLines: 2,),
               ],
             ),
           ),
