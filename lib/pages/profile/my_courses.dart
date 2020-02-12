@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:learning/models/series_watch.dart';
 import 'package:learning/utils/app_traslation_util.dart';
 import 'package:learning/widgets/app_container.dart';
+import 'package:learning/widgets/app_series_authors.dart';
 import 'package:learning/widgets/common_ui.dart';
 import 'package:provider/provider.dart';
 
@@ -87,7 +88,7 @@ class MyCoursesPage extends StatelessWidget {
                       maxLines: 3,
                     ),
                   ),
-                  Text('something', style: Theme.of(context).textTheme.display3.copyWith(color: Colors.grey),)
+                  AppSeriesAuthors(seriesWatch.sdata.authors)
                 ],
               ),
             ),

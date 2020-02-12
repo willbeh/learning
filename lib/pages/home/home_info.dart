@@ -5,6 +5,7 @@ import 'package:learning/models/series.service.dart';
 import 'package:learning/states/home_page_state.dart';
 import 'package:learning/states/video_state.dart';
 import 'package:learning/utils/app_const.dart';
+import 'package:learning/widgets/app_series_authors.dart';
 import 'package:learning/widgets/app_stream_builder.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
@@ -110,8 +111,8 @@ class MyWatchList extends StatelessWidget {
       return Container(
         width: MediaQuery.of(context).size.width,
         padding: const EdgeInsets.only(left: 20),
-        child: const Center(
-          child: Text('No series'),
+        child: Center(
+          child: Text('${AppTranslate.text(context, 'home_no_series')}'),
         ),
       );
     }
@@ -191,6 +192,7 @@ class MyWatchList extends StatelessWidget {
                       style: Theme.of(context).textTheme.display1.copyWith(fontWeight: FontWeight.w500),
                     ),
                   ),
+                  AppSeriesAuthors(seriesWatch.sdata.authors),
                   Text('someone', style: Theme.of(context).textTheme.display3.copyWith(color: Colors.grey),),
                 ],
               ),
@@ -299,7 +301,7 @@ class UpcomingSeries extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        Text('someone', style: Theme.of(context).textTheme.display3.copyWith(color: Colors.grey),),
+                        AppSeriesAuthors(s.authors)
                       ],
                     ),
                   ),

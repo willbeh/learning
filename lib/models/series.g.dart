@@ -16,13 +16,7 @@ Series _$SeriesFromJson(Map json) {
     image: json['image'] as String,
     thumb: json['thumb'] as String,
     status: json['status'] as String,
-    authors: (json['authors'] as List)
-        ?.map((e) => e == null
-            ? null
-            : Author.fromJson((e as Map)?.map(
-                (k, e) => MapEntry(k as String, e),
-              )))
-        ?.toList(),
+    authors: (json['authors'] as List)?.map((e) => e as String)?.toList(),
     hasTest: json['hasTest'] as bool,
     depend: json['depend'] as String,
     list: (json['list'] as List)?.map((e) => e as String)?.toList(),

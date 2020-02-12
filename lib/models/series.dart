@@ -1,6 +1,5 @@
 import 'package:firebase_service_generator/firebase_service.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:learning/models/author.dart';
 
 part 'series.g.dart';
 
@@ -19,7 +18,7 @@ class Series {
   String image;
   String thumb;
   String status;
-  List<Author> authors;
+  List<String> authors;
   bool hasTest;
   String depend;
   List<String> list;

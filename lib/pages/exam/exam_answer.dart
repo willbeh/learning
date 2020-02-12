@@ -9,6 +9,7 @@ import 'package:learning/utils/app_const.dart';
 import 'package:learning/utils/app_traslation_util.dart';
 import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/app_dotted_seperator.dart';
+import 'package:learning/widgets/app_series_authors.dart';
 import 'package:learning/widgets/common_ui.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
@@ -26,7 +27,7 @@ class ExamAnswer extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text('Someone', style: Theme.of(context).textTheme.display3.copyWith(color: Colors.grey),),
+            AppSeriesAuthors(videoState.selectedSeries.authors),
             CommonUI.heightPadding(height: 5),
             Text('${videoState.selectedSeries.name}', style: Theme.of(context).textTheme.headline,),
             CommonUI.heightPadding(),

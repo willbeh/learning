@@ -12,6 +12,7 @@ import 'package:learning/utils/app_traslation_util.dart';
 import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/app_button.dart';
 import 'package:learning/models/answer.service.dart';
+import 'package:learning/widgets/app_series_authors.dart';
 import 'package:learning/widgets/common_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:logger/logger.dart';
@@ -156,8 +157,7 @@ class _ExamQuestionsState extends State<ExamQuestions> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            // TODO get authors
-            Text('Someone', style: Theme.of(context).textTheme.display3.copyWith(color: Colors.grey),),
+            AppSeriesAuthors(videoState.selectedSeries.authors),
             CommonUI.heightPadding(height: 5),
             Text('${videoState.selectedSeries.name}', style: Theme.of(context).textTheme.headline,),
             CommonUI.heightPadding(),

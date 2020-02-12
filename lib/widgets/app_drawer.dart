@@ -30,8 +30,8 @@ class AppDrawer extends StatelessWidget {
                 AppAvatar(radius: 30),
                 CommonUI.heightPadding(),
                 if(user?.displayName != null)
-                  Text('${user?.displayName}', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-                Text('${user?.email}', style: TextStyle(color: Colors.white),),
+                  Text('${user?.displayName}', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                Text('${user?.email}', style: const TextStyle(color: Colors.white),),
               ],
             ),
           ),

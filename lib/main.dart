@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
 //        FutureProvider<RemoteConfig>(create: (_) => getRemoteConfig(), lazy: false,),
         FutureProvider<RemoteConfig>(create: (_) => appRemoteConfig.getRemoteConfig(), lazy: false,),
         ChangeNotifierProvider<AppState>(
-          create: (_) => AppState(lang: 'en', isLightTheme: true),
+          create: (_) => AppState(lang: 'en', isLightTheme: true, banners: [], profiles: []),
           lazy: false,
         ),
         ChangeNotifierProvider<VideoState>(
