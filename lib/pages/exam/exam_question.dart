@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:learning/app_color.dart';
@@ -362,6 +363,8 @@ class _ExamQuestionsState extends State<ExamQuestions> {
                 _answer.status = constCompleted;
                 _answer.correct = _checkAnswers();
                 _answer.min = _exam.min;// widget.video.min;
+                _answer.pass = _answer.correct >= _answer.min;
+                _answer.completed = DateTime.now();
                 answerFirebaseService.update(id: _answer.id, data: _answer.toJson());
 
                 // update series watch
@@ -373,6 +376,10 @@ class _ExamQuestionsState extends State<ExamQuestions> {
                   },
                 );
 
+                // call function to update result in series
+                _updateResult();
+
+                // close alert
                 Navigator.pop(context);
               },
             )
@@ -386,27 +393,25 @@ class _ExamQuestionsState extends State<ExamQuestions> {
     for(int i = 0; i<_exam.questions.length; i++){
       final Question question = _exam.questions[i];
       final UserAnswer answer = _answer.answers.firstWhere((a) => a.qid == question.code);
-      log.d('answer ${listEquals(answer.answer, question.answer)} - ${answer.answer} == ${question.answer}');
       if(listEquals(answer.answer, question.answer)){
         count = count + 1;
       }
     }
-
-    log.d('count $count');
-
-    // TODO update function
-
-//    final HttpsCallable callable = CloudFunctions(region: 'asia-northeast1').getHttpsCallable(
-//      functionName: 'updateResult',
-//    );
-//
-//    callable.call(<String, dynamic>{ 'vid': _answer.sid, 'min': 10, 'questions': _questions.map((q) => q.toJson()).toList(), 'answer': _answer.toJson() }
-//    ).then((res) {
-//      log.d('OK ${res.toString()}');
-//    }).catchError((error){
-//      log.w('updateResult error $error}');
-//    });
     return count;
+  }
+
+  // call function to update the series result
+  void _updateResult() {
+    final HttpsCallable callable = CloudFunctions(region: 'asia-northeast1').getHttpsCallable(
+      functionName: 'updateResult',
+    );
+
+    callable.call(<String, dynamic>{ 'sid': _answer.sid, 'min': _answer.min, 'correct': _answer.correct }
+    ).then((res) {
+      log.d('OK ${res.toString()}');
+    }).catchError((error){
+      log.w('updateResult error $error}');
+    });
   }
 
   void _moveDown(){

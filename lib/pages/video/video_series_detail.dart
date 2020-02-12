@@ -112,12 +112,14 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
     final double topHeight = maxExtent - shrinkOffset - _tabBar.preferredSize.height;
 
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.white,
-        boxShadow: [BoxShadow(
-          color: Colors.black,
-          blurRadius: 2.0,
-        ),]
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black,
+            blurRadius: 2.0,
+          ),
+        ]
       ),
 
       child: Column(

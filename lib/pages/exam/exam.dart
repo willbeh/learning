@@ -48,6 +48,7 @@ class ExamPage extends StatelessWidget {
                     uid: user.uid,
                     sid: videoState.selectedSeries.id,
                     status: '',
+                    date: DateTime.now(),
                     answers: []
                 );
                 answerFirebaseService.insert(data: tempAnswer.toJson());

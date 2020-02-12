@@ -8,7 +8,7 @@ part 'series.g.dart';
 @JsonSerializable(anyMap: true)
 class Series {
   Series({this.id, this.cid, this.cname, this.name, this.desc, this.image, this.thumb, this.status, this.authors, this.hasTest, this.depend, this.list,
-    this.order, this.watched, this.completed, this.header, this.subHeader, this.about,
+    this.order, this.watched, this.completed, this.header, this.subHeader, this.about, this.pass, this.fail,
   });
 
   String id;
@@ -29,6 +29,8 @@ class Series {
   String header;
   String subHeader;
   String about;
+  int pass;
+  int fail;
 
 
   factory Series.fromJson(Map<dynamic, dynamic> json) => _$SeriesFromJson(json);

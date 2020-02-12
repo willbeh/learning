@@ -35,7 +35,8 @@ class ExamAnswer extends StatelessWidget {
             Text('${AppTranslate.text(context, 'test_result_title')}', style: Theme.of(context).textTheme.headline,),
             Text('${AppTranslate.text(context, 'test_result_desc')}', style: Theme.of(context).textTheme.display3.copyWith(color: Colors.grey),),
             CommonUI.heightPadding(),
-            _buildScoreCard(context, exam, answer),
+            _buildResultRow(context, exam, answer),
+            CommonUI.heightPadding(height: 30),
             ExamAnswerSegment(),
           ],
         ),
@@ -43,75 +44,59 @@ class ExamAnswer extends StatelessWidget {
     );
   }
 
-  Widget _buildScoreCard(BuildContext context, Exam exam, Answer answer) {
+  Widget _buildResultRow(BuildContext context, Exam exam, Answer answer) {
     final double width = MediaQuery.of(context).size.width - 40;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Card(
-          elevation: 2,
-          child: Container(
-            width: width/2 - 10,
-            child: Column(
-              children: <Widget>[
-                Container(
-                  height: 35,
-                  child: Center(
-                    child: RichText(
-                      text: TextSpan(
-                        style: Theme.of(context).textTheme.display2,
-                        children: <TextSpan>[
-                          TextSpan(text: '${((answer.correct/answer.answers.length)*100).toInt()}', style: TextStyle(fontWeight: FontWeight.bold)),
-                          TextSpan(text: '/100', style: TextStyle(color: Colors.grey)),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  height: 35,
-                  width: double.infinity,
-                  color: Theme.of(context).primaryColor.withOpacity(0.3),
-                  child: Center(child: Text('${AppTranslate.text(context, 'test_result_score')}',
-                    style: Theme.of(context).textTheme.display2.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),)),
-                ),
-              ],
-            )
-          ),
+        _buildScoreCard(context,
+          width: width/2 - 10,
+          label: AppTranslate.text(context, 'test_result_score'),
+          score: ((answer.correct/answer.answers.length)*100).toInt(),
+          over: 100
         ),
-        Card(
-          elevation: 2,
-          child: Container(
+        _buildScoreCard(context,
             width: width/2 - 10,
-            child: Column(
-              children: <Widget>[
-                Container(
-                  height: 35,
-                  child: Center(
-                    child: RichText(
-                      text: TextSpan(
-                        style: Theme.of(context).textTheme.display2,
-                        children: <TextSpan>[
-                          TextSpan(text: '${answer.correct}', style: TextStyle(fontWeight: FontWeight.bold)),
-                          TextSpan(text: '/${answer.answers.length}', style: TextStyle(color: Colors.grey)),
-                        ],
-                      ),
+            label: '${AppTranslate.text(context, 'test_result_correct')}',
+            score: answer.correct,
+            over: answer.answers.length
+        ),
+      ],
+    );
+  }
+
+  Widget _buildScoreCard(BuildContext context, {double width, String label, int score, int over}) {
+    return Card(
+      elevation: 2,
+      child: Container(
+          width: width,
+          child: Column(
+            children: <Widget>[
+              Container(
+                height: 35,
+                child: Center(
+                  child: RichText(
+                    text: TextSpan(
+                      style: Theme.of(context).textTheme.display2,
+                      children: <TextSpan>[
+                        TextSpan(text: '$score', style: const TextStyle(fontWeight: FontWeight.bold)),
+                        TextSpan(text: '/$over', style: const TextStyle(color: Colors.grey)),
+                      ],
                     ),
                   ),
                 ),
-                Container(
-                  height: 35,
-                  width: double.infinity,
-                  color: Theme.of(context).primaryColor.withOpacity(0.3),
-                  child: Center(child: Text('${AppTranslate.text(context, 'test_result_correct')}',
-                    style: Theme.of(context).textTheme.display2.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),)),
-                ),
-              ],
-            ),
-          ),
-        )
-      ],
+              ),
+              Container(
+                height: 35,
+                width: double.infinity,
+                color: Theme.of(context).primaryColor.withOpacity(0.3),
+                child: Center(child: Text(label,
+                  style: Theme.of(context).textTheme.display2.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),)),
+              ),
+            ],
+          )
+      ),
     );
   }
 }
@@ -137,7 +122,6 @@ class _ExamAnswerSegmentState extends State<ExamAnswerSegment> {
     };
 
     _exam = _exam ?? Provider.of<Exam>(context);
-
     _answer = _answer ?? Provider.of<Answer>(context);
   }
 
@@ -147,9 +131,8 @@ class _ExamAnswerSegmentState extends State<ExamAnswerSegment> {
       width: MediaQuery.of(context).size.width,
       child: Column(
         children: <Widget>[
-          CommonUI.heightPadding(),
           _buildSegmentControl(context),
-          CommonUI.heightPadding(),
+          CommonUI.heightPadding(height: 30),
           _buildQuestionList(context),
         ],
       ),
@@ -183,21 +166,23 @@ class _ExamAnswerSegmentState extends State<ExamAnswerSegment> {
       physics: const NeverScrollableScrollPhysics(),
       itemCount: _exam.questions.length,
       separatorBuilder: (context, i) {
+        // only show incorrect
         if(_selected == '2') {
-          final UserAnswer userAnswer = _answer.answers.firstWhere((ans) => ans.qid == _exam.questions[i].code);
-          if (listEquals(userAnswer.answer, _exam.questions[i].answer)){
-            return Container();
-          }
+          return Container();
         }
+        // show all
         return CommonUI.heightPadding(height: 30);
       },
       itemBuilder: (context, i) {
+        // only show incorrect
         if(_selected == '2') {
           final UserAnswer userAnswer = _answer.answers.firstWhere((ans) => ans.qid == _exam.questions[i].code);
+          // return empty if correct answer
           if (listEquals(userAnswer.answer, _exam.questions[i].answer)){
             return Container();
           }
         }
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[

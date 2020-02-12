@@ -34,6 +34,9 @@ Answer _$AnswerFromJson(Map json) {
     status: json['status'] as String,
     correct: json['correct'] as int,
     min: json['min'] as int,
+    pass: json['pass'] as bool,
+    date: DateTimeUtil.fromTimestamp(json['date']),
+    completed: DateTimeUtil.fromTimestamp(json['completed']),
   );
 }
 
@@ -45,4 +48,7 @@ Map<String, dynamic> _$AnswerToJson(Answer instance) => <String, dynamic>{
       'status': instance.status,
       'correct': instance.correct,
       'min': instance.min,
+      'pass': instance.pass,
+      'date': DateTimeUtil.toTimestamp(instance.date),
+      'completed': DateTimeUtil.toTimestamp(instance.completed),
     };

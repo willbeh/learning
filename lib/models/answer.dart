@@ -1,5 +1,6 @@
 import 'package:firebase_service_generator/firebase_service.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:learning/utils/datetime_util.dart';
 
 part 'answer.g.dart';
 
@@ -22,7 +23,8 @@ class UserAnswer {
 @FirebaseService(name: 'answer', col: 'answers')
 @JsonSerializable(anyMap: true)
 class Answer {
-  Answer({this.id, this.uid, this.sid, List<UserAnswer> answers, this.status, this.correct, this.min}) : answers = answers ?? <UserAnswer>[];
+  Answer({this.id, this.uid, this.sid, List<UserAnswer> answers, this.status, this.correct, this.min, this.pass,
+  this.date, this.completed}) : answers = answers ?? <UserAnswer>[];
 
   String id;
   String uid;
@@ -32,6 +34,11 @@ class Answer {
   String status;
   int correct;
   int min;
+  bool pass;
+  @JsonKey(fromJson: DateTimeUtil.fromTimestamp, toJson: DateTimeUtil.toTimestamp)
+  DateTime date;
+  @JsonKey(fromJson: DateTimeUtil.fromTimestamp, toJson: DateTimeUtil.toTimestamp)
+  DateTime completed;
 
 
   factory Answer.fromJson(Map<String, dynamic> json) => _$AnswerFromJson(json);

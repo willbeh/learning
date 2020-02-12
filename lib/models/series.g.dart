@@ -32,6 +32,8 @@ Series _$SeriesFromJson(Map json) {
     header: json['header'] as String,
     subHeader: json['subHeader'] as String,
     about: json['about'] as String,
+    pass: json['pass'] as int,
+    fail: json['fail'] as int,
   );
 }
 
@@ -54,4 +56,6 @@ Map<String, dynamic> _$SeriesToJson(Series instance) => <String, dynamic>{
       'header': instance.header,
       'subHeader': instance.subHeader,
       'about': instance.about,
+      'pass': instance.pass,
+      'fail': instance.fail,
     };
