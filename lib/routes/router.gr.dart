@@ -16,6 +16,7 @@ import 'package:learning/pages/profile/profile.dart';
 import 'package:learning/pages/profile/my_videos.dart';
 import 'package:learning/pages/video/video_series_player.dart';
 import 'package:learning/pages/profile/edit_profile.dart';
+import 'package:learning/pages/temp/temp_videos.dart';
 
 class AppRouter {
   static const homePage = '/homePage';
@@ -27,6 +28,7 @@ class AppRouter {
   static const myVideosPage = '/myVideosPage';
   static const videoSeriesPlayerPage = '/videoSeriesPlayerPage';
   static const editProfilePage = '/editProfilePage';
+  static const tempVideos = '/tempVideos';
   static GlobalKey<NavigatorState> get navigatorKey =>
       getNavigatorKey<AppRouter>();
   static NavigatorState get navigator => navigatorKey.currentState;
@@ -77,6 +79,11 @@ class AppRouter {
       case AppRouter.editProfilePage:
         return MaterialPageRoute(
           builder: (_) => EditProfilePage(),
+          settings: settings,
+        );
+      case AppRouter.tempVideos:
+        return MaterialPageRoute(
+          builder: (_) => TempVideos(),
           settings: settings,
         );
       default:

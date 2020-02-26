@@ -7,6 +7,7 @@ import 'package:learning/pages/profile/profile.dart';
 import 'package:learning/pages/session/forget.dart';
 import 'package:learning/pages/session/login.dart';
 import 'package:learning/pages/splash.dart';
+import 'package:learning/pages/temp/temp_videos.dart';
 import 'package:learning/pages/video/video_series_player.dart';
 
 @autoRouter
@@ -21,6 +22,7 @@ class $AppRouter {
   MyVideosPage myVideosPage;
   VideoSeriesPlayerPage videoSeriesPlayerPage;
   EditProfilePage editProfilePage;
+  TempVideos tempVideos;
 }
 
 /// run - flutter pub run build_runner build

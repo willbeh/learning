@@ -164,7 +164,7 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
       ..addListener(_logInfo);
   }
 
-  void _setOrientation(Orientation orientation) {
+  Function _setOrientation(Orientation orientation) {
     if (orientation == Orientation.portrait) {
       SystemChrome.setPreferredOrientations([
         DeviceOrientation.landscapeLeft,
@@ -179,6 +179,7 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
       SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
       _orientation = Orientation.portrait;
     }
+    return null;
   }
 
   Widget _buildPage(BuildContext context, Orientation orientation){
@@ -236,13 +237,14 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
               _controller,
               width: width,
               height: height,
-              playVideo: () => _playVideo(),
-              changeOrientation: () => _setOrientation(orientation),
+              playVideo: _playVideo,
+              changeOrientation: _setOrientation,
               isCompleted: _isCompleted,
               cancelTimer: () => _cancelTimer(),
               restartTimer: () => _restartTimer(),
               isHide: _hideStuff,
               orientation: orientation,
+              seekVideo: _seekVideo,
               replayVideo: () => _seekVideo(second: -10, forward: false),
               forwardVideo: () => _seekVideo(second: 10, forward: true),
             ),
@@ -349,7 +351,7 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
     });
   }
 
-  void _playVideo() {
+  Function _playVideo() {
     if (_controller.value.isPlaying) {
       Wakelock.disable();
       _controller.pause();
@@ -361,9 +363,10 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
       _startHideTimer();
     }
     setState(() {});
+    return null;
   }
 
-  void _seekVideo({int second = -10, bool forward = false}){
+  Function _seekVideo({int second = -10, bool forward = false}){
     int newPosition = _controller.value.position.inSeconds + second;
     if(forward && newPosition > _controller.value.duration.inSeconds){
       newPosition = _controller.value.duration.inSeconds;
@@ -377,6 +380,7 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
     _controller.seekTo(Duration(seconds: newPosition));
 
     if(isPlaying) _controller.play();
+    return null;
   }
 
   void _updateWatchDocument(Map<String, dynamic> data) {

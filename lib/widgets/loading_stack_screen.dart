@@ -24,7 +24,7 @@ class LoadingStackScreen extends StatelessWidget {
               children: <Widget>[
                 const CircularProgressIndicator(),
                 if (text != null) Text(text,
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                 ) else Container(),
               ],
             ),

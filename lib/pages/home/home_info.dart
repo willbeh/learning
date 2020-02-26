@@ -280,7 +280,7 @@ class UpcomingSeries extends StatelessWidget {
                       height: 30,
                       width: 30,
                       margin: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                           color: Colors.white
                       ),

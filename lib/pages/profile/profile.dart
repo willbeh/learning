@@ -44,6 +44,7 @@ class ProfilePage extends StatelessWidget {
             Container(
               color: Colors.white,
               child: ListTile(
+                onTap: () => AppRouter.navigator.pushNamed(AppRouter.tempVideos),
                 title: Text('${AppTranslate.text(context, 'account_about')}'),
                 trailing: Icon(Icons.navigate_next),
               ),

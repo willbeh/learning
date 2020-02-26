@@ -18,6 +18,7 @@ class AppVideoControl extends StatefulWidget {
   final Orientation orientation;
   final Function replayVideo;
   final Function forwardVideo;
+  final Function seekVideo;
 
   const AppVideoControl(this.controller,
       {this.width,
@@ -31,6 +32,7 @@ class AppVideoControl extends StatefulWidget {
         this.orientation,
         this.replayVideo,
         this.forwardVideo,
+        this.seekVideo,
       });
 
   @override
@@ -75,7 +77,7 @@ class _AppVideoControlState extends State<AppVideoControl> {
                         size: 50,
                         color: Colors.white,
                       ),
-                      onPressed: () => widget.replayVideo,
+                      onPressed: () => widget.seekVideo(second: -10, forward: false),
                     ),
                     IconButton(
                       icon: Icon(
@@ -85,7 +87,7 @@ class _AppVideoControlState extends State<AppVideoControl> {
                         size: 50,
                         color: Colors.white,
                       ),
-                      onPressed: () => widget.playVideo,
+                      onPressed: () => widget.playVideo(),
                     ),
                     IconButton(
                       icon: Icon(
@@ -93,7 +95,7 @@ class _AppVideoControlState extends State<AppVideoControl> {
                         size: 50,
                         color: Colors.white,
                       ),
-                      onPressed: () => widget.forwardVideo,
+                      onPressed: () => widget.seekVideo(second: 10, forward: true),
                     ),
                   ],
                 ),
@@ -141,7 +143,7 @@ class _AppVideoControlState extends State<AppVideoControl> {
                                   : Icons.fullscreen_exit,
                               color: Colors.white,
                             ),
-                            onPressed: () => widget.changeOrientation,
+                            onPressed: () => widget.changeOrientation(widget.orientation),
                           ),
                         ],
                       ),
