@@ -152,6 +152,7 @@ class _ExamQuestionsState extends State<ExamQuestions> {
     final VideoState videoState = Provider.of<VideoState>(context);
 
     return SingleChildScrollView(
+      key: UniqueKey(),
       child: Container(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -186,6 +187,7 @@ class _ExamQuestionsState extends State<ExamQuestions> {
 
   Widget _buildSingleQuestion(BuildContext context, Question question) {
     return SingleChildScrollView(
+      key: UniqueKey(),
       child: Container(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -196,6 +198,7 @@ class _ExamQuestionsState extends State<ExamQuestions> {
             Card(
               elevation: 2,
               child: ListView.separated(
+                key: UniqueKey(),
                 shrinkWrap: true,
                 itemCount: question.options.length,
                 separatorBuilder: (context, i) => const Divider(color: Colors.grey,),
@@ -221,6 +224,7 @@ class _ExamQuestionsState extends State<ExamQuestions> {
 
   Widget _buildMultiQuestion(BuildContext context, Question question) {
     return SingleChildScrollView(
+      key: UniqueKey(),
       child: Container(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -231,6 +235,7 @@ class _ExamQuestionsState extends State<ExamQuestions> {
             Card(
               elevation: 2,
               child: ListView.separated(
+                key: UniqueKey(),
                 shrinkWrap: true,
                 itemCount: question.options.length,
                 separatorBuilder: (context, i) => const Divider(color: Colors.grey,),

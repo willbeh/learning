@@ -22,6 +22,7 @@ class ExamAnswer extends StatelessWidget {
     final Answer answer = Provider.of<Answer>(context);
 
     return SingleChildScrollView(
+      key: UniqueKey(),
       child: Container(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -163,6 +164,7 @@ class _ExamAnswerSegmentState extends State<ExamAnswerSegment> {
 
   Widget _buildQuestionList(BuildContext context) {
     return ListView.separated(
+      key: UniqueKey(),
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: _exam.questions.length,
@@ -200,6 +202,7 @@ class _ExamAnswerSegmentState extends State<ExamAnswerSegment> {
     return Card(
       elevation: 2,
       child: ListView.separated(
+        key: UniqueKey(),
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: _exam.questions[i].options.length,

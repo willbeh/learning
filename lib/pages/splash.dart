@@ -85,6 +85,7 @@ class _SplashPageState extends State<SplashPage> {
           );
         },
         child: Container(
+          key: UniqueKey(),
           decoration: BoxDecoration(
             color: Theme.of(context).accentColor,
           ),

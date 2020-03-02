@@ -1,12 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:learning/models/series.dart';
-import 'package:learning/models/series.service.dart';
+import 'package:learning/pages/home/upcoming_series.dart';
 import 'package:learning/states/home_page_state.dart';
 import 'package:learning/states/video_state.dart';
 import 'package:learning/utils/app_const.dart';
 import 'package:learning/widgets/app_series_authors.dart';
-import 'package:learning/widgets/app_stream_builder.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
@@ -24,6 +22,7 @@ class HomeInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      key: UniqueKey(),
       physics: const ClampingScrollPhysics(),
       child: Column(
         children: <Widget>[
@@ -193,7 +192,6 @@ class MyWatchList extends StatelessWidget {
                     ),
                   ),
                   AppSeriesAuthors(seriesWatch.sdata.authors),
-                  Text('someone', style: Theme.of(context).textTheme.display3.copyWith(color: Colors.grey),),
                 ],
               ),
             )
@@ -232,84 +230,6 @@ class MyWatchList extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class UpcomingSeries extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final List<SeriesWatch> seriesWatchs = Provider.of(context);
-
-    if(seriesWatchs != null && seriesWatchs.isNotEmpty){
-      return AppStreamBuilder(
-        stream: seriesFirebaseService.find(
-          limit: Provider.of<RemoteConfig>(context).getInt('home_upcoming'),
-          query: seriesFirebaseService.colRef.where('order', isGreaterThan: seriesWatchs[0].sdata.order),
-        ),
-        fn: _buildPage,
-      );
-    } else {
-      return Container();
-    }
-  }
-
-  Widget _buildPage(BuildContext context, List<Series> series){
-    return ListView.separated(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: series.length,
-      separatorBuilder: (context, i) => CommonUI.heightPadding(),
-      itemBuilder: (context, i) {
-        final Series s = series[i];
-        return AppContainerCard(
-            width: MediaQuery.of(context).size.width,
-            height: 120,
-            child: Row(
-              children: <Widget>[
-                Stack(
-                  children: <Widget>[
-                    CachedNetworkImage(
-                      imageUrl: s.thumb,
-                      width: 120,
-                      height: 120,
-                      fit: BoxFit.cover,
-                    ),
-                    Container(
-                      alignment: Alignment.topLeft,
-                      height: 30,
-                      width: 30,
-                      margin: const EdgeInsets.all(8),
-                      decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white
-                      ),
-                      child: Center(child: Icon(Icons.lock, size: 18,)),
-                    )
-                  ],
-                ),
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.all(15),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Expanded(
-                          child: Text(s.name,
-                            style: Theme.of(context).textTheme.display1.copyWith(fontWeight: FontWeight.w500),
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        AppSeriesAuthors(s.authors)
-                      ],
-                    ),
-                  ),
-                )
-              ],
-            )
-        );
-      },
     );
   }
 }

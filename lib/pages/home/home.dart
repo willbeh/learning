@@ -5,9 +5,38 @@ import 'package:learning/pages/profile/my_courses.dart';
 import 'package:learning/pages/profile/profile.dart';
 import 'package:learning/states/home_page_state.dart';
 import 'package:learning/utils/app_traslation_util.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
+  int _selectedIndex;
+
+  AnimationController _controller1;
+  AnimationController _controller2;
+  AnimationController _controller3;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = 0;
+    _controller1 = AnimationController(vsync: this);
+    _controller2 = AnimationController(vsync: this);
+    _controller3 = AnimationController(vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _controller1.dispose();
+    _controller2.dispose();
+    _controller3.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<Widget> _widgetOptions = <Widget>[
@@ -24,16 +53,19 @@ class HomePage extends StatelessWidget {
             body: SafeArea(
               child: Stack(
                 children: <Widget>[
-                  _widgetOptions.elementAt(homePageState.selectedIndex),
-                  if(homePageState.selectedIndex != 2)
+                  _widgetOptions.elementAt(_selectedIndex),
+                  if(_selectedIndex != 2)
                     child,
+//                  _widgetOptions.elementAt(homePageState.selectedIndex),
+//                  if(homePageState.selectedIndex != 2)
+//                    child,
                 ],
               ),
             ),
             bottomNavigationBar: BottomNavigationBar(
               items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
+                  icon: Lottie.asset('assets/lottie/home.json', height: 40, width: 40, controller: _controller1),
                   title: Text('${AppTranslate.text(context, 'bottom_home')}'),
                 ),
                 BottomNavigationBarItem(
@@ -45,12 +77,15 @@ class HomePage extends StatelessWidget {
                   title: Text('${AppTranslate.text(context, 'bottom_account')}'),
                 ),
               ],
-              currentIndex: homePageState.selectedIndex,
+              currentIndex: _selectedIndex, // homePageState.selectedIndex,
               selectedItemColor: Theme.of(context).primaryColor,
               selectedFontSize: 12,
               unselectedFontSize: 12,
               onTap: (i) {
-                homePageState.selectedIndex = i;
+                setState(() {
+                  _selectedIndex = i;
+                });
+//                homePageState.selectedIndex = i;
               },
             ),
           );

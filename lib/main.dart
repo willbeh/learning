@@ -74,6 +74,9 @@ class _MyAppLoadState extends State<MyAppLoad> {
   String _currentLang;
 
   void onLocaleChange(Locale locale){
+    if(locale.languageCode == null) {
+      return;
+    }
     setState((){
       _currentLang = locale.languageCode;
       _localeOverrideDelegate = SpecificLocalizationDelegate(locale);
@@ -97,6 +100,7 @@ class _MyAppLoadState extends State<MyAppLoad> {
   void initState() {
     super.initState();
     _localeOverrideDelegate = const SpecificLocalizationDelegate(null);
+//    _navigatorKey = AppRouter.navigatorKey;
   }
 
   @override
@@ -167,7 +171,7 @@ class _MyAppLoadState extends State<MyAppLoad> {
           for (final supportedLocale in supportedLocales) {
 //            if (supportedLocale.languageCode == locale.languageCode &&
 //                supportedLocale.countryCode == locale.countryCode) {
-            if (supportedLocale.languageCode == locale.languageCode) {
+            if (supportedLocale.languageCode == locale?.languageCode) {
               _currentLang = locale.languageCode;
               appState.initLang(_currentLang);
               return supportedLocale;
