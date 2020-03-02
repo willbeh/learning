@@ -1,17 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:learning/pages/home/upcoming_series.dart';
-import 'package:learning/states/home_page_state.dart';
 import 'package:learning/states/video_state.dart';
 import 'package:learning/utils/app_const.dart';
 import 'package:learning/widgets/app_series_authors.dart';
-import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:learning/models/series_watch.dart';
 import 'package:learning/routes/router.gr.dart';
 import 'package:learning/utils/app_traslation_util.dart';
-import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/app_carousel.dart';
 import 'package:learning/widgets/app_container.dart';
 import 'package:learning/widgets/app_loading_container.dart';
@@ -19,6 +16,10 @@ import 'package:learning/widgets/common_ui.dart';
 
 
 class HomeInfo extends StatelessWidget {
+  final Function navigateTo;
+
+  const HomeInfo(this.navigateTo);
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -38,7 +39,7 @@ class HomeInfo extends StatelessWidget {
                   children: <Widget>[
                     Text('${AppTranslate.text(context, 'home_title')}', style: Theme.of(context).textTheme.headline,),
                     InkWell(
-                      onTap: () => Provider.of<HomePageState>(context, listen: false).selectedIndex = 1,
+                      onTap: () => navigateTo(1),
                       child: Text('${AppTranslate.text(context, 'home_all')}', style: Theme.of(context).textTheme.display2.copyWith(color: Theme.of(context).primaryColor),),
                     )
                   ],
@@ -51,7 +52,7 @@ class HomeInfo extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(vertical: 5),
             height: 270,
-            child: MyWatchList(),
+            child: MyWatchList(navigateTo),
           ),
           Container(
             width: MediaQuery.of(context).size.width,
@@ -74,7 +75,9 @@ class HomeInfo extends StatelessWidget {
 }
 
 class MyWatchList extends StatelessWidget {
-  final Logger log = getLogger('MyWatchList');
+  final Function navigateTo;
+
+  const MyWatchList(this.navigateTo);
 
   @override
   Widget build(BuildContext context) {
@@ -207,7 +210,7 @@ class MyWatchList extends StatelessWidget {
       width: 226,
       margin: const EdgeInsets.only(left:20, top: 5, bottom: 5, right: 20),
       child: InkWell(
-        onTap: () => Provider.of<HomePageState>(context, listen: false).selectedIndex = 1,
+        onTap: () => navigateTo(1),
         child: Container(
           padding: const EdgeInsets.all(15),
           child: Center(

@@ -71,8 +71,7 @@ class _UpcomingSeriesCardState extends State<UpcomingSeriesCard> with SingleTick
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        _controller.value = 0;
-        _controller.forward();
+        _controller.forward(from: 0);
       },
       child: AppContainerCard(
           width: MediaQuery.of(context).size.width,
@@ -97,13 +96,13 @@ class _UpcomingSeriesCardState extends State<UpcomingSeriesCard> with SingleTick
                         color: Colors.white
                     ),
                     child: Lottie.asset(
-                      'assets/lottie/locked_v2.json',
+                      'assets/lottie/locked_v3.json',
                       controller: _controller,
                       onLoaded: (composition) {
                         // Configure the AnimationController with the duration of the
                         // Lottie file and start the animation.
-                        _controller
-                            .duration = composition.duration;
+                        print('dur ${composition.duration}');
+                        _controller.duration = composition.duration;
                       },
                     ),
                   )
