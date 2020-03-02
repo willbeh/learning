@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:learning/models/video.dart';
-import 'package:learning/utils/logger.dart';
 import 'package:learning/widgets/app_stream_builder.dart';
 import 'package:learning/models/video.service.dart';
 
 class TempVideos extends StatelessWidget {
-  final log = getLogger('TempVideos');
 
   @override
   Widget build(BuildContext context) {
@@ -719,9 +717,7 @@ class TempVideos extends StatelessWidget {
                 }
               }
             }).then((val) {
-              log.d('updated');
             }).catchError((error) {
-              log.e('error updating $error');
             })
           },
           title: Text(video.vid),

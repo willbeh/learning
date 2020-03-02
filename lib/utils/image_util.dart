@@ -31,7 +31,7 @@ class ImageUtil {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text('Close', style: TextStyle(color: Colors.white),),
+                child: const Text('Close', style: TextStyle(color: Colors.white),),
               ),
             ],
           );

@@ -69,7 +69,7 @@ final ThemeData lightTheme = ThemeData(
       brightness: Brightness.light,
     ),
   ),
-  appBarTheme: AppBarTheme(
+  appBarTheme: const AppBarTheme(
       color: Colors.white,
       brightness: Brightness.light,
       elevation: 0,
@@ -78,7 +78,7 @@ final ThemeData lightTheme = ThemeData(
       ),
       textTheme: TextTheme(
           title: TextStyle(
-            color: const Color(0xdd000000),
+            color: Color(0xdd000000),
             fontSize: 18,
             fontWeight: FontWeight.w500,
             fontStyle: FontStyle.normal,

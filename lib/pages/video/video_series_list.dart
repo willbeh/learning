@@ -126,7 +126,7 @@ class VideoSeriesListTile extends StatelessWidget {
       return Container(
         width: 35,
         alignment: Alignment.centerLeft,
-        child: Icon(Icons.check, color: Colors.grey,),
+        child: const Icon(Icons.check, color: Colors.grey,),
       );
     } else {
       return Container(

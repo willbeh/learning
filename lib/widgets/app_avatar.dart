@@ -88,9 +88,9 @@ class AppAvatar extends StatelessWidget {
               ),
               const Divider(),
               ListTile(
-                leading: Icon(Icons.camera_alt),
+                leading: const Icon(Icons.camera_alt),
                 title: Text('${AppTranslate.text(context, 'camera')}'),
-                trailing: Icon(Icons.navigate_next),
+                trailing: const Icon(Icons.navigate_next),
                 onTap: () {
 //                  Navigator.pop(context);
                   return _getImage(context).then((_) {
@@ -100,9 +100,9 @@ class AppAvatar extends StatelessWidget {
               ),
               const Divider(),
               ListTile(
-                leading: Icon(Icons.image),
+                leading: const Icon(Icons.image),
                 title: Text('${AppTranslate.text(context, 'gallery')}'),
-                trailing: Icon(Icons.navigate_next),
+                trailing: const Icon(Icons.navigate_next),
                 onTap: () {
 //                  Navigator.pop(context);
                   _getImage(context, source: ImageSource.gallery).then((_) {

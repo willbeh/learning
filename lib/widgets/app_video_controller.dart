@@ -72,7 +72,7 @@ class _AppVideoControlState extends State<AppVideoControl> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     IconButton(
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.replay_10,
                         size: 50,
                         color: Colors.white,
@@ -155,8 +155,8 @@ class _AppVideoControlState extends State<AppVideoControl> {
             if (widget.isCompleted)
               Align(
                 alignment: Alignment.topRight,
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
+                child: const Padding(
+                  padding: EdgeInsets.all(10),
                   child: Text(
                     'Completed',
                     style: TextStyle(color: Colors.white),

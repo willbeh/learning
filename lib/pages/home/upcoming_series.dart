@@ -99,9 +99,6 @@ class _UpcomingSeriesCardState extends State<UpcomingSeriesCard> with SingleTick
                       'assets/lottie/locked_v3.json',
                       controller: _controller,
                       onLoaded: (composition) {
-                        // Configure the AnimationController with the duration of the
-                        // Lottie file and start the animation.
-                        print('dur ${composition.duration}');
                         _controller.duration = composition.duration;
                       },
                     ),
