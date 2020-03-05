@@ -12,7 +12,9 @@ class Profile {
   String name;
   String email;
   String phone;
+  @JsonKey(name: 'photo_path')
   String photo;
+  @JsonKey(name: 'photo_url')
   String photoUrl;
   String token;
   bool setup;

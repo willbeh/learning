@@ -37,15 +37,20 @@ class AppAvatar extends StatelessWidget {
     }
 
 
-    return (photoUrl != null && photoUrl != '')
-        ? InkWell(
+    if (photoUrl != null && photoUrl != '') {
+      return InkWell(
           onTap: () => _viewImage(context, photoUrl),
           child: ImageUtil.showCircularImage(radius, photoUrl),
-        )
-        : CircleAvatar( //Icon(Icons.person, size: 32,),
-      radius: radius,
-      child: Text('$photoText', style: TextStyle(fontSize: fontSize),),
-    );
+        );
+    } else {
+      return InkWell(
+        onTap: () => _changeImage(context),
+        child: CircleAvatar( //Icon(Icons.person, size: 32,),
+          radius: radius,
+          child: Text('$photoText', style: TextStyle(fontSize: fontSize),),
+        ),
+      );
+    }
   }
 
   void _viewImage(BuildContext context, String photoUrl) {
@@ -58,7 +63,10 @@ class AppAvatar extends StatelessWidget {
       ),
       actions: [
         FlatButton(
-          onPressed: () => _changeImage(context),
+          onPressed: () {
+            Navigator.pop(context);
+            _changeImage(context);
+          },
           child: Text('${AppTranslate.text(context, 'change')}'),
         ),
         AppButton.roundedButton(context,
@@ -73,7 +81,6 @@ class AppAvatar extends StatelessWidget {
   }
 
   void _changeImage(BuildContext context) {
-    Navigator.pop(context);
     showBottomSheet(
         context: context,
         builder: (context) => Container(
