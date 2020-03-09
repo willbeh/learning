@@ -33,10 +33,10 @@ class TempVideos extends StatelessWidget {
                 "description": null,
                 "type": "video",
                 "link": "https://vimeo.com/396364131/dd374c2b36",
-                "duration": 0,
-                "width": 400,
+                "duration": 31,
+                "width": 1920,
                 "language": null,
-                "height": 300,
+                "height": 1080,
                 "embed": {
                   "buttons": {
                     "like": true,
@@ -65,7 +65,7 @@ class TempVideos extends StatelessWidget {
                   "speed": false,
                   "color": "00adef",
                   "uri": null,
-                  "html": "<iframe src=\"https://player.vimeo.com/video/396364131?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=166420\" width=\"400\" height=\"300\" frameborder=\"0\" allow=\"autoplay; fullscreen\" allowfullscreen title=\"Sales Team\"></iframe>",
+                  "html": "<iframe src=\"https://player.vimeo.com/video/396364131?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=166420\" width=\"1920\" height=\"1080\" frameborder=\"0\" allow=\"autoplay; fullscreen\" allowfullscreen title=\"Sales Team\"></iframe>",
                   "badges": {
                     "hdr": false,
                     "live": {
@@ -83,7 +83,7 @@ class TempVideos extends StatelessWidget {
                   }
                 },
                 "created_time": "2020-03-09T03:03:12+00:00",
-                "modified_time": "2020-03-09T03:03:41+00:00",
+                "modified_time": "2020-03-09T03:17:04+00:00",
                 "release_time": "2020-03-09T03:03:12+00:00",
                 "content_rating": [
                   "unrated"
@@ -490,27 +490,152 @@ class TempVideos extends StatelessWidget {
                   "link": "https://vimeo.com/user109008672/review/396364131/93ad877cb5"
                 },
                 "parent_folder": null,
-                "last_user_action_event_date": "2020-03-09T03:03:24+00:00",
-                "files": [],
+                "last_user_action_event_date": "2020-03-09T03:17:04+00:00",
+                "files": [
+                  {
+                    "quality": "hd",
+                    "type": "video/mp4",
+                    "width": 1280,
+                    "height": 720,
+                    "link": "https://player.vimeo.com/external/396364131.hd.mp4?s=87bccbf6c4476f4adc8b7c6ab9c53ef2c53fad73&profile_id=174&oauth2_token_id=1304026954",
+                    "created_time": "2020-03-09T03:04:04+00:00",
+                    "fps": 23.980000000000000426325641456060111522674560546875,
+                    "size": 8205304,
+                    "md5": "c442e692f86788ab1691f4e890ab108b"
+                  },
+                  {
+                    "quality": "hd",
+                    "type": "video/mp4",
+                    "width": 1920,
+                    "height": 1080,
+                    "link": "https://player.vimeo.com/external/396364131.hd.mp4?s=87bccbf6c4476f4adc8b7c6ab9c53ef2c53fad73&profile_id=175&oauth2_token_id=1304026954",
+                    "created_time": "2020-03-09T03:04:04+00:00",
+                    "fps": 23.980000000000000426325641456060111522674560546875,
+                    "size": 14290081,
+                    "md5": "9a8a0da97ecd84e7c8cc4a9d8fb92d72"
+                  },
+                  {
+                    "quality": "sd",
+                    "type": "video/mp4",
+                    "width": 960,
+                    "height": 540,
+                    "link": "https://player.vimeo.com/external/396364131.sd.mp4?s=003de9600839ad14657a4ef2cad12da18140e5fd&profile_id=165&oauth2_token_id=1304026954",
+                    "created_time": "2020-03-09T03:04:04+00:00",
+                    "fps": 23.980000000000000426325641456060111522674560546875,
+                    "size": 5102471,
+                    "md5": "5b870afcd8af429bfe4c554887a96b31"
+                  },
+                  {
+                    "quality": "sd",
+                    "type": "video/mp4",
+                    "width": 640,
+                    "height": 360,
+                    "link": "https://player.vimeo.com/external/396364131.sd.mp4?s=003de9600839ad14657a4ef2cad12da18140e5fd&profile_id=164&oauth2_token_id=1304026954",
+                    "created_time": "2020-03-09T03:03:44+00:00",
+                    "fps": 23.980000000000000426325641456060111522674560546875,
+                    "size": 2012504,
+                    "md5": "b722ab98c343e039e6063f8b2cd5c69b"
+                  },
+                  {
+                    "quality": "sd",
+                    "type": "video/mp4",
+                    "width": 426,
+                    "height": 240,
+                    "link": "https://player.vimeo.com/external/396364131.sd.mp4?s=003de9600839ad14657a4ef2cad12da18140e5fd&profile_id=139&oauth2_token_id=1304026954",
+                    "created_time": "2020-03-09T03:03:44+00:00",
+                    "fps": 23.980000000000000426325641456060111522674560546875,
+                    "size": 1252849,
+                    "md5": "06c9c9cf1f53896ffc82c064773e2698"
+                  },
+                  {
+                    "quality": "hls",
+                    "type": "video/mp4",
+                    "link": "https://player.vimeo.com/external/396364131.m3u8?s=ff994a4b7b1bd5dcb8ba84d3248f88e8b881243c&oauth2_token_id=1304026954",
+                    "created_time": "2020-03-09T03:04:04+00:00",
+                    "fps": 23.980000000000000426325641456060111522674560546875,
+                    "size": 8205304,
+                    "md5": "c442e692f86788ab1691f4e890ab108b"
+                  }
+                ],
                 "download": [
                   {
                     "quality": "source",
                     "type": "source",
                     "width": 1920,
                     "height": 1080,
-                    "expires": "2020-03-09T06:03:50+00:00",
-                    "link": "https://player.vimeo.com/play/1685778706?s=396364131_1583766230_a2e7779a46a16a0592a21ea39df1af6e&loc=external&context=Vimeo%5CController%5CApi%5CResources%5CVideoController.&download=1&filename=Sales%2BTeamsource.mp4",
+                    "expires": "2020-03-09T07:04:24+00:00",
+                    "link": "https://player.vimeo.com/play/1685778706?s=396364131_1583769864_236273b8050a6658358a2a9a35506f69&loc=external&context=Vimeo%5CController%5CApi%5CResources%5CVideoController.&download=1&filename=Sales%2BTeamsource.mp4",
                     "created_time": "2020-03-09T03:03:24+00:00",
                     "fps": 23.980000000000000426325641456060111522674560546875,
                     "size": 14868351,
                     "md5": "054266cff6c0b1acefe56c15deaccb51"
+                  },
+                  {
+                    "quality": "hd",
+                    "type": "video/mp4",
+                    "width": 1280,
+                    "height": 720,
+                    "expires": "2020-03-09T07:04:24+00:00",
+                    "link": "https://player.vimeo.com/play/1685779137?s=396364131_1583769864_1e35de95293dcb2db4f283f053ed75a8&loc=external&context=Vimeo%5CController%5CApi%5CResources%5CVideoController.&download=1&filename=Sales%2BTeam174.mp4",
+                    "created_time": "2020-03-09T03:04:04+00:00",
+                    "fps": 23.980000000000000426325641456060111522674560546875,
+                    "size": 8205304,
+                    "md5": "c442e692f86788ab1691f4e890ab108b"
+                  },
+                  {
+                    "quality": "hd",
+                    "type": "video/mp4",
+                    "width": 1920,
+                    "height": 1080,
+                    "expires": "2020-03-09T07:04:24+00:00",
+                    "link": "https://player.vimeo.com/play/1685779133?s=396364131_1583769864_6099d2bd0c833f759fe1e79e5d4a8b12&loc=external&context=Vimeo%5CController%5CApi%5CResources%5CVideoController.&download=1&filename=Sales%2BTeam175.mp4",
+                    "created_time": "2020-03-09T03:04:04+00:00",
+                    "fps": 23.980000000000000426325641456060111522674560546875,
+                    "size": 14290081,
+                    "md5": "9a8a0da97ecd84e7c8cc4a9d8fb92d72"
+                  },
+                  {
+                    "quality": "sd",
+                    "type": "video/mp4",
+                    "width": 960,
+                    "height": 540,
+                    "expires": "2020-03-09T07:04:24+00:00",
+                    "link": "https://player.vimeo.com/play/1685779132?s=396364131_1583769864_23c4af83c576fe1ec19084f5e4c9f48f&loc=external&context=Vimeo%5CController%5CApi%5CResources%5CVideoController.&download=1&filename=Sales%2BTeam165.mp4",
+                    "created_time": "2020-03-09T03:04:04+00:00",
+                    "fps": 23.980000000000000426325641456060111522674560546875,
+                    "size": 5102471,
+                    "md5": "5b870afcd8af429bfe4c554887a96b31"
+                  },
+                  {
+                    "quality": "sd",
+                    "type": "video/mp4",
+                    "width": 640,
+                    "height": 360,
+                    "expires": "2020-03-09T07:04:24+00:00",
+                    "link": "https://player.vimeo.com/play/1685778983?s=396364131_1583769864_e1334591b0c10c04e14e6451afaf3bf5&loc=external&context=Vimeo%5CController%5CApi%5CResources%5CVideoController.&download=1&filename=Sales%2BTeam164.mp4",
+                    "created_time": "2020-03-09T03:03:44+00:00",
+                    "fps": 23.980000000000000426325641456060111522674560546875,
+                    "size": 2012504,
+                    "md5": "b722ab98c343e039e6063f8b2cd5c69b"
+                  },
+                  {
+                    "quality": "sd",
+                    "type": "video/mp4",
+                    "width": 426,
+                    "height": 240,
+                    "expires": "2020-03-09T07:04:24+00:00",
+                    "link": "https://player.vimeo.com/play/1685778980?s=396364131_1583769864_e92c771cd44bf76b2fc724a118c42630&loc=external&context=Vimeo%5CController%5CApi%5CResources%5CVideoController.&download=1&filename=Sales%2BTeam139.mp4",
+                    "created_time": "2020-03-09T03:03:44+00:00",
+                    "fps": 23.980000000000000426325641456060111522674560546875,
+                    "size": 1252849,
+                    "md5": "06c9c9cf1f53896ffc82c064773e2698"
                   }
                 ],
                 "app": {
                   "name": "Parallel Uploader",
                   "uri": "/apps/87099"
                 },
-                "status": "transcoding",
+                "status": "available",
                 "resource_key": "ad97cee233a0b24339c497b056dafb4870bc0576",
                 "upload": {
                   "status": "complete",
@@ -523,7 +648,7 @@ class TempVideos extends StatelessWidget {
                   "redirect_url": null
                 },
                 "transcode": {
-                  "status": "in_progress"
+                  "status": "complete"
                 }
               }
             }).then((val) {

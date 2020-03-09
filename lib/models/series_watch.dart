@@ -8,10 +8,11 @@ part 'series_watch.g.dart';
 @FirebaseService(name: 'series_watch', col: 'seriesWatch')
 @JsonSerializable(anyMap: true)
 class SeriesWatch {
-  SeriesWatch({this.id, this.sid, this.sdata, this.uid, this.date, this.created, this.completed, this.status, this.test});
+  SeriesWatch({this.id, this.sid, this.sdata, this.uid, this.date, this.created, this.completed, this.status, this.test, this.enableTest = false});
 
   String id;
   String sid;
+  @JsonKey( toJson: Series.utilToJson)
   Series sdata;
   String uid;
   @JsonKey(fromJson: DateTimeUtil.fromTimestamp) //, toJson: DateTimeUtil.toTimestamp)
@@ -22,6 +23,8 @@ class SeriesWatch {
   DateTime completed;
   String status;
   bool test;
+  @JsonKey(name: 'enable_test')
+  bool enableTest;
 
 
   factory SeriesWatch.fromJson(Map<String, dynamic> json) => _$SeriesWatchFromJson(json);

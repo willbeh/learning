@@ -19,6 +19,7 @@ import 'package:learning/widgets/app_loading_container.dart';
 import 'package:learning/widgets/app_video_controller.dart';
 import 'package:learning/widgets/common_ui.dart';
 import 'package:learning/models/watch.service.dart';
+import 'package:learning/models/series_watch.service.dart';
 
 class VideoSeriesPlayerPage extends StatefulWidget {
   @override
@@ -32,7 +33,7 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
   Video _currentVideo;
   VideoPlayerController _controller;
   List<Video> videos;
-  int selectedVideoIndex;
+  int _selectedVideoIndex = 0;
   SharedPreferences prefs;
   Watch _watch;
   bool _isCompleted = false;
@@ -272,15 +273,15 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
         if(videos[j].vid == watchs[i].vid){
           videoState.selectedVideo = videos[j];
           videoState.selectedWatch = watchs[i];
-          selectedVideoIndex = j;
-          log.d('selectedVideoIndex ${selectedVideoIndex.toString()}');
+          _selectedVideoIndex = j;
+          log.d('selectedVideoIndex $_selectedVideoIndex');
 //          setState(() {});
           return;
         }
       }
       videoState.selectedWatch = null;
       videoState.selectedVideo = videos[0];
-      selectedVideoIndex = 0;
+      _selectedVideoIndex = 0;
       log.d('selectedVideoIndex 0 -');
     }
   }
@@ -398,6 +399,12 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
     }
   }
 
+  void _updateSeriesWatchDocument(Map<String, dynamic> data) {
+    series_watchFirebaseService.update(id: videoState.selectedSeriesWatch.id, data: data).catchError((error) {
+      log.w('Update series_watchFirebaseService error $error');
+    });
+  }
+
   void _logInfo(){
     if (_watch != null) {
       if (_controller.value.position.inSeconds > _watch.furthest + 1) {
@@ -446,14 +453,19 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
         });
 
         // go to next video if available
-        log.d('length ${videos.length} - index ${selectedVideoIndex}');
-        if((videos.length - 1) > selectedVideoIndex) {
+        if((videos.length - 1) > _selectedVideoIndex) {
+          Video tempVideo = videos[_selectedVideoIndex+1];
           final List<Watch> watchs = Provider.of(context, listen: false);
           Watch cWatch;
           if(watchs != null) {
-            cWatch = watchs.firstWhere((w) => w.vid == videos[selectedVideoIndex+1].vid, orElse: () => null);
+            cWatch = watchs.firstWhere((w) => w.vid == tempVideo.vid, orElse: () => null);
           }
-          Provider.of<VideoState>(context, listen: false).selectVideo(videos[selectedVideoIndex+1], cWatch);
+          _selectedVideoIndex = _selectedVideoIndex + 1;
+          Provider.of<VideoState>(context, listen: false).selectVideo(tempVideo, cWatch);
+        } else {
+          videoState.selectedSeriesWatch.enableTest = true;
+          log.d('s ${videoState.selectedSeriesWatch.toJson()}');
+          _updateSeriesWatchDocument(videoState.selectedSeriesWatch.toJson());
         }
       }
     }

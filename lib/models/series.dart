@@ -35,6 +35,10 @@ class Series {
   factory Series.fromJson(Map<dynamic, dynamic> json) => _$SeriesFromJson(json);
 
   Map<String, dynamic> toJson() => _$SeriesToJson(this);
+
+  static Map<String, dynamic> utilToJson(Series s){
+    return s.toJson();
+  }
 }
 
 

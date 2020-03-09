@@ -14,6 +14,7 @@ class VideoSeriesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<Video> videos = Provider.of(context);
+    final VideoState videoState = Provider.of(context);
 
     if(videos == null || videos.isEmpty){
       return Container();
@@ -29,7 +30,9 @@ class VideoSeriesList extends StatelessWidget {
           return Container(
             margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
             child: AppButton.roundedButton(context,
-                text: '${AppTranslate.text(context, 'video_test')}',
+              onPressed: (videoState.selectedSeriesWatch.enableTest != null && videoState.selectedSeriesWatch.enableTest) ? () => {
+              } : null,
+              text: '${AppTranslate.text(context, 'video_test')}',
               height: 48
             ),
           );
