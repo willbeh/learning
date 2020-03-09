@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:learning/models/video.dart';
 import 'package:learning/models/watch.dart';
+import 'package:learning/routes/router.gr.dart';
 import 'package:learning/states/video_state.dart';
 import 'package:learning/utils/app_traslation_util.dart';
 import 'package:learning/utils/datetime_util.dart';
@@ -30,7 +31,8 @@ class VideoSeriesList extends StatelessWidget {
           return Container(
             margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
             child: AppButton.roundedButton(context,
-              onPressed: (videoState.selectedSeriesWatch.enableTest != null && videoState.selectedSeriesWatch.enableTest) ? () => {
+              onPressed: (videoState.selectedSeriesWatch.enableTest != null && videoState.selectedSeriesWatch.enableTest) ? () {
+                AppRouter.navigator.pushNamed(AppRouter.examPage);
               } : null,
               text: '${AppTranslate.text(context, 'video_test')}',
               height: 48

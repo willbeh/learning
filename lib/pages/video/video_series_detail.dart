@@ -10,7 +10,37 @@ import 'package:learning/widgets/app_series_authors.dart';
 import 'package:learning/widgets/common_ui.dart';
 import 'package:provider/provider.dart';
 
-class VideoSeriesDetail extends StatelessWidget {
+class VideoSeriesDetail extends StatefulWidget {
+  @override
+  _VideoSeriesDetailState createState() => _VideoSeriesDetailState();
+}
+
+class _VideoSeriesDetailState extends State<VideoSeriesDetail> with SingleTickerProviderStateMixin{
+  TabController _tabController;
+  VideoState _videoState;
+
+  @override
+  void initState() {
+    _videoState = Provider.of<VideoState>(context, listen: false);
+    super.initState();
+    _tabController = TabController(vsync: this, length: 3)
+    ..addListener(() {
+      if(_tabController.index == 2) {
+        _tabController.animateTo(_tabController.previousIndex);
+        if(_videoState.selectedSeriesWatch.enableTest) {
+          AppRouter.navigator.pushNamed(AppRouter.examPage);
+        }
+      }
+
+    });
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -25,20 +55,17 @@ class VideoSeriesDetail extends StatelessWidget {
                   sliver: SliverPersistentHeader(
                     delegate: _SliverAppBarDelegate(
                       TabBar(
+                        controller: _tabController,
                         labelColor: Colors.black87,
                         unselectedLabelColor: Colors.grey,
                         indicatorColor: Colors.black,
-                        onTap: (i) {
-                          if(i == 2) {
-                            AppRouter.navigator.pushNamed(AppRouter.examPage);
-                          }
-                        },
                         tabs: [
                           Tab(text: '${AppTranslate.text(context, 'video_tab_lesson')}'),
                           Tab(text: '${AppTranslate.text(context, 'video_tab_material')}'),
                           Tab(child: Row(
                             children: <Widget>[
-                              Icon(Icons.lock, size: 12, color: Theme.of(context).primaryColor,),
+                              if(!_videoState.selectedSeriesWatch.enableTest)
+                                Icon(Icons.lock, size: 12, color: Theme.of(context).primaryColor,),
                               Text('${AppTranslate.text(context, 'video_tab_test')}')
                             ],
                           ),)
@@ -52,6 +79,8 @@ class VideoSeriesDetail extends StatelessWidget {
             ];
           },
           body: TabBarView(
+            controller: _tabController,
+            physics: const NeverScrollableScrollPhysics(),
             children: [
               VideoSeriesList(),
               _buildSeriesDetail(context),
