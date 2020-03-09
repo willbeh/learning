@@ -28,15 +28,15 @@ class TempVideos extends StatelessWidget {
           onTap: () => {
             videoFirebaseService.update(id: video.id, data: {
               'data': {
-                "uri": "/videos/393863017",
-                "name": "Open Space Learning",
-                "description": "Open Space Learning",
+                "uri": "/videos/396364131",
+                "name": "Sales Team",
+                "description": null,
                 "type": "video",
-                "link": "https://vimeo.com/393863017/82231eb77f",
-                "duration": 17,
-                "width": 3840,
+                "link": "https://vimeo.com/396364131/dd374c2b36",
+                "duration": 0,
+                "width": 400,
                 "language": null,
-                "height": 2160,
+                "height": 300,
                 "embed": {
                   "buttons": {
                     "like": true,
@@ -65,7 +65,7 @@ class TempVideos extends StatelessWidget {
                   "speed": false,
                   "color": "00adef",
                   "uri": null,
-                  "html": "<iframe src=\"https://player.vimeo.com/video/393863017?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=166420\" width=\"3840\" height=\"2160\" frameborder=\"0\" allow=\"autoplay; fullscreen\" allowfullscreen title=\"Open Space Learning\"></iframe>",
+                  "html": "<iframe src=\"https://player.vimeo.com/video/396364131?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=166420\" width=\"400\" height=\"300\" frameborder=\"0\" allow=\"autoplay; fullscreen\" allowfullscreen title=\"Sales Team\"></iframe>",
                   "badges": {
                     "hdr": false,
                     "live": {
@@ -82,11 +82,11 @@ class TempVideos extends StatelessWidget {
                     "weekend_challenge": false
                   }
                 },
-                "created_time": "2020-02-26T07:17:20+00:00",
-                "modified_time": "2020-02-26T07:31:16+00:00",
-                "release_time": "2020-02-26T07:17:20+00:00",
+                "created_time": "2020-03-09T03:03:12+00:00",
+                "modified_time": "2020-03-09T03:03:41+00:00",
+                "release_time": "2020-03-09T03:03:12+00:00",
                 "content_rating": [
-                  "safe"
+                  "unrated"
                 ],
                 "license": null,
                 "privacy": {
@@ -97,99 +97,80 @@ class TempVideos extends StatelessWidget {
                   "comments": "anybody"
                 },
                 "pictures": {
-                  "uri": "/videos/393863017:82231eb77f/pictures/859526037",
+                  "uri": "/videos/396364131:dd374c2b36/pictures/863088456",
                   "active": true,
                   "type": "custom",
                   "sizes": [
                     {
                       "width": 100,
                       "height": 75,
-                      "link": "https://i.vimeocdn.com/video/859526037_100x75.jpg?r=pad",
-                      "link_with_play_button": "https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F859526037_100x75.jpg&src1=http%3A%2F%2Ff.vimeocdn.com%2Fp%2Fimages%2Fcrawler_play.png"
+                      "link": "https://i.vimeocdn.com/video/863088456_100x75.jpg?r=pad",
+                      "link_with_play_button": "https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F863088456_100x75.jpg&src1=http%3A%2F%2Ff.vimeocdn.com%2Fp%2Fimages%2Fcrawler_play.png"
                     },
                     {
                       "width": 200,
                       "height": 150,
-                      "link": "https://i.vimeocdn.com/video/859526037_200x150.jpg?r=pad",
-                      "link_with_play_button": "https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F859526037_200x150.jpg&src1=http%3A%2F%2Ff.vimeocdn.com%2Fp%2Fimages%2Fcrawler_play.png"
+                      "link": "https://i.vimeocdn.com/video/863088456_200x150.jpg?r=pad",
+                      "link_with_play_button": "https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F863088456_200x150.jpg&src1=http%3A%2F%2Ff.vimeocdn.com%2Fp%2Fimages%2Fcrawler_play.png"
                     },
                     {
                       "width": 295,
                       "height": 166,
-                      "link": "https://i.vimeocdn.com/video/859526037_295x166.jpg?r=pad",
-                      "link_with_play_button": "https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F859526037_295x166.jpg&src1=http%3A%2F%2Ff.vimeocdn.com%2Fp%2Fimages%2Fcrawler_play.png"
+                      "link": "https://i.vimeocdn.com/video/863088456_295x166.jpg?r=pad",
+                      "link_with_play_button": "https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F863088456_295x166.jpg&src1=http%3A%2F%2Ff.vimeocdn.com%2Fp%2Fimages%2Fcrawler_play.png"
                     },
                     {
                       "width": 640,
                       "height": 360,
-                      "link": "https://i.vimeocdn.com/video/859526037_640x360.jpg?r=pad",
-                      "link_with_play_button": "https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F859526037_640x360.jpg&src1=http%3A%2F%2Ff.vimeocdn.com%2Fp%2Fimages%2Fcrawler_play.png"
+                      "link": "https://i.vimeocdn.com/video/863088456_640x360.jpg?r=pad",
+                      "link_with_play_button": "https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F863088456_640x360.jpg&src1=http%3A%2F%2Ff.vimeocdn.com%2Fp%2Fimages%2Fcrawler_play.png"
                     },
                     {
                       "width": 1280,
                       "height": 720,
-                      "link": "https://i.vimeocdn.com/video/859526037_1280x720.jpg?r=pad",
-                      "link_with_play_button": "https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F859526037_1280x720.jpg&src1=http%3A%2F%2Ff.vimeocdn.com%2Fp%2Fimages%2Fcrawler_play.png"
+                      "link": "https://i.vimeocdn.com/video/863088456_1280x720.jpg?r=pad",
+                      "link_with_play_button": "https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F863088456_1280x720.jpg&src1=http%3A%2F%2Ff.vimeocdn.com%2Fp%2Fimages%2Fcrawler_play.png"
                     },
                     {
                       "width": 1920,
                       "height": 1080,
-                      "link": "https://i.vimeocdn.com/video/859526037_1920x1080.jpg?r=pad",
-                      "link_with_play_button": "https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F859526037_1920x1080.jpg&src1=http%3A%2F%2Ff.vimeocdn.com%2Fp%2Fimages%2Fcrawler_play.png"
+                      "link": "https://i.vimeocdn.com/video/863088456_1920x1080.jpg?r=pad",
+                      "link_with_play_button": "https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F863088456_1920x1080.jpg&src1=http%3A%2F%2Ff.vimeocdn.com%2Fp%2Fimages%2Fcrawler_play.png"
                     },
                     {
                       "width": 640,
                       "height": 360,
-                      "link": "https://i.vimeocdn.com/video/859526037_640x360.jpg?r=pad",
-                      "link_with_play_button": "https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F859526037_640x360.jpg&src1=http%3A%2F%2Ff.vimeocdn.com%2Fp%2Fimages%2Fcrawler_play.png"
+                      "link": "https://i.vimeocdn.com/video/863088456_640x360.jpg?r=pad",
+                      "link_with_play_button": "https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F863088456_640x360.jpg&src1=http%3A%2F%2Ff.vimeocdn.com%2Fp%2Fimages%2Fcrawler_play.png"
                     },
                     {
                       "width": 960,
                       "height": 540,
-                      "link": "https://i.vimeocdn.com/video/859526037_960x540.jpg?r=pad",
-                      "link_with_play_button": "https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F859526037_960x540.jpg&src1=http%3A%2F%2Ff.vimeocdn.com%2Fp%2Fimages%2Fcrawler_play.png"
+                      "link": "https://i.vimeocdn.com/video/863088456_960x540.jpg?r=pad",
+                      "link_with_play_button": "https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F863088456_960x540.jpg&src1=http%3A%2F%2Ff.vimeocdn.com%2Fp%2Fimages%2Fcrawler_play.png"
                     },
                     {
                       "width": 1280,
                       "height": 720,
-                      "link": "https://i.vimeocdn.com/video/859526037_1280x720.jpg?r=pad",
-                      "link_with_play_button": "https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F859526037_1280x720.jpg&src1=http%3A%2F%2Ff.vimeocdn.com%2Fp%2Fimages%2Fcrawler_play.png"
+                      "link": "https://i.vimeocdn.com/video/863088456_1280x720.jpg?r=pad",
+                      "link_with_play_button": "https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F863088456_1280x720.jpg&src1=http%3A%2F%2Ff.vimeocdn.com%2Fp%2Fimages%2Fcrawler_play.png"
                     },
                     {
                       "width": 1920,
                       "height": 1080,
-                      "link": "https://i.vimeocdn.com/video/859526037_1920x1080.jpg?r=pad",
-                      "link_with_play_button": "https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F859526037_1920x1080.jpg&src1=http%3A%2F%2Ff.vimeocdn.com%2Fp%2Fimages%2Fcrawler_play.png"
+                      "link": "https://i.vimeocdn.com/video/863088456_1920x1080.jpg?r=pad",
+                      "link_with_play_button": "https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F863088456_1920x1080.jpg&src1=http%3A%2F%2Ff.vimeocdn.com%2Fp%2Fimages%2Fcrawler_play.png"
                     },
                     {
                       "width": 1280,
                       "height": 720,
-                      "link": "https://i.vimeocdn.com/video/859526037_1280x720.jpg?r=pad",
-                      "link_with_play_button": "https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F859526037_1280x720.jpg&src1=http%3A%2F%2Ff.vimeocdn.com%2Fp%2Fimages%2Fcrawler_play.png"
+                      "link": "https://i.vimeocdn.com/video/863088456_1280x720.jpg?r=pad",
+                      "link_with_play_button": "https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F863088456_1280x720.jpg&src1=http%3A%2F%2Ff.vimeocdn.com%2Fp%2Fimages%2Fcrawler_play.png"
                     }
                   ],
-                  "resource_key": "b3f0ae7bccec5b44c04eaacf69a66d8bcf53fcd6"
+                  "resource_key": "825d90efef392ed6e773a774814bc456c95d48a3"
                 },
-                "tags": [
-                  {
-                    "uri": "/tags/group",
-                    "name": "group",
-                    "tag": "group",
-                    "canonical": "group",
-                    "metadata": {
-                      "connections": {
-                        "videos": {
-                          "uri": "/tags/group/videos",
-                          "options": [
-                            "GET"
-                          ],
-                          "total": 30800
-                        }
-                      }
-                    },
-                    "resource_key": "cd502085e8ae92c8f52cb5e9f21bf6b539545e99"
-                  }
-                ],
+                "tags": [],
                 "stats": {
                   "plays": 0
                 },
@@ -197,7 +178,7 @@ class TempVideos extends StatelessWidget {
                 "metadata": {
                   "connections": {
                     "comments": {
-                      "uri": "/videos/393863017:82231eb77f/comments",
+                      "uri": "/videos/396364131:dd374c2b36/comments",
                       "options": [
                         "GET",
                         "POST"
@@ -206,22 +187,22 @@ class TempVideos extends StatelessWidget {
                     },
                     "credits": null,
                     "likes": {
-                      "uri": "/videos/393863017:82231eb77f/likes",
+                      "uri": "/videos/396364131:dd374c2b36/likes",
                       "options": [
                         "GET"
                       ],
                       "total": 0
                     },
                     "pictures": {
-                      "uri": "/videos/393863017:82231eb77f/pictures",
+                      "uri": "/videos/396364131:dd374c2b36/pictures",
                       "options": [
                         "GET",
                         "POST"
                       ],
-                      "total": 2
+                      "total": 1
                     },
                     "texttracks": {
-                      "uri": "/videos/393863017:82231eb77f/texttracks",
+                      "uri": "/videos/396364131:dd374c2b36/texttracks",
                       "options": [
                         "GET",
                         "POST"
@@ -231,7 +212,7 @@ class TempVideos extends StatelessWidget {
                     "related": null,
                     "recommendations": null,
                     "albums": {
-                      "uri": "/videos/393863017:82231eb77f/albums",
+                      "uri": "/videos/396364131:dd374c2b36/albums",
                       "options": [
                         "GET",
                         "PATCH"
@@ -239,25 +220,25 @@ class TempVideos extends StatelessWidget {
                       "total": 0
                     },
                     "available_albums": {
-                      "uri": "/videos/393863017:82231eb77f/available_albums",
+                      "uri": "/videos/396364131:dd374c2b36/available_albums",
                       "options": [
                         "GET"
                       ],
                       "total": 0
                     },
                     "versions": {
-                      "uri": "/videos/393863017:82231eb77f/versions",
+                      "uri": "/videos/396364131:dd374c2b36/versions",
                       "options": [
                         "GET"
                       ],
                       "total": 1,
-                      "current_uri": "/videos/393863017/versions/295869209",
-                      "resource_key": "c1f4f2a35aa0984e3df9a1af7223fd3156ed3a11"
+                      "current_uri": "/videos/396364131/versions/298758249",
+                      "resource_key": "b221752c11011613055e235aa4d66e3f97c3bc7b"
                     }
                   },
                   "interactions": {
                     "watchlater": {
-                      "uri": "/users/109008672/watchlater/393863017:82231eb77f",
+                      "uri": "/users/109008672/watchlater/396364131:dd374c2b36",
                       "options": [
                         "GET",
                         "PUT",
@@ -267,7 +248,7 @@ class TempVideos extends StatelessWidget {
                       "added_time": null
                     },
                     "report": {
-                      "uri": "/videos/393863017/report",
+                      "uri": "/videos/396364131/report",
                       "options": [
                         "POST"
                       ],
@@ -434,7 +415,7 @@ class TempVideos extends StatelessWidget {
                         "options": [
                           "GET"
                         ],
-                        "total": 1
+                        "total": 3
                       },
                       "watchlater": {
                         "uri": "/users/109008672/watchlater",
@@ -485,7 +466,7 @@ class TempVideos extends StatelessWidget {
                   "preferences": {
                     "videos": {
                       "privacy": {
-                        "view": "anybody",
+                        "view": "unlisted",
                         "comments": "anybody",
                         "embed": "public",
                         "download": true,
@@ -505,203 +486,32 @@ class TempVideos extends StatelessWidget {
                   "account": "pro"
                 },
                 "review_page": {
-                  "active": false,
-                  "link": "https://vimeo.com/user109008672/review/393863017/1770eb057c"
+                  "active": true,
+                  "link": "https://vimeo.com/user109008672/review/396364131/93ad877cb5"
                 },
                 "parent_folder": null,
-                "last_user_action_event_date": "2020-02-26T07:31:16+00:00",
-                "files": [
-                  {
-                    "quality": "hd",
-                    "type": "video/mp4",
-                    "width": 3840,
-                    "height": 2160,
-                    "link": "https://player.vimeo.com/external/393863017.hd.mp4?s=d3574bcea478a95ef763cbca8a2acc57c2ffb465&profile_id=172&oauth2_token_id=1300266401",
-                    "created_time": "2020-02-26T07:20:04+00:00",
-                    "fps": 25,
-                    "size": 37675166,
-                    "md5": "c2a696c996b21247ba76557484eb5b6d"
-                  },
-                  {
-                    "quality": "hd",
-                    "type": "video/mp4",
-                    "width": 1280,
-                    "height": 720,
-                    "link": "https://player.vimeo.com/external/393863017.hd.mp4?s=d3574bcea478a95ef763cbca8a2acc57c2ffb465&profile_id=174&oauth2_token_id=1300266401",
-                    "created_time": "2020-02-26T07:20:04+00:00",
-                    "fps": 25,
-                    "size": 6127613,
-                    "md5": "3fdba06c4c5f07f8f3c8f6ebf9d7f3fa"
-                  },
-                  {
-                    "quality": "hd",
-                    "type": "video/mp4",
-                    "width": 2560,
-                    "height": 1440,
-                    "link": "https://player.vimeo.com/external/393863017.hd.mp4?s=d3574bcea478a95ef763cbca8a2acc57c2ffb465&profile_id=170&oauth2_token_id=1300266401",
-                    "created_time": "2020-02-26T07:20:04+00:00",
-                    "fps": 25,
-                    "size": 19607500,
-                    "md5": "6b4193e93f9df60b4acd45aa48ac53e3"
-                  },
-                  {
-                    "quality": "hd",
-                    "type": "video/mp4",
-                    "width": 1920,
-                    "height": 1080,
-                    "link": "https://player.vimeo.com/external/393863017.hd.mp4?s=d3574bcea478a95ef763cbca8a2acc57c2ffb465&profile_id=175&oauth2_token_id=1300266401",
-                    "created_time": "2020-02-26T07:20:04+00:00",
-                    "fps": 25,
-                    "size": 12018301,
-                    "md5": "19336d37150a645627c97638aa62f428"
-                  },
-                  {
-                    "quality": "sd",
-                    "type": "video/mp4",
-                    "width": 960,
-                    "height": 540,
-                    "link": "https://player.vimeo.com/external/393863017.sd.mp4?s=4cbbae71e52cc22699c405f1af0b2fb2bd02efff&profile_id=165&oauth2_token_id=1300266401",
-                    "created_time": "2020-02-26T07:19:44+00:00",
-                    "fps": 25,
-                    "size": 3335079,
-                    "md5": "4e8dec9dd0d486333195246fc2fc4640"
-                  },
-                  {
-                    "quality": "sd",
-                    "type": "video/mp4",
-                    "width": 640,
-                    "height": 360,
-                    "link": "https://player.vimeo.com/external/393863017.sd.mp4?s=4cbbae71e52cc22699c405f1af0b2fb2bd02efff&profile_id=164&oauth2_token_id=1300266401",
-                    "created_time": "2020-02-26T07:18:05+00:00",
-                    "fps": 25,
-                    "size": 1132894,
-                    "md5": "061859de7d8e444d883773ee08fe3fd4"
-                  },
-                  {
-                    "quality": "sd",
-                    "type": "video/mp4",
-                    "width": 426,
-                    "height": 240,
-                    "link": "https://player.vimeo.com/external/393863017.sd.mp4?s=4cbbae71e52cc22699c405f1af0b2fb2bd02efff&profile_id=139&oauth2_token_id=1300266401",
-                    "created_time": "2020-02-26T07:18:05+00:00",
-                    "fps": 25,
-                    "size": 699008,
-                    "md5": "a856d3c33b48c9df4be30ea045a3bd67"
-                  },
-                  {
-                    "quality": "hls",
-                    "type": "video/mp4",
-                    "link": "https://player.vimeo.com/external/393863017.m3u8?s=4743677dee6494cb88b56cbec9561fe595c71554&oauth2_token_id=1300266401",
-                    "created_time": "2020-02-26T07:20:04+00:00",
-                    "fps": 25,
-                    "size": 37675166,
-                    "md5": "c2a696c996b21247ba76557484eb5b6d"
-                  }
-                ],
+                "last_user_action_event_date": "2020-03-09T03:03:24+00:00",
+                "files": [],
                 "download": [
                   {
                     "quality": "source",
                     "type": "source",
-                    "width": 3840,
-                    "height": 2160,
-                    "expires": "2020-02-26T10:36:17+00:00",
-                    "link": "https://player.vimeo.com/play/1671263896?s=393863017_1582745777_82f7be7a96ade9be85b9dd1362bdf772&loc=external&context=Vimeo%5CController%5CApi%5CResources%5CVideoController.&download=1&filename=Open%2BSpace%2BLearningsource.mp4",
-                    "created_time": "2020-02-26T07:17:44+00:00",
-                    "fps": 25,
-                    "size": 41043735,
-                    "md5": "8ae3d4b9b5749ffc98bcb79111f80081"
-                  },
-                  {
-                    "quality": "hd",
-                    "type": "video/mp4",
-                    "width": 3840,
-                    "height": 2160,
-                    "expires": "2020-02-26T10:36:17+00:00",
-                    "link": "https://player.vimeo.com/play/1671265410?s=393863017_1582745777_f957701a723e80fa5a577d5d57449538&loc=external&context=Vimeo%5CController%5CApi%5CResources%5CVideoController.&download=1&filename=Open%2BSpace%2BLearning172.mp4",
-                    "created_time": "2020-02-26T07:20:04+00:00",
-                    "fps": 25,
-                    "size": 37675166,
-                    "md5": "c2a696c996b21247ba76557484eb5b6d"
-                  },
-                  {
-                    "quality": "hd",
-                    "type": "video/mp4",
-                    "width": 1280,
-                    "height": 720,
-                    "expires": "2020-02-26T10:36:17+00:00",
-                    "link": "https://player.vimeo.com/play/1671265406?s=393863017_1582745777_2980276a10163f53f42be2902147d2d1&loc=external&context=Vimeo%5CController%5CApi%5CResources%5CVideoController.&download=1&filename=Open%2BSpace%2BLearning174.mp4",
-                    "created_time": "2020-02-26T07:20:04+00:00",
-                    "fps": 25,
-                    "size": 6127613,
-                    "md5": "3fdba06c4c5f07f8f3c8f6ebf9d7f3fa"
-                  },
-                  {
-                    "quality": "hd",
-                    "type": "video/mp4",
-                    "width": 2560,
-                    "height": 1440,
-                    "expires": "2020-02-26T10:36:17+00:00",
-                    "link": "https://player.vimeo.com/play/1671265404?s=393863017_1582745777_a8ec33339e8ae35f1bdea93f19fecff5&loc=external&context=Vimeo%5CController%5CApi%5CResources%5CVideoController.&download=1&filename=Open%2BSpace%2BLearning170.mp4",
-                    "created_time": "2020-02-26T07:20:04+00:00",
-                    "fps": 25,
-                    "size": 19607500,
-                    "md5": "6b4193e93f9df60b4acd45aa48ac53e3"
-                  },
-                  {
-                    "quality": "hd",
-                    "type": "video/mp4",
                     "width": 1920,
                     "height": 1080,
-                    "expires": "2020-02-26T10:36:17+00:00",
-                    "link": "https://player.vimeo.com/play/1671265402?s=393863017_1582745777_c0853ce14efdfe8aac81566c25763653&loc=external&context=Vimeo%5CController%5CApi%5CResources%5CVideoController.&download=1&filename=Open%2BSpace%2BLearning175.mp4",
-                    "created_time": "2020-02-26T07:20:04+00:00",
-                    "fps": 25,
-                    "size": 12018301,
-                    "md5": "19336d37150a645627c97638aa62f428"
-                  },
-                  {
-                    "quality": "sd",
-                    "type": "video/mp4",
-                    "width": 960,
-                    "height": 540,
-                    "expires": "2020-02-26T10:36:17+00:00",
-                    "link": "https://player.vimeo.com/play/1671265235?s=393863017_1582745777_0877c91aa3fbc1f09a86e277a520a1d7&loc=external&context=Vimeo%5CController%5CApi%5CResources%5CVideoController.&download=1&filename=Open%2BSpace%2BLearning165.mp4",
-                    "created_time": "2020-02-26T07:19:44+00:00",
-                    "fps": 25,
-                    "size": 3335079,
-                    "md5": "4e8dec9dd0d486333195246fc2fc4640"
-                  },
-                  {
-                    "quality": "sd",
-                    "type": "video/mp4",
-                    "width": 640,
-                    "height": 360,
-                    "expires": "2020-02-26T10:36:17+00:00",
-                    "link": "https://player.vimeo.com/play/1671264199?s=393863017_1582745777_ef0c5b8248222328b5d48004051f8344&loc=external&context=Vimeo%5CController%5CApi%5CResources%5CVideoController.&download=1&filename=Open%2BSpace%2BLearning164.mp4",
-                    "created_time": "2020-02-26T07:18:05+00:00",
-                    "fps": 25,
-                    "size": 1132894,
-                    "md5": "061859de7d8e444d883773ee08fe3fd4"
-                  },
-                  {
-                    "quality": "sd",
-                    "type": "video/mp4",
-                    "width": 426,
-                    "height": 240,
-                    "expires": "2020-02-26T10:36:17+00:00",
-                    "link": "https://player.vimeo.com/play/1671264194?s=393863017_1582745777_e16cb1ded1c7e269384dbf2121890e0a&loc=external&context=Vimeo%5CController%5CApi%5CResources%5CVideoController.&download=1&filename=Open%2BSpace%2BLearning139.mp4",
-                    "created_time": "2020-02-26T07:18:05+00:00",
-                    "fps": 25,
-                    "size": 699008,
-                    "md5": "a856d3c33b48c9df4be30ea045a3bd67"
+                    "expires": "2020-03-09T06:03:50+00:00",
+                    "link": "https://player.vimeo.com/play/1685778706?s=396364131_1583766230_a2e7779a46a16a0592a21ea39df1af6e&loc=external&context=Vimeo%5CController%5CApi%5CResources%5CVideoController.&download=1&filename=Sales%2BTeamsource.mp4",
+                    "created_time": "2020-03-09T03:03:24+00:00",
+                    "fps": 23.980000000000000426325641456060111522674560546875,
+                    "size": 14868351,
+                    "md5": "054266cff6c0b1acefe56c15deaccb51"
                   }
                 ],
                 "app": {
                   "name": "Parallel Uploader",
                   "uri": "/apps/87099"
                 },
-                "status": "available",
-                "resource_key": "f66a1de401a40b8569945317678f2f5ccddfdeb7",
+                "status": "transcoding",
+                "resource_key": "ad97cee233a0b24339c497b056dafb4870bc0576",
                 "upload": {
                   "status": "complete",
                   "link": null,
@@ -713,7 +523,7 @@ class TempVideos extends StatelessWidget {
                   "redirect_url": null
                 },
                 "transcode": {
-                  "status": "complete"
+                  "status": "in_progress"
                 }
               }
             }).then((val) {

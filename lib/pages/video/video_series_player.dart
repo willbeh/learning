@@ -32,6 +32,7 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
   Video _currentVideo;
   VideoPlayerController _controller;
   List<Video> videos;
+  int selectedVideoIndex;
   SharedPreferences prefs;
   Watch _watch;
   bool _isCompleted = false;
@@ -271,21 +272,26 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
         if(videos[j].vid == watchs[i].vid){
           videoState.selectedVideo = videos[j];
           videoState.selectedWatch = watchs[i];
+          selectedVideoIndex = j;
+          log.d('selectedVideoIndex ${selectedVideoIndex.toString()}');
 //          setState(() {});
           return;
         }
       }
       videoState.selectedWatch = null;
       videoState.selectedVideo = videos[0];
+      selectedVideoIndex = 0;
+      log.d('selectedVideoIndex 0 -');
     }
   }
 
   void _initWatch(BuildContext context){
     if (videoState.selectedWatch != null) {
       Watch wp; // preference watch
-      if (prefs.getString(videoState.selectedVideo.vid) != null) {
-        wp = Watch.fromJson(jsonDecode(prefs.getString(videoState.selectedVideo.vid)) as Map<String, dynamic>);
-      }
+//      log.d('vid ${videoState.selectedVideo.vid}');
+//      if (prefs.getString(videoState.selectedVideo.vid) != null) {
+//        wp = Watch.fromJson(jsonDecode(prefs.getString(videoState.selectedVideo.vid)) as Map<String, dynamic>);
+//      }
       // preference watch is further than firestore
       if (wp != null && wp.furthest > videoState.selectedWatch.furthest) {
         _watch = wp;
@@ -438,6 +444,17 @@ class _VideoSeriesPlayerPageState extends State<VideoSeriesPlayerPage> {
             setState(() {});
           });
         });
+
+        // go to next video if available
+        log.d('length ${videos.length} - index ${selectedVideoIndex}');
+        if((videos.length - 1) > selectedVideoIndex) {
+          final List<Watch> watchs = Provider.of(context, listen: false);
+          Watch cWatch;
+          if(watchs != null) {
+            cWatch = watchs.firstWhere((w) => w.vid == videos[selectedVideoIndex+1].vid, orElse: () => null);
+          }
+          Provider.of<VideoState>(context, listen: false).selectVideo(videos[selectedVideoIndex+1], cWatch);
+        }
       }
     }
   }
