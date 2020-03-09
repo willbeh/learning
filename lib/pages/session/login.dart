@@ -77,17 +77,17 @@ class _LoginPageState extends State<LoginPage> {
                           ],
                         ),
                       ),
-                      Container(
-                        color: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text('${AppTranslate.text(context, 'login_donot')}', style: Theme.of(context).textTheme.display2,),
-                            Text('${AppTranslate.text(context, 'login_signup')}', style: Theme.of(context).textTheme.display2.copyWith(fontWeight: FontWeight.bold ,color: Theme.of(context).primaryColor),),
-                          ],
-                        ),
-                      )
+//                      Container(
+//                        color: Colors.white,
+//                        padding: const EdgeInsets.symmetric(vertical: 14),
+//                        child: Row(
+//                          mainAxisAlignment: MainAxisAlignment.center,
+//                          children: <Widget>[
+//                            Text('${AppTranslate.text(context, 'login_donot')}', style: Theme.of(context).textTheme.display2,),
+//                            Text('${AppTranslate.text(context, 'login_signup')}', style: Theme.of(context).textTheme.display2.copyWith(fontWeight: FontWeight.bold ,color: Theme.of(context).primaryColor),),
+//                          ],
+//                        ),
+//                      )
                     ],
                   ),
                 );
